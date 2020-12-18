@@ -6,3 +6,4 @@
 nginx.htaccess
 kitecms.sql
 .htaccess
+/config/database.php
