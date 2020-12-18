@@ -1,0 +1,8 @@
+/.idea
+/.vscode
+*.log
+.env
+*.lock
+nginx.htaccess
+kitecms.sql
+.htaccess
