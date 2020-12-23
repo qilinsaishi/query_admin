@@ -53,7 +53,7 @@ class Admin extends Common
         $breadcrumb = Auth::breadcrumb();
         $end = end($breadcrumb);
         View::share('breadcrumb', $breadcrumb);
-        View::share('current', $end['lang_var']);
+        View::share('current', $end['name']);
 
         // 站点赋值
         View::share('site_list', Auth::getSite($session['uid']));

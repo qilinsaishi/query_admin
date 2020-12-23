@@ -13,7 +13,7 @@
                 {notempty name="vo.child"}
                     <li class="treeview {$vo.active}">
                       <a href="{$vo.url}">
-                        <i class="{$vo.icon}"></i> <span><!--{$vo.name}-->{:lang($vo['lang_var'])}</span>
+                        <i class="{$vo.icon}"></i> <span><!--{$vo.name}-->{:lang($vo['name'])}</span>
                         <span class="pull-right-container">
                           <i class="fa fa-angle-left pull-right"></i>
                         </span>
@@ -22,25 +22,25 @@
                         {volist name="vo.child" id="son"}
                             {notempty  name="son.child"}
                             <li class="treeview {$son.active}">
-                              <a href="{$son.url}"><i class="{$son.icon}"></i> {:lang($son['lang_var'])}
+                              <a href="{$son.url}"><i class="{$son.icon}"></i> {:lang($son['name'])}
                                 <span class="pull-right-container">
                                   <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                               </a>
                               <ul class="treeview-menu">
                                 {volist name="son.child" id="gson"}
-                                <li class="{$gson.active}"><a href="{$gson.url}"><i class="{$gson.icon}"></i> {:lang($gson['lang_var'])}</a></li>
+                                <li class="{$gson.active}"><a href="{$gson.url}"><i class="{$gson.icon}"></i> {:lang($gson['name'])}</a></li>
                                 {/volist}
                               </ul>
                             </li>
                             {else /}
-                            <li class="{$son.active}"><a href="{$son.url}"><i class="{$son.icon}"></i> {:lang($son['lang_var'])}</a></li>
+                            <li class="{$son.active}"><a href="{$son.url}"><i class="{$son.icon}"></i> {:lang($son['name'])}</a></li>
                             {/notempty}
                         {/volist}
                       </ul>
                     </li>
                 {else /}
-                    <li class="{$vo.active}"><a href="{$vo.url}"><i class="{$vo.icon}"></i> <span>{:lang($vo['lang_var'])}</span></a></li>
+                    <li class="{$vo.active}"><a href="{$vo.url}"><i class="{$vo.icon}"></i> <span>{:lang($vo['name'])}</span></a></li>
                 {/notempty}
             {/volist}
         {/notempty}

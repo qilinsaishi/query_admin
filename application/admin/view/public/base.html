@@ -76,7 +76,7 @@ desired effect
       <ol class="breadcrumb">
         <li><i class="fa fa-home"></i> {:lang('Home')}</li>
         {volist name="breadcrumb" id="vo"}
-        <li lass="{$vo.active}">{:lang($vo['lang_var'])}</li>
+        <li lass="{$vo.active}">{:lang($vo['name'])}</li>
         {/volist}
       </ol>
     </section>

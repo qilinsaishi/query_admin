@@ -13,7 +13,6 @@ class Rule extends Admin
     {
         $query = Db::name('auth_rule')->order('sort asc')->select();
         $list = list_for_level($query);
-
         return view('index', ['list' => $list]);
     }
 
