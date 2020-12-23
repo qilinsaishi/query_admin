@@ -67,10 +67,10 @@ class DefaultConfig extends Admin
                 return $this->response(201, $validate->getError());
             }
 
-            $siteObj = new DefaultConfigModel();
-            $siteObj->isUpdate(true)->allowField(true)->save($request);
+            $defaultConfigObj= new DefaultConfigModel();
+            $defaultConfigObj->isUpdate(true)->allowField(true)->save($request);
 
-            if (is_numeric($siteObj->id)) {
+            if (is_numeric($defaultConfigObj->id)) {
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
@@ -161,10 +161,10 @@ class DefaultConfig extends Admin
             }
             $request['site_id']=$this->site_id;
 
-            $siteObj = new DefaultConfigModel();
-            $siteObj->allowField(true)->save($request);
+            $defaultConfigObj = new DefaultConfigModel();
+            $defaultConfigObj->allowField(true)->save($request);
 
-            if (is_numeric($siteObj->id)) {
+            if (is_numeric($defaultConfigObj->id)) {
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
