@@ -84,10 +84,12 @@ class Site extends Admin
 
         $id = Request::param('id');
         $info = SiteModel::get($id);
+        $typeList=config('app.game_type');
 
         $data = [
             'info'  => $info,
             'theme' => $this->getThemeList(),
+            'typeList'=>$typeList,
         ];
 
         return $this->fetch('edit', $data);
@@ -164,9 +166,10 @@ class Site extends Admin
                 return $this->response(201, Lang::get('Fail'));
             }
         }
-
+        $typeList=config('app.game_type');
         $data = [
             'theme'      => $this->getThemeList(),
+            'typeList'=>$typeList,
         ];
 
         return $this->fetch('create', $data);
@@ -197,7 +200,7 @@ class Site extends Admin
         // 分页列表
         $list = $siteObj
             ->whereOr('name|title','like','%'.$q.'%')
-            ->where('id', 'in', $ids)
+            //->where('id', 'in', $ids)
             ->order('sort asc')
             ->paginate(20, false, [
                 'type'     => 'bootstrap',
