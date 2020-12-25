@@ -2,6 +2,7 @@
 namespace app\admin\controller;
 
 use app\common\model\Collect;
+use app\common\model\querylist\CpseoTeamInfo;
 use think\Db;
 use think\facade\Request;
 use think\facade\Session;
@@ -30,6 +31,18 @@ class Collects extends Admin
         }
 
         $collectObj = new Collect();
+
+        $seoTeamModel=new CpseoTeamInfo();
+        $seoTeamData=$seoTeamModel->getList($params,$q);
+        $new_data=[];
+        if (isset($seoTeamData)) {
+            foreach ($seoTeamData as $v) {
+
+                array_push($new_data, $v);
+            }
+        }
+        print_r($new_data);exit;
+
         $list = $collectObj
             ->field('*')
             ->whereOr('title|keyword|url','like','%'.$q.'%')

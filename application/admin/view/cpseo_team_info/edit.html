@@ -1,0 +1,143 @@
+<!-- 模板继承 -->
+{extend name="public:base" /}
+
+<!-- 页面标题 -->
+{block name="title"}Administrator{/block}
+
+<!-- 自定义css -->
+{block name="css"}{/block}
+
+<!-- 内容区域 -->
+{block name="content"}
+  <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+      <li class=""><a href="{:url('admin/CpseoTeamInfo/index')}">cpSeo战队</a></li>
+      <li class=""><a href="{:url('admin/CpseoTeamInfo/create')}">{:lang('Create')}</a></li>
+      <li class="pull-right"><a href="javascript:history.back(-1);" class="text-muted"><i class="fa fa-chevron-circle-left"></i></a></li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane active">
+        <form role="form" id="operate">
+            <div class="form-group">
+              <label>名称 <span class="text-red">*</span></label>
+              <div class="row">
+              <div class="col-md-6">
+              <input type="hidden" name="team_id" value="{$info.team_id}">
+              <input type="text" name="team_name" value="{$info.team_name}" class="form-control input-sm" placeholder="">
+              </div>
+              </div>
+            </div>
+            
+			<div class="form-group">
+              <label>Logo</label>
+              <div class="row">
+              <div class="col-md-12">
+                <div class="layui-upload-drag" id="logo">
+                  <input type="hidden" name="logo" value="{$info.logo}">
+                  <div class="layui-upload-list" id="preview">
+                      {empty name="info.logo"}
+                      <p>{:lang('Upload')}</p>
+                      {else /}
+                      <img class="layui-upload-img img-responsive" src="{$info.logo}" />
+                      {/empty}
+                  </div>
+                </div>
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+			  <label>是否热门战队</label>
+			  <div class="row">
+			  <div class="col-md-12">
+				<div class="radio">
+					<label class="radio-inline">
+						<input type="radio" {eq name="info.hot" value="0"}checked{/eq} name="hot" value="0">否
+					</label>
+					<label class="radio-inline">
+						<input type="radio" {eq name="info.hot" value="1"}checked{/eq} name="hot" value="1">是
+					</label>
+				</div>
+			  </div>
+			  </div>
+			</div>
+			
+			
+            
+        </form>
+      </div>
+      <!-- /.tab-pane -->
+    </div>
+    <!-- /.tab-content -->
+    <div class="box-footer">
+        <div class="btn-group">
+            <button class="btn btn-primary btn-flat" onclick="operate();" type="button"> {:lang('Save')}</button>
+        </div>
+    </div>
+  </div>
+{/block}
+
+<!-- 自定义js -->
+{block name="js"}
+<script>
+layui.use('upload', function(){
+  var $ = layui.jquery
+  ,upload = layui.upload;
+  //拖拽上传
+  upload.render({
+    elem: "#logo"
+    ,accept: 'image'
+    ,multiple: false
+    ,number: 1
+    ,url: "{:url('admin/upload/uploadFile')}"
+    ,done: function(res){
+      if (res.code == 200) {
+        $("[name='logo']").val(res.data.url);
+        $("#preview").html("<img class=\'layui-upload-img img-responsive\' src=\'"+res.data.url+"\'>");
+      } else {
+        swal({
+          position: 'center',
+          type: 'error',
+          title: res.msg,
+          showConfirmButton: false,
+          toast:false,
+          timer: 2000
+        });
+      }
+    }
+  });
+  
+});
+</script>
+<script type="text/javascript">
+    function operate(){
+        $.ajax({
+            url:"{:url('admin/CpseoTeamInfo/edit')}",
+            data:$("#operate").serialize(),
+            type:'post',
+            dataType:'json',
+            success:function(xhr){
+                if(xhr.code == 200){
+                    swal({
+                      position: 'center',
+                      type: 'success',
+                      title: xhr.msg,
+                      showConfirmButton: false,
+                      toast:false,
+                      timer: 2000
+                    });
+                } else{
+                    swal({
+                      position: 'center',
+                      type: 'error',
+                      title: xhr.msg,
+                      showConfirmButton: false,
+                      toast:false,
+                      timer: 2000
+                    });
+                }
+            }
+        });
+    }
+
+</script>
+{/block}
