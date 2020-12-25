@@ -85,6 +85,7 @@ class Link extends Admin
             if (is_numeric($exist)) {
                 return $this->response(201, Lang::get('This record already exists'));
             }
+            $game=SiteConfig::getCategoryConfigName($this->site_id, $this->category,$request['cid']);
 
             // 写入content内容
             $contentData = [
@@ -92,6 +93,7 @@ class Link extends Admin
                 'uid'     => $this->uid,
             ];
             $contentData = array_merge($request, $contentData);
+            $contentData['game']=$game ?? '';
             $obj->allowField(true)->save($contentData);
 
             if (is_numeric($obj->id)) {
@@ -123,7 +125,8 @@ class Link extends Admin
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
-
+            $game=SiteConfig::getCategoryConfigName($this->site_id, $this->category,$request['cid']);
+            $request['game']=$game ?? '';
             // 写入
             $obj = new LinkModel;
             $obj->isUpdate(true)->allowField(true)->save($request);
@@ -206,7 +209,8 @@ class Link extends Admin
             return $this->response(201, Lang::get('Fail'));
         }
     }
-    public function removeCategory()
+
+    public function removeCategory()
     {
         $id = Request::param('id');
         $del = SiteConfig::deleteCategoryConfig($this->site_id, $this->category, $id);
