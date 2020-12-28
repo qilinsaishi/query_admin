@@ -17,6 +17,6 @@ class LolHeroInfoValidate extends Validate
 
     protected $scene = [
         'create'         => ['hero_name','logo'],
-        'edit'           => ['hero_name','logo'],
+        'edit'           => ['logo'],
     ];
 }

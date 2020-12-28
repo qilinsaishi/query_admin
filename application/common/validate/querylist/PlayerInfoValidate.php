@@ -21,6 +21,6 @@ class PlayerInfoValidate extends Validate
 
     protected $scene = [
         'create'         => ['player_name','game', 'position','logo'],
-        'edit'           => ['player_name','game','position','logo'],
+        'edit'           => ['game','position','logo'],
     ];
 }

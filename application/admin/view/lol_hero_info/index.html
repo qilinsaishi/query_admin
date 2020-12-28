@@ -69,7 +69,7 @@
                        
                         <td>
                             <a href="{:url('admin/LolHeroInfo/edit', ['id' => $vo['hero_id']])}"></i> {:lang('Edit')}</a>
-                            <a onclick="remove('{$vo.hero_id}')" href="#"> {:lang('Delete')}</a>
+                            <!--<a onclick="remove('{$vo.hero_id}')" href="#"> {:lang('Delete')}</a>-->
                         </td>
                     </tr>
                     {/volist}
@@ -86,7 +86,7 @@
     <!-- /.tab-content -->
     <div class="box-footer">
         <div class="row">
-          <div class="col-md-6">
+          <!--<div class="col-md-6">
             <form method="post" class="form-inline">
                 <div class="input-group">
                     <div><select id="type" class="form-control">
@@ -98,7 +98,7 @@
                     </span>
                 </div>
             </form>
-          </div>
+          </div>-->
           <div class="col-md-6">
             <div class="text-right"> {$page} </div>
           </div>

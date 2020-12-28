@@ -61,7 +61,7 @@
                          <td>{$vo.create_time}</td>
                         <td>
                             <a href="{:url('admin/CpseoTeamInfo/edit', ['id' => $vo['team_id']])}"></i> {:lang('Edit')}</a>
-                            <a onclick="remove('{$vo.team_id}')" href="#"> {:lang('Delete')}</a>
+                            <!--<a onclick="remove('{$vo.team_id}')" href="#"> {:lang('Delete')}</a>-->
                         </td>
                     </tr>
                     {/volist}
@@ -78,7 +78,7 @@
     <!-- /.tab-content -->
     <div class="box-footer">
         <div class="row">
-          <div class="col-md-6">
+          <!--<div class="col-md-6">
             <form method="post" class="form-inline">
                 <div class="input-group">
                     <div><select id="type" class="form-control">
@@ -90,7 +90,7 @@
                     </span>
                 </div>
             </form>
-          </div>
+          </div>-->
           <div class="col-md-6">
             <div class="text-right"> {$page} </div>
           </div>

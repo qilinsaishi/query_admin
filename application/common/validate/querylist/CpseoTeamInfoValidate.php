@@ -17,6 +17,6 @@ class CpseoTeamInfoValidate extends Validate
 
     protected $scene = [
         'create'         => ['team_name', 'logo'],
-        'edit'           => ['team_name', 'logo'],
+        'edit'           => [ 'logo'],
     ];
 }
