@@ -73,7 +73,7 @@
                                 <div class="col-md-12">
                                   <select class="form-control select2" name="tag_id[]" multiple="multiple" style="width:100%">
                                     {volist name="tags" id="vo"}
-                                    <option {in name="vo.tag_id" value="$tagsMapp"}selected{/in} value="{$vo.tag_id}">{$vo.tag_name}</option>
+                                    <option {in name="vo.tag_id" value="$roleArray"}selected{/in} value="{$vo.tag_id}">{$vo.tag_name}</option>
                                     {/volist}
                                   </select>
                                 </div>

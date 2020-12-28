@@ -1,0 +1,301 @@
+<!-- 模板继承 -->
+{extend name="public:base" /}
+
+<!-- 页面标题 -->
+{block name="title"}Administrator{/block}
+
+<!-- 自定义css -->
+{block name="css"}{/block}
+
+<!-- 内容区域 -->
+{block name="content"}
+  <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+      <li class=""><a href="{:url('admin/PlayerInfo/index')}">队员管理</a></li>
+      <li class=""><a href="{:url('admin/PlayerInfo/create')}">{:lang('Create')}</a></li>
+      <li class="pull-right"><a href="javascript:history.back(-1);" class="text-muted"><i class="fa fa-chevron-circle-left"></i></a></li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane active">
+        <form role="form" id="operate">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="box box-solid">
+                        <div class="box-body">
+                            <div class="form-group">
+                              <label>英雄名称<span class="text-red">*</span></label>
+                              <div class="row">
+                              <div class="col-md-12">
+							  <input type="hidden" name="hero_id" value="{$info.hero_id}">
+                              <input type="text" name="hero_name" value="{$info.hero_name}" class="form-control input-sm" placeholder="">
+                              </div>
+                              </div>
+                            </div>
+							<div class="form-group">
+                              <label>英文名称</label>
+                              <div class="row">
+                              <div class="col-md-12">
+                              <input type="text" name="en_name" class="form-control input-sm" value="{$info.en_name}" placeholder="">
+                              </div>
+                              </div>
+                            </div>
+							<div class="form-group">
+                              <label>物理攻击</label>
+                              <div class="row">
+                              <div class="col-md-12">
+                              <input type="text" name="physical_attack" value="{$info.physical_attack}"  class="form-control input-sm" placeholder="">
+                              </div>
+                              </div>
+                            </div>
+							<div class="form-group">
+                              <label>防御力</label>
+                              <div class="row">
+                              <div class="col-md-12">
+                              <input type="text" name="defense" value="{$info.defense}" class="form-control input-sm" placeholder="">
+                              </div>
+                              </div>
+                            </div>
+							<div class="form-group">
+                              <label>生命</label>
+                              <div class="row">
+                              <div class="col-md-12">
+                              <input type="text" name="hp" value="{$info.hp}" class="form-control input-sm" placeholder="">
+                              </div>
+                              </div>
+                            </div>
+							<div class="form-group">
+                              <label>魔法</label>
+                              <div class="row">
+                              <div class="col-md-12">
+                              <input type="text" name="mp"  value="{$info.mp}" class="form-control input-sm" placeholder="">
+                              </div>
+                              </div>
+                            </div>
+							<div class="form-group">
+                              <label>攻击速度</label>
+                              <div class="row">
+                              <div class="col-md-12">
+                              <input type="text" name="attack_speed" value="{$info.attack_speed}" class="form-control input-sm" placeholder="">
+                              </div>
+                              </div>
+                            </div>
+							<div class="form-group">
+                              <label>伤害值</label>
+                              <div class="row">
+                              <div class="col-md-12">
+                              <input type="text" name="attack_damage" value="{$info.attack_damage}" class="form-control input-sm" placeholder="">
+                              </div>
+                              </div>
+                            </div>
+							
+							<div class="form-group">
+                              <label>移动速度</label>
+                              <div class="row">
+                              <div class="col-md-12">
+                              <input type="text" name="move_speed" value="{$info.move_speed}" class="form-control input-sm" placeholder="">
+                              </div>
+                              </div>
+                            </div>
+							<div class="form-group">
+							  <label>Logo</label>
+							  <div class="row">
+							  <div class="col-md-12">
+								<div class="layui-upload-drag" id="logo">
+								  <input type="hidden" name="logo" value="{$info.logo}">
+								  <div class="layui-upload-list" id="preview">
+									  {empty name="info.logo"}
+									  <p>{:lang('Upload')}</p>
+									  {else /}
+									  <img class="layui-upload-img img-responsive" src="{$info.logo}" />
+									  {/empty}
+								  </div>
+								</div>
+							  </div>
+							  </div>
+							</div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="box box-solid">
+                        <div class="box-body">
+                            <div class="form-group">
+                              <label>中文名</label>
+                              <div class="row">
+                              <div class="col-md-12">
+                              <input type="text" name="cn_name"  value="{$info.cn_name}"  class="form-control input-sm" placeholder="">
+                              </div>
+                              </div>
+                            </div>
+							 <div class="form-group">
+                              <label>职业</label>
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <select class="form-control select2" name="roles[]" multiple="multiple" style="width:100%">
+                                    {volist name="role_list" id="vo"}
+                                    <option value="{$vo}"  {in name="vo" value="$roleArray"}selected{/in}>{$vo}</option>
+                                    {/volist}
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+							<div class="form-group">
+                              <label>魔法攻击</label>
+                              <div class="row">
+                              <div class="col-md-12">
+                              <input type="text" name="magic_attack"  value="{$info.magic_attack}"  class="form-control input-sm" placeholder="">
+                              </div>
+                              </div>
+                            </div>
+							<div class="form-group">
+                              <label>上手难度</label>
+                              <div class="row">
+                              <div class="col-md-12">
+                              <input type="text" name="difficulty"  value="{$info.difficulty}"  class="form-control input-sm" placeholder="">
+                              </div>
+                              </div>
+                            </div>
+							<div class="form-group">
+                              <label>生命回复</label>
+                              <div class="row">
+                              <div class="col-md-12">
+                              <input type="text" name="hp_regen" value="{$info.hp_regen}" class="form-control input-sm" placeholder="">
+                              </div>
+                              </div>
+                            </div>
+							<div class="form-group">
+                              <label>魔法回复</label>
+                              <div class="row">
+                              <div class="col-md-12">
+                              <input type="text" name="mp_regen" value="{$info.mp_regen}" class="form-control input-sm" placeholder="">
+                              </div>
+                              </div>
+                            </div>
+							<div class="form-group">
+                              <label>攻击范围</label>
+                              <div class="row">
+                              <div class="col-md-12">
+                              <input type="text" name="attack_range"  value="{$info.attack_range}"  class="form-control input-sm" placeholder="">
+                              </div>
+                              </div>
+                            </div>
+							
+							<div class="form-group">
+                              <label>魔法抗性</label>
+                              <div class="row">
+                              <div class="col-md-12">
+                              <input type="text" name="magic_defense" value="{$info.magic_defense}" class="form-control input-sm" placeholder="">
+                              </div>
+                              </div>
+                            </div>
+							
+							<div class="form-group">
+                              <label>价格</label>
+                              <div class="row">
+                              <div class="col-md-12">
+                              <input type="text" name="price" value="{$info.price}" class="form-control input-sm" placeholder="">
+                              </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label>{:lang('Description')}</label>
+                              <div class="row">
+                              <div class="col-md-12">
+                              <textarea class="form-control input-sm" name="description" rows="3" placeholder="">{$info.description}</textarea>
+                              </div>
+                              </div>
+                            </div>
+                           
+                           
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    
+                </div>
+            </div>
+			
+			
+            
+        </form>
+      </div>
+      <!-- /.tab-pane -->
+    </div>
+    <!-- /.tab-content -->
+    <div class="box-footer">
+        <div class="btn-group">
+            <button class="btn btn-primary btn-flat" onclick="operate();" type="button"> {:lang('Save')}</button>
+        </div>
+    </div>
+  </div>
+{/block}
+
+<!-- 自定义js -->
+{block name="js"}
+<script>
+$('.select2').select2({
+    multiple: true,
+});
+layui.use('upload', function(){
+
+  var $ = layui.jquery
+  ,upload = layui.upload;
+  //拖拽上传
+  upload.render({
+    elem: "#logo"
+    ,accept: 'image'
+    ,multiple: false
+    ,number: 1
+    ,url: "{:url('admin/upload/uploadFile')}"
+    ,done: function(res){
+      if (res.code == 200) {
+        $("[name='logo']").val(res.data.url);
+        $("#preview").html("<img class=\'layui-upload-img img-responsive\' src=\'"+res.data.url+"\'>");
+      } else {
+        swal({
+          position: 'center',
+          type: 'error',
+          title: res.msg,
+          showConfirmButton: false,
+          toast:false,
+          timer: 2000
+        });
+      }
+    }
+  });
+  
+});
+</script>
+<script type="text/javascript">
+    function operate(){
+        $.ajax({
+            url:"{:url('admin/LolHeroInfo/edit')}",
+            data:$("#operate").serialize(),
+            type:'post',
+            dataType:'json',
+            success:function(xhr){
+                if(xhr.code == 200){
+                    swal({
+                      position: 'center',
+                      type: 'success',
+                      title: xhr.msg,
+                      showConfirmButton: false,
+                      toast:false,
+                      timer: 2000
+                    });
+                } else{
+                    swal({
+                      position: 'center',
+                      type: 'error',
+                      title: xhr.msg,
+                      showConfirmButton: false,
+                      toast:false,
+                      timer: 2000
+                    });
+                }
+            }
+        });
+    }
+
+</script>
+{/block}
