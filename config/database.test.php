@@ -60,4 +60,13 @@ return [
     'break_reconnect' => false,
     // 断线标识字符串
     'break_match_str' => [],
+	'db_query_list' => [
+        'type' => 'mysql',
+        'hostname' => '192.168.1.44',
+        'database' => 'query_list',
+        'username' => 'test_user',
+        'password' => '123456',
+        'charset' => 'utf8',
+        'prefix' => '',
+    ],
 ];
