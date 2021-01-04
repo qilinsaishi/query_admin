@@ -4,7 +4,7 @@ namespace app\admin\controller;
 use app\common\model\Collect;
 use app\common\model\querylist\Information as InformationModel;
 
-use app\common\validate\querylist\LolSummonerInfoValidate;
+use app\common\validate\querylist\InformationValidate;
 use think\Db;
 use think\facade\Request;
 use think\facade\Session;
@@ -16,31 +16,38 @@ use app\admin\controller\Admin;
 
 class Information extends Admin
 {
+    protected $type = [
+        1=>'综合',
+        2=>'公告',
+        3=>'赛事',
+        4=>'攻略',
+        5=>'社区'
+    ];
     public function index()
     {
         $request = Request::param();
-        $params = [];
-        $search = [];
-        if (isset($request['q'])) {
-            $q           = $request['q'];
-            $params['q'] = $request['q'];
-            $search['q'] = $request['q'];
-        }else {
-            $q = '';
-            $search['q'] = '';
-        }
+        $query = [
+            'source' =>  isset($request['source']) ? $request['source'] : '',
+            'type'     => isset($request['type']) ? $request['type'] : '',
+            'q'       => isset($request['q']) ? $request['q'] : '',
+            'game'  => isset($request['game']) ? $request['game'] : '',
+        ];
+        $args = [
+            'query'  => $query,
+            'field'  => '',
+            'order'  => 'id desc',
+            'params' => $query,
+            'limit'  => 20,
+        ];
+		$gameList=config('app.game_type');
+        // 分页列表
         $informationModel=new InformationModel();
-        $informationModel=$informationModel->getList($params,$q);
-        $new_data=[];
-        if (isset($informationModel)) {
-            foreach ($informationModel as $v) {
-                array_push($new_data, $v);
-            }
-        }
-        $this->assign('search', $search);
-        $this->assign('list', $new_data);
-        $this->assign('page', $informationModel->render());
-
+        $list = $informationModel->getList($args);
+        $this->assign('search', $query);
+        $this->assign('list', $list);
+        $this->assign('page', $list->render());
+        $this->assign('typeList', $this->type);
+		$this->assign('gameList', $gameList);
         return $this->fetch('index');
     }
 
@@ -50,34 +57,29 @@ class Information extends Admin
         if (Request::isAjax()) {
             $request = Request::param();
             // 验证数据
-            $validate = new LolSummonerInfoValidate();
+            $validate = new InformationValidate();
             $validateResult = $validate->scene('edit')->check($request);
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
             $request['update_time']=date("Y-m-d H:i:s");
-            $lolSummonerInfoObj= new InformationModel();
-            $lolSummonerInfoObj->isUpdate(true)->allowField(true)->save($request);
+            $informationInfoObj= new InformationModel();
+            $informationInfoObj->isUpdate(true)->allowField(true)->save($request);
 
-            if (is_numeric($lolSummonerInfoObj->skill_id)) {
+            if (is_numeric($informationInfoObj->id)) {
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
             }
         }
-
         $id = Request::param('id');
         $info = InformationModel::get($id);
-        $roleArray=$intoList=[];
-
-       /* if($info && $info['into_list']){
-            $intoList=json_decode($info['into_list'],true);
-        }*/
+        $gameList=config('app.game_type');
 
         $data = [
             'info'  => $info,
-           // 'role_list'=>$role_list,
-           // 'roleArray'=>$roleArray
+            'typeList'=>$this->type,
+            'gameList'=>$gameList
         ];
 
         return $this->fetch('edit', $data);
@@ -147,7 +149,7 @@ class Information extends Admin
             $request = Request::param();
 
             // 验证数据
-            $validate = new LolSummonerInfoValidate();
+            $validate = new InformationValidate();
             $validateResult = $validate->scene('create')->check($request);
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
@@ -155,10 +157,10 @@ class Information extends Admin
             $request['create_time']=date("Y-m-d H:i:s");
             $request['update_time']=date("Y-m-d H:i:s");
 
-            $lolSummonerInfoObj = new InformationModel();
-            $lolSummonerInfoObj->allowField(true)->save($request);
+            $informationInfoObj = new InformationModel();
+            $informationInfoObj->allowField(true)->save($request);
 
-            if (is_numeric($lolSummonerInfoObj->skill_id)) {
+            if (is_numeric($informationInfoObj->id)) {
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));

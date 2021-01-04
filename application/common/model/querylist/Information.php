@@ -14,15 +14,30 @@ class Information extends BaseQueryList
     //protected $createTime = 'create_time';
     //protected $updateTime = 'update_time';
 
-    /*public function getCreateAtAttr($value)
-    {
-        return date('Y-m-d H:i:s', $value);
-    }*/
-    public function getList($params,$q,$game){
-        $data=[];
-        $data=$this->field('*')
-			->where('game',$game)
-            ->whereOr('title|author','like','%'.$q.'%')
+    public function getList($request){
+        $query = [];
+        if (isset($request['query']['q'])) {
+            $query[] = ['title|author','like','%'.$request['query']['q'].'%'];
+        }
+
+        if (!empty($request['query']['type'])) {
+            $query[] = ['type', 'eq', $request['query']['type']];
+        }
+
+        if (!empty($request['query']['game'])) {
+            $query[] = ['game', 'eq', $request['query']['game']];
+        }
+
+        if (!empty($request['query']['source'])) {
+            $query[] = [$request['query']['source'], 'eq', $request['query']['source']];
+        }
+
+        // 分页参数
+        $params = [];
+        if (!empty($request['params'])) {
+            $params = $request['params'];
+        }
+        $data=$this->where($query)
             ->order('id desc')
             ->paginate(20, false, [
                 'type'     => 'bootstrap',
