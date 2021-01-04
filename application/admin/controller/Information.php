@@ -167,8 +167,13 @@ class Information extends Admin
             }
         }
         //$role_list=$this->role_list;
+        $gameList=config('app.game_type');
+        $data = [
+            'typeList'=>$this->type,
+            'gameList'=>$gameList
+        ];
 
-        return $this->fetch('create');
+        return $this->fetch('create',$data);
     }
 
 

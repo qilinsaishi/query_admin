@@ -51,7 +51,7 @@
               <select name="game" class="form-control">
                 <option>请选择</option>
                 {volist name="gameList" id="vo"}
-                <option value="{$vo}" {eq name="$vo" value="$info.game"}selected{/eq} value="{$vo}">
+                <option  {eq name="$vo" value="$info.game"}selected{/eq} value="{$vo}">
                     {$vo}
                 </option>
                 {/volist}
@@ -64,10 +64,10 @@
               <label>文章类型 <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-4">
-              <select name="game" class="form-control">
+              <select name="type" class="form-control">
                 <option>请选择</option>
                 {volist name="typeList" id="vo"}
-                <option value="{$vo}" {eq name="key" value="$info.type"}selected{/eq} value="{$key}" >
+                <option  {eq name="key" value="$info.type"}selected{/eq} value="{$key}" >
                     {$vo}
                 </option>
                 {/volist}
