@@ -43,22 +43,31 @@
               </div>
               </div>
             </div>
+			
 			<div class="form-group">
-              <label>位置 <span class="text-red">*</span></label>
+              <label>对应游戏 <span class="text-red">*</span></label>
               <div class="row">
-              <div class="col-md-6">
-              <input type="text" name="position" value="{$info.position}"  class="form-control input-sm" placeholder="">
+              <div class="col-md-4">
+              <select name="game" class="form-control">
+                <option>请选择</option>
+                {volist name="gameList" id="vo"}
+                <option value="{$vo}" {eq name="$vo" value="$info.game"}selected{/eq} value="{$vo}">
+                    {$vo}
+                </option>
+                {/volist}
+              </select>
               </div>
               </div>
             </div>
+			
 			<div class="form-group">
-              <label>游戏类型 <span class="text-red">*</span></label>
+              <label>文章类型 <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-4">
               <select name="game" class="form-control">
                 <option>请选择</option>
                 {volist name="typeList" id="vo"}
-                <option value="{$vo}" {eq name="info.game" value="$vo"}selected{/eq} >
+                <option value="{$vo}" {eq name="key" value="$info.type"}selected{/eq} value="{$key}" >
                     {$vo}
                 </option>
                 {/volist}
@@ -85,22 +94,13 @@
               </div>
             </div>
 			<div class="form-group">
-			  <label>是否热门战队</label>
+			  <label>内容</label>
 			  <div class="row">
 			  <div class="col-md-12">
-				<div class="radio">
-					<label class="radio-inline">
-						<input type="radio" {eq name="info.hot" value="0"}checked{/eq} name="hot" value="0">否
-					</label>
-					<label class="radio-inline">
-						<input type="radio" {eq name="info.hot" value="1"}checked{/eq} name="hot" value="1">是
-					</label>
-				</div>
+			  <textarea id="editor" name="content">{$info.content}</textarea>
 			  </div>
 			  </div>
 			</div>
-			
-			
             
         </form>
       </div>
@@ -145,6 +145,20 @@ layui.use('upload', function(){
     }
   });
   
+});
+</script>
+<script src="__STATIC__/ueditor/ueditor.config.js"></script>
+<script src="__STATIC__/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript">
+var ue = UE.getEditor('editor', {
+    toolbars: [
+        ['fullscreen', 'source', 'undo', 'redo', 'selectall', '|', 'removeformat', 'formatmatch', 'autotypeset', 'cleardoc', '|', 'template', 'indent', 'horizontal','justifyleft', 'justifyright', 'justifycenter', 'justifyjustify', 'insertcode'],
+        ['fontfamily', 'fontsize', '|', 'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'link', 'unlink', 'inserttable', 'deletetable', 'simpleupload', 'insertimage']
+    ],
+    initialFrameWidth: '100%',
+    initialFrameHeight:300,
+    scaleEnabled:true,
+    serverUrl: '{:url("admin/ueditor/index")}',
 });
 </script>
 <script type="text/javascript">
