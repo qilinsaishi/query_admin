@@ -11,45 +11,19 @@
 {block name="content"}
   <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
-      <li class=""><a href="{:url('admin/Information/index')}">资讯管理</a></li>
+      <li class=""><a href="{:url('admin/AskAnswers/index')}">问答管理</a></li>
       <li class="active"><a href="">{:lang('Create')}</a></li>
       <li class="pull-right"><a href="javascript:history.back(-1);" class="text-muted"><i class="fa fa-chevron-circle-left"></i></a></li>
     </ul>
     <div class="tab-content">
       <div class="tab-pane active">
-         <form role="form" id="operate">
-             <div class="form-group">
-              <label>标题 </label>
-              <div class="row">
-              <div class="col-md-6">
-             
-			  <input type="text" name="title"   class="form-control input-sm" placeholder="">
-              </div>
-              </div>
-            </div>
+        <form role="form" id="operate">
 			<div class="form-group">
-              <label>作者 </label>
-              <div class="row">
-              <div class="col-md-6">
-              <input type="text" name="author"   class="form-control input-sm" placeholder="">
-              </div>
-              </div>
-            </div>
-			<div class="form-group">
-              <label>对应来源</label>
-              <div class="row">
-              <div class="col-md-6">
-              <input type="text" name="source"   class="form-control input-sm" placeholder="">
-              </div>
-              </div>
-            </div>
-			
-			<div class="form-group">
-              <label>对应游戏 <span class="text-red">*</span></label>
+              <label>游戏类型<span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-4">
-              <select name="game" class="form-control">
-                <option>请选择</option>
+              <select name="game_type" class="form-control">
+                <option  value="">请选择-</option>
                 {volist name="gameList" id="vo"}
                 <option value="{$vo}">
                     {$vo}
@@ -59,60 +33,41 @@
               </div>
               </div>
             </div>
-			
 			<div class="form-group">
-              <label>文章类型 <span class="text-red">*</span></label>
+              <label>作者</label>
+              <div class="row">
+              <div class="col-md-6">
+              <input type="text" name="author" class="form-control input-sm" placeholder="">
+              </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>问题 <span class="text-red">*</span></label>
+              <div class="row">
+              <div class="col-md-6">
+              <input type="text" name="ask" class="form-control input-sm" placeholder="">
+              </div>
+              </div>
+            </div>
+
+			<div class="form-group">
+			  <label>答案<span class="text-red">*</span></label>
+			  <div class="row">
+			  <div class="col-md-12">
+			  <textarea id="editor" name="answers"></textarea>
+			  </div>
+			  </div>
+			</div>
+            <div class="form-group">
+              <label>排序</label>
               <div class="row">
               <div class="col-md-4">
-              <select name="type" class="form-control">
-                <option>请选择</option>
-                {volist name="typeList" id="vo"}
-                <option  value="{$key}" >
-                    {$vo}
-                </option>
-                {/volist}
-              </select>
+              <input type="text" name="sort" value="1" class="form-control input-sm" onkeyup="value=value.replace(/[^\d]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))" placeholder="">
               </div>
               </div>
             </div>
-			<div class="form-group">
-			  <label>状态</label>
-			  <div class="row">
-			  <div class="col-md-12">
-				<div class="radio">
-					<label class="radio-inline">
-						<input type="radio"  name="status" checked value="1">正常
-					</label>
-					<label class="radio-inline">
-						<input type="radio"  name="status" value="2">隐藏
-					</label>
-				</div>
-			  </div>
-			  </div>
-			</div>
-			
-			<div class="form-group">
-              <label>Logo</label>
-              <div class="row">
-              <div class="col-md-12">
-                <div class="layui-upload-drag" id="logo">
-                  <input type="hidden" name="logo">
-                  <div class="layui-upload-list" id="preview">
-                  <p>{:lang('Upload')}</p>
-                  </div>
-                </div>
-              </div>
-              </div>
-            </div>
-           
-			<div class="form-group">
-			  <label>内容</label>
-			  <div class="row">
-			  <div class="col-md-12">
-			  <textarea id="editor" name="content"></textarea>
-			  </div>
-			  </div>
-			</div>
+            
+          
         </form>
       </div>
       <!-- /.tab-pane -->
@@ -129,9 +84,6 @@
 <!-- 自定义js -->
 {block name="js"}
 <script>
-$('.select2').select2({
-    multiple: true,
-});
 layui.use('upload', function(){
   var $ = layui.jquery
   ,upload = layui.upload;
@@ -178,7 +130,7 @@ var ue = UE.getEditor('editor', {
 <script type="text/javascript">
     function operate(){
         $.ajax({
-            url:"{:url('admin/Information/create')}",
+            url:"{:url('admin/AskAnswers/create')}",
             data:$("#operate").serialize(),
             type:'post',
             dataType:'json',
