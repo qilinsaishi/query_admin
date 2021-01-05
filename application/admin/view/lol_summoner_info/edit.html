@@ -19,11 +19,11 @@
       <div class="tab-pane active">
         <form role="form" id="operate">
             <div class="form-group">
-              <label>选手名称 </label>
+              <label>技能名称 </label>
               <div class="row">
               <div class="col-md-6">
-              <input type="hidden" name="player_id" value="{$info.player_id}">
-              {$info.player_name}
+              <input type="hidden" name="skill_id" value="{$info.skill_id}">
+              {$info.skill_name}
               </div>
               </div>
             </div>
@@ -44,31 +44,17 @@
               </div>
             </div>
 			<div class="form-group">
-              <label>位置 <span class="text-red">*</span></label>
+              <label>召唤师等级 </label>
               <div class="row">
               <div class="col-md-6">
-              <input type="text" name="position" value="{$info.position}"  class="form-control input-sm" placeholder="">
+              <input type="text" name="rank"  value="{$info.rank}"  class="form-control input-sm" onkeyup="value=value.replace(/[^\d]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))" placeholder="">
               </div>
               </div>
             </div>
-			<div class="form-group">
-              <label>游戏类型 <span class="text-red">*</span></label>
-              <div class="row">
-              <div class="col-md-4">
-              <select name="game" class="form-control">
-                <option>请选择</option>
-                {volist name="typeList" id="vo"}
-                <option value="{$vo}" {eq name="info.game" value="$vo"}selected{/eq} >
-                    {$vo}
-                </option>
-                {/volist}
-              </select>
-              </div>
-              </div>
-            </div>
+		
             
 			<div class="form-group">
-              <label>Logo</label>
+              <label>图标路径</label>
               <div class="row">
               <div class="col-md-12">
                 <div class="layui-upload-drag" id="logo">
@@ -84,18 +70,29 @@
               </div>
               </div>
             </div>
+			
 			<div class="form-group">
-			  <label>是否热门战队</label>
+              <label>大图链接</label>
+              <div class="row">
+              <div class="col-md-12">
+                <div class="layui-upload-drag" id="image">
+                  <input type="hidden" name="image" value="{$info.image}">
+                  <div class="layui-upload-list" id="preview1">
+                      {empty name="info.logo"}
+                      <p>{:lang('Upload')}</p>
+                      {else /}
+                      <img class="layui-upload-img img-responsive" src="{$info.logo}" />
+                      {/empty}
+                  </div>
+                </div>
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+			  <label>{:lang('Description')}</label>
 			  <div class="row">
 			  <div class="col-md-12">
-				<div class="radio">
-					<label class="radio-inline">
-						<input type="radio" {eq name="info.hot" value="0"}checked{/eq} name="hot" value="0">否
-					</label>
-					<label class="radio-inline">
-						<input type="radio" {eq name="info.hot" value="1"}checked{/eq} name="hot" value="1">是
-					</label>
-				</div>
+			  <textarea class="form-control input-sm" name="description" rows="3" placeholder=""></textarea>
 			  </div>
 			  </div>
 			</div>
@@ -144,6 +141,30 @@ layui.use('upload', function(){
       }
     }
   });
+   //拖拽上传
+	  upload.render({
+		elem: "#image"
+		,accept: 'image'
+		,multiple: false
+		,number: 1
+		,url: "{:url('admin/upload/uploadFile')}"
+		,done: function(res){
+		  if (res.code == 200) {
+			$("[name='image']").val(res.data.url);
+			$("#preview1").html("<img class=\'layui-upload-img img-responsive\' src=\'"+res.data.url+"\'>");
+		  } else {
+			swal({
+			  position: 'center',
+			  type: 'error',
+			  title: res.msg,
+			  showConfirmButton: false,
+			  toast:false,
+			  timer: 2000
+			});
+		  }
+		}
+	  
+	});
   
 });
 </script>
