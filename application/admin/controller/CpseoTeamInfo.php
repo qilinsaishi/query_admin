@@ -18,28 +18,25 @@ class CpseoTeamInfo extends Admin
     public function index()
     {
         $request = Request::param();
-        $params = [];
-        $search = [];
-        if (isset($request['q'])) {
-            $q           = $request['q'];
-            $params['q'] = $request['q'];
-            $search['q'] = $request['q'];
-        }else {
-            $q = '';
-            $search['q'] = '';
-        }
+        $query = [
+            'q'       => isset($request['q']) ? $request['q'] : '',
+            'game'  => isset($request['game']) ? $request['game'] : '',
+        ];
+        $args = [
+            'query'  => $query,
+            'field'  => '',
+            'order'  => 'team_id desc',
+            'params' => $query,
+            'limit'  => 20,
+        ];
+        $gameList=config('app.game_type');
+        // 分页列表
         $seoTeamModel=new CpseoTeamInfoModel();
-        $seoTeamData=$seoTeamModel->getList($params,$q);
-        $new_data=[];
-        if (isset($seoTeamData)) {
-            foreach ($seoTeamData as $v) {
-
-                array_push($new_data, $v);
-            }
-        }
-        $this->assign('search', $search);
-        $this->assign('list', $new_data);
-        $this->assign('page', $seoTeamData->render());
+        $list = $seoTeamModel->getList($args);
+        $this->assign('search', $query);
+        $this->assign('list', $list);
+        $this->assign('page', $list->render());
+        $this->assign('gameList', $gameList);
 
         return $this->fetch('index');
     }
@@ -55,7 +52,13 @@ class CpseoTeamInfo extends Admin
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
-
+            if(isset($request['aka']) && $request['aka']){
+                if(strpos($request['aka'],'，') !==false){
+                    $request['aka']=str_replace('，',',',$request['aka']);
+                }
+                $request['aka']=explode(',',$request['aka']);
+                $request['aka']=json_encode($request['aka']);
+            }
             $cpseoTeamInfoObj= new CpseoTeamInfoModel();
             $cpseoTeamInfoObj->isUpdate(true)->allowField(true)->save($request);
 
@@ -68,7 +71,19 @@ class CpseoTeamInfo extends Admin
 
         $id = Request::param('id');
         $info = CpseoTeamInfoModel::get($id);
-        $typeList=config('app.config_type');
+        $typeList=config('app.game_type');
+        $info['aka']=json_decode($info['aka'],true);
+        $info['race_stat']=json_decode($info['race_stat'],true);
+        if(!empty($info['aka'])){
+            $info['aka']=implode(',',$info['aka']);
+        }else{
+            $info['aka']='';
+        }
+        /*if(!empty($info['race_stat'])){
+            $info['race_stat']=implode(',',$info['race_stat']);
+        }else{
+            $info['race_stat']='';
+        }*/
 
         $data = [
             'info'  => $info,
@@ -148,6 +163,13 @@ class CpseoTeamInfo extends Admin
                 return $this->response(201, $validate->getError());
             }
             $request['site_id']=$this->site_id;
+            if(isset($request['aka']) && $request['aka']){
+                if(strpos($request['aka'],'，') !==false){
+                    $request['aka']=str_replace('，',',',$request['aka']);
+                }
+                $request['aka']=explode(',',$request['aka']);
+                $request['aka']=json_encode($request['aka']);
+            }
 
             $cpseoTeamInfoObj = new CpseoTeamInfoModel();
             $cpseoTeamInfoObj->allowField(true)->save($request);
@@ -158,7 +180,8 @@ class CpseoTeamInfo extends Admin
                 return $this->response(201, Lang::get('Fail'));
             }
         }
-        $typeList=config('app.config_type');
+        $typeList=config('app.game_type');
+        //$typeList=config('app.config_type');
 
         return $this->fetch('create',['typeList'=>$typeList]);
     }

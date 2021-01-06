@@ -27,9 +27,64 @@
               </div>
               </div>
             </div>
+			<div class="form-group">
+              <label>外文名称 <span class="text-red">*</span></label>
+              <div class="row">
+              <div class="col-md-6">
+              <input type="text" name="en_name"  value="{$info.en_name}" class="form-control input-sm" placeholder="">
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+              <label>别名</label>
+              <div class="row">
+              <div class="col-md-6">
+              <input type="text" name="aka" value="{$info.aka}"  class="form-control input-sm" placeholder="">
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+              <label>团队创建日期</label>
+              <div class="row">
+              <div class="col-md-6">
+              <input type="text" name="established_date"  value="{$info.established_date}"  class="form-control input-sm" placeholder="">
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+              <label>现任教练</label>
+              <div class="row">
+              <div class="col-md-6">
+              <input type="text" name="coach" value="{$info.coach}"  class="form-control input-sm" placeholder="">
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+              <label>所在地区</label>
+              <div class="row">
+              <div class="col-md-6">
+              <input type="text" name="location" value="{$info.location}"  class="form-control input-sm" placeholder="">
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+              <label>游戏类型 <span class="text-red">*</span></label>
+              <div class="row">
+              <div class="col-md-4">
+              <select name="game" class="form-control">
+                <option>请选择</option>
+                {volist name="typeList" id="vo"}
+                <option value="{$vo}"  {eq name="info.game" value="$vo"}selected{/eq} >
+                    {$vo}
+                </option>
+                {/volist}
+              </select>
+              </div>
+              </div>
+            </div>
             
 			<div class="form-group">
-              <label>Logo</label>
+              <label>战队的主Logo</label>
               <div class="row">
               <div class="col-md-12">
                 <div class="layui-upload-drag" id="logo">
@@ -60,7 +115,39 @@
 			  </div>
 			  </div>
 			</div>
+			<div class="form-group">
+			  <label>战队历程</label>
+			  <div class="row">
+			  <div class="col-md-12">
+			  <textarea class="form-control input-sm" name="team_history" rows="15" placeholder="">{$info.team_history}</textarea>
+			  </div>
+			  </div>
+			</div>
 			
+			<div class="form-group">
+			  <label>荣誉</label>
+			  <div class="row">
+			  <div class="col-md-12">
+			  <textarea class="form-control input-sm" name="honor_list" rows="10" placeholder="">{$info.honor_list}</textarea>
+			  </div>
+			  </div>
+			</div>
+			<!--<div class="form-group">
+			  <label>战绩</label>
+			  <div class="row">
+			  <div class="col-md-12">
+			  <textarea class="form-control input-sm" name="race_stat" rows="10" placeholder=""></textarea>
+			  </div>
+			  </div>
+			</div>-->
+			<div class="form-group">
+			  <label>描述</label>
+			  <div class="row">
+			  <div class="col-md-12">
+			  <textarea class="form-control input-sm" name="description" rows="10" placeholder="">{$info.description}</textarea>
+			  </div>
+			  </div>
+			</div>
 			
             
         </form>

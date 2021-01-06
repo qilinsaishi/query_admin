@@ -20,27 +20,26 @@ class PlayerInfo extends Admin
     public function index()
     {
         $request = Request::param();
-        $params = [];
-        $search = [];
-        if (isset($request['q'])) {
-            $q           = $request['q'];
-            $params['q'] = $request['q'];
-            $search['q'] = $request['q'];
-        }else {
-            $q = '';
-            $search['q'] = '';
-        }
+        $query = [
+            'q'       => isset($request['q']) ? $request['q'] : '',
+            'game'  => isset($request['game']) ? $request['game'] : '',
+        ];
+        $args = [
+            'query'  => $query,
+            'field'  => '',
+            'order'  => 'player_id desc',
+            'params' => $query,
+            'limit'  => 20,
+        ];
+        $gameList=config('app.game_type');
+        // 分页列表
         $playInfoModel=new PlayerInfoModel();
-        $playInfoData=$playInfoModel->getList($params,$q);
-        $new_data=[];
-        if (isset($playInfoData)) {
-            foreach ($playInfoData as $v) {
-                array_push($new_data, $v);
-            }
-        }
-        $this->assign('search', $search);
-        $this->assign('list', $new_data);
-        $this->assign('page', $playInfoData->render());
+        $list=$playInfoModel->getList($args);
+
+        $this->assign('search', $query);
+        $this->assign('list', $list);
+        $this->assign('page', $list->render());
+        $this->assign('gameList', $gameList);
 
         return $this->fetch('index');
     }

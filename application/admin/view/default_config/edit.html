@@ -112,7 +112,7 @@ layui.use('upload', function(){
     ,url: "{:url('admin/upload/uploadFile')}"
     ,done: function(res){
       if (res.code == 200) {
-        $("[name='logo']").val(res.data.url);
+        $("[name='value']").val(res.data.url);
         $("#preview").html("<img class=\'layui-upload-img img-responsive\' src=\'"+res.data.url+"\'>");
       } else {
         swal({
@@ -135,7 +135,7 @@ layui.use('upload', function(){
 		$('#logotable').css('display','none');
 		$('#valuetable').css('display','block');
 	}
-	if(type=='file'){alert(22);
+	if(type=='file'){
 		$('#valuetable').css('display','none');
 		$('#logotable').css('display','block');
 		

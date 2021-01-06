@@ -22,7 +22,19 @@
         <!-- /.box-header -->
         <div class="box-body">
             <form action="#" method="get" class="form-inline">
-             
+			  <div class="form-group">
+                  <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon1">对应游戏</span>
+                  <select name="game" class="form-control">
+                    <option value="">--请选择--</option>
+                    {foreach $gameList as $k=>$v } 
+                    <option {eq name="$v" value="$search.game"}selected{/eq} value="{$v}">
+                        {$v}
+                    </option>
+                    {/foreach}
+                  </select>
+                  </div>
+              </div>
               <div class="form-group">
                 <input type="text" name="q" value="{$search.q}" class="form-control" placeholder="">
               </div>
@@ -56,7 +68,7 @@
                         </td>
                         <td>{$vo.game}</td>
                         <td>
-                            <img src="{$vo.logo}">
+                            <img src="{$vo.logo}?x-oss-process=image/resize,m_lfit,h_60,w_60">
                         </td>
                          <td>{$vo.create_time}</td>
                         <td>

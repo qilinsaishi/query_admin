@@ -7,7 +7,7 @@ use app\common\model\BaseQueryList;
 class CpseoTeamInfo extends BaseQueryList
 {
     protected $pk = 'team_id';
-	protected $table = 'cpseo_team_info';
+	protected $table = 'team_info';
 
     protected $autoWriteTimestamp = true;
 
@@ -18,10 +18,23 @@ class CpseoTeamInfo extends BaseQueryList
     {
         return date('Y-m-d H:i:s', $value);
     }*/
-    public function getList($params,$q){
-        $data=[];
-        $data=$this->field('*')
-            ->whereOr('team_name','like','%'.$q.'%')
+
+    public function getList($request){
+        $query = [];
+        if (isset($request['query']['q'])) {
+            $query[] = ['team_name','like','%'.$request['query']['q'].'%'];
+        }
+
+        if (!empty($request['query']['game'])) {
+            $query[] = ['game', 'eq', $request['query']['game']];
+        }
+
+        // 分页参数
+        $params = [];
+        if (!empty($request['params'])) {
+            $params = $request['params'];
+        }
+        $data=$this->where($query)
             ->order('team_id desc')
             ->paginate(20, false, [
                 'type'     => 'bootstrap',

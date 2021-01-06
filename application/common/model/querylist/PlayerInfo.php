@@ -18,10 +18,24 @@ class PlayerInfo extends BaseQueryList
     {
         return date('Y-m-d H:i:s', $value);
     }*/
-    public function getList($params,$q){
-        $data=[];
-        $data=$this->field('*')
-            ->whereOr('player_name|cn_name|en_name|position','like','%'.$q.'%')
+
+    public function getList($request){
+        $query = [];
+
+        if (isset($request['query']['q'])) {
+            $query[] = ['player_name|position|en_name','like','%'.$request['query']['q'].'%'];
+        }
+
+        if (!empty($request['query']['game'])) {
+            $query[] = ['game', 'eq', $request['query']['game']];
+        }
+
+        // 分页参数
+        $params = [];
+        if (!empty($request['params'])) {
+            $params = $request['params'];
+        }
+        $data=$this->where($query)
             ->order('player_id desc')
             ->paginate(20, false, [
                 'type'     => 'bootstrap',
@@ -31,7 +45,8 @@ class PlayerInfo extends BaseQueryList
         return $data;
     }
 
-  
+
+
 
 
 }
