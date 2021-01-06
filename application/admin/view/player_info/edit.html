@@ -44,6 +44,22 @@
               </div>
             </div>
 			<div class="form-group">
+              <label>别名</label>
+              <div class="row">
+              <div class="col-md-6">
+              <input type="text" name="aka" value="{$info.aka}"  class="form-control input-sm" placeholder="">
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+              <label>国家 </label>
+              <div class="row">
+              <div class="col-md-6">
+              <input type="text" name="country" value="{$info.country}"  class="form-control input-sm" placeholder="">
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
               <label>位置 <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-6">
@@ -85,6 +101,18 @@
               </div>
             </div>
 			<div class="form-group">
+			  <label>所属战队</label>
+			  <div class="row">
+				<div class="col-md-12">
+				  <select class="form-control select2" name="team_id" style="width:40%">
+					{volist name="teamList" id="vo"}
+					<option value="{$vo.team_id}"   {eq name="info.team_id" value="$vo.team_id"}selected{/eq} >{$vo.team_name}</option>
+					{/volist}
+				  </select>
+				</div>
+			  </div>
+			</div>
+			<div class="form-group">
 			  <label>是否热门战队</label>
 			  <div class="row">
 			  <div class="col-md-12">
@@ -99,8 +127,22 @@
 			  </div>
 			  </div>
 			</div>
-			
-			
+			<div class="form-group">
+			  <label>战队历史</label>
+			  <div class="row">
+			  <div class="col-md-12">
+			  <textarea id="editor" name="team_history">{$info.team_history}</textarea>
+			  </div>
+			  </div>
+			</div>
+			<div class="form-group">
+			  <label>战绩历史</label>
+			  <div class="row">
+			  <div class="col-md-12">
+			  <textarea id="editor1" name="event_history">{$info.event_history}</textarea>
+			  </div>
+			  </div>
+			</div>
             
         </form>
       </div>
@@ -147,7 +189,35 @@ layui.use('upload', function(){
   
 });
 </script>
+<script src="__STATIC__/ueditor/ueditor.config.js"></script>
+<script src="__STATIC__/ueditor/ueditor.all.min.js"></script>
 <script type="text/javascript">
+var ue = UE.getEditor('editor', {
+    toolbars: [
+        ['fullscreen', 'source', 'undo', 'redo', 'selectall', '|', 'removeformat', 'formatmatch', 'autotypeset', 'cleardoc', '|', 'template', 'indent', 'horizontal','justifyleft', 'justifyright', 'justifycenter', 'justifyjustify', 'insertcode'],
+        ['fontfamily', 'fontsize', '|', 'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'link', 'unlink', 'inserttable', 'deletetable', 'simpleupload', 'insertimage']
+    ],
+    initialFrameWidth: '100%',
+    initialFrameHeight:300,
+    scaleEnabled:true,
+    serverUrl: '{:url("admin/ueditor/index")}',
+});
+var ue1 = UE.getEditor('editor1', {
+    toolbars: [
+        ['fullscreen', 'source', 'undo', 'redo', 'selectall', '|', 'removeformat', 'formatmatch', 'autotypeset', 'cleardoc', '|', 'template', 'indent', 'horizontal','justifyleft', 'justifyright', 'justifycenter', 'justifyjustify', 'insertcode'],
+        ['fontfamily', 'fontsize', '|', 'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'link', 'unlink', 'inserttable', 'deletetable', 'simpleupload', 'insertimage']
+    ],
+    initialFrameWidth: '100%',
+    initialFrameHeight:300,
+    scaleEnabled:true,
+    serverUrl: '{:url("admin/ueditor/index")}',
+});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+	$('.select2').select2();
+
+});
     function operate(){
         $.ajax({
             url:"{:url('admin/PlayerInfo/edit')}",

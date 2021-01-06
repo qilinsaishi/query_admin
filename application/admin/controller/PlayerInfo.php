@@ -4,6 +4,7 @@ namespace app\admin\controller;
 use app\common\model\Collect;
 use app\common\model\querylist\PlayerInfo as PlayerInfoModel;
 
+use app\common\model\querylist\TeamInfo;
 use app\common\validate\querylist\PlayerInfoValidate;
 use think\Db;
 use think\facade\Request;
@@ -55,6 +56,16 @@ class PlayerInfo extends Admin
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
+            if(isset($request['aka']) && $request['aka']){
+
+                if(strpos($request['aka'],'，') !==false){
+                    $request['aka']=str_replace('，',',',$request['aka']);
+                }
+                $request['aka']=explode(',',$request['aka']);
+                $request['aka']=json_encode($request['aka']);
+            }
+            $request['team_history']=addslashes($request['team_history']);
+            $request['event_history']=addslashes($request['event_history']);
 
             $playerInfoObj= new PlayerInfoModel();
             $playerInfoObj->isUpdate(true)->allowField(true)->save($request);
@@ -68,10 +79,19 @@ class PlayerInfo extends Admin
 
         $id = Request::param('id');
         $info = PlayerInfoModel::get($id);
+        $info['aka']=json_decode($info['aka'],true);
+        if(!empty($info['aka'])){
+            $info['aka']=implode(',',$info['aka']);
+        }
+        $info['team_history']=$info['team_history'];
+        $info['event_history']=$info['event_history'];
+        $teamModel=new TeamInfo();
+        $teamList=$teamModel->teamList('lol');
         $typeList=config('app.game_type');
 
         $data = [
             'info'  => $info,
+            'teamList'  => $teamList,
             'typeList'=>$typeList
         ];
 
@@ -149,7 +169,15 @@ class PlayerInfo extends Admin
             }
             $request['site_id']=$this->site_id;
             $request['stat']='';
-
+            if(isset($request['aka']) && $request['aka']){
+                if(strpos($request['aka'],'，') !==false){
+                    $request['aka']=str_replace('，',',',$request['aka']);
+                }
+                $request['aka']=explode(',',$request['aka']);
+                $request['aka']=json_encode($request['aka']);
+            }
+            $request['team_history']=addslashes($request['team_history']);
+            $request['event_history']=addslashes($request['event_history']);
             $playerInfoObj = new PlayerInfoModel();
             $playerInfoObj->allowField(true)->save($request);
 
@@ -159,9 +187,11 @@ class PlayerInfo extends Admin
                 return $this->response(201, Lang::get('Fail'));
             }
         }
+        $teamModel=new TeamInfo();
+        $teamList=$teamModel->teamList('lol');
         $typeList=config('app.game_type');
 
-        return $this->fetch('create',['typeList'=>$typeList]);
+        return $this->fetch('create',['typeList'=>$typeList,'teamList'=>$teamList]);
     }
 
 
