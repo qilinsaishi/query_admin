@@ -18,6 +18,21 @@
     <div class="tab-content">
       <div class="tab-pane active">
         <form role="form" id="operate">
+			<div class="form-group">
+              <label>类型<span class="text-red">*</span></label>
+              <div class="row">
+              <div class="col-md-4">
+              <select name="type" id="tableType" class="form-control" onchange="getTableType();">
+                <option  value="">请选择-</option>
+                {volist name="typeList" id="vo"}
+                <option value="{$key}">
+                    {$vo}
+                </option>
+                {/volist}
+              </select>
+              </div>
+              </div>
+            </div>
             <div class="form-group">
               <label>名称 <span class="text-red">*</span></label>
               <div class="row">
@@ -26,7 +41,7 @@
               </div>
               </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="keytable">
               <label>键名<span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-6">
@@ -34,7 +49,7 @@
               </div>
               </div>
             </div>
-			<div class="form-group">
+			<div class="form-group" id="valuetable">
               <label>键值<span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-6">
@@ -42,21 +57,20 @@
               </div>
               </div>
             </div>
-            <div class="form-group">
-              <label>类型<span class="text-red">*</span></label>
+			<div class="form-group" id="logotable">
+              <label>键值</label>
               <div class="row">
-              <div class="col-md-4">
-              <select name="type" class="form-control">
-                <option  value="">请选择-</option>
-                {volist name="typeList" id="vo"}
-                <option value="{$vo}">
-                    {$vo}
-                </option>
-                {/volist}
-              </select>
+              <div class="col-md-12">
+                <div class="layui-upload-drag" id="logo">
+                  
+                  <div class="layui-upload-list" id="preview">
+                  <p>{:lang('Upload')}</p>
+                  </div>
+                </div>
               </div>
               </div>
             </div>
+            
             <div class="form-group">
               <label>排序</label>
               <div class="row">
@@ -95,7 +109,7 @@ layui.use('upload', function(){
     ,url: "{:url('admin/upload/uploadFile')}"
     ,done: function(res){
       if (res.code == 200) {
-        $("[name='logo']").val(res.data.url);
+        $("[name='value']").val(res.data.url);
         $("#preview").html("<img class=\'layui-upload-img img-responsive\' src=\'"+res.data.url+"\'>");
       } else {
         swal({
@@ -113,6 +127,20 @@ layui.use('upload', function(){
 });
 </script>
 <script type="text/javascript">
+	$('#logotable').css('display','none');
+	$('#valuetable').css('display','none');
+	function getTableType(){
+		var value=$("#tableType").val();
+		if(value=='text'){
+			$('#valuetable').css('display','block');
+			$('#logotable').css('display','none');
+		}
+		if(value=='file'){
+			$('#logotable').css('display','block');
+			$('#valuetable').css('display','none');
+		}
+		
+	};
     function operate(){
         $.ajax({
             url:"{:url('admin/defaultConfig/create')}",

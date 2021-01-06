@@ -160,7 +160,6 @@ class DefaultConfig extends Admin
                 return $this->response(201, $validate->getError());
             }
             $request['site_id']=$this->site_id;
-
             $defaultConfigObj = new DefaultConfigModel();
             $defaultConfigObj->allowField(true)->save($request);
 

@@ -82,9 +82,17 @@ class PlayerInfo extends Admin
         $info['aka']=json_decode($info['aka'],true);
         if(!empty($info['aka'])){
             $info['aka']=implode(',',$info['aka']);
+        }else{
+            $info['aka']='';
         }
-        $info['team_history']=$info['team_history'];
-        $info['event_history']=$info['event_history'];
+        /*if($info['team_history']=='[]'){
+            $info['team_history']='';
+        }
+        if($info['event_history']=='[]'){
+            $info['event_history']='';
+        }*/
+
+        $info['event_history']=!empty($info['event_history']) ?$info['event_history']: '';
         $teamModel=new TeamInfo();
         $teamList=$teamModel->teamList('lol');
         $typeList=config('app.game_type');
