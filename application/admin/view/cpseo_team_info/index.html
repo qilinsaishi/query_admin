@@ -66,6 +66,7 @@
                         <th>#ID</th>
                         <th>战队名称</th>
                         <th>游戏类型</th>
+						<th>初始来源</th>
                         <th>战队Logo</th>
 						<th>{:lang('Creation date')}</th>
                         <th>{:lang('Action')}</th>
@@ -80,6 +81,7 @@
                             {$vo.team_name}
                         </td>
                         <td>{$vo.game}</td>
+						<td>{$vo.original_source}</td>
                         <td>
                             <img src="{$vo.logo}?x-oss-process=image/resize,m_lfit,h_60,w_60">
                         </td>
