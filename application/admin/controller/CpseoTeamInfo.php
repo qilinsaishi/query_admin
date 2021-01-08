@@ -17,10 +17,11 @@ class CpseoTeamInfo extends Admin
 {
     public function index()
     {
-        $request = Request::param();
+        $request = Request::param();//print_r($request);exit;
         $query = [
             'q'       => isset($request['q']) ? $request['q'] : '',
             'game'  => isset($request['game']) ? $request['game'] : '',
+            'original_source'  => isset($request['original_source']) ? $request['original_source'] : '',
         ];
         $args = [
             'query'  => $query,
@@ -30,6 +31,7 @@ class CpseoTeamInfo extends Admin
             'limit'  => 20,
         ];
         $gameList=config('app.game_type');
+        $originalSource=config('app.original_source');
         // 分页列表
         $seoTeamModel=new CpseoTeamInfoModel();
         $list = $seoTeamModel->getList($args);
@@ -37,6 +39,7 @@ class CpseoTeamInfo extends Admin
         $this->assign('list', $list);
         $this->assign('page', $list->render());
         $this->assign('gameList', $gameList);
+        $this->assign('originalSource', $originalSource);
 
         return $this->fetch('index');
     }

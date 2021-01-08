@@ -28,6 +28,10 @@ class CpseoTeamInfo extends BaseQueryList
         if (!empty($request['query']['game'])) {
             $query[] = ['game', 'eq', $request['query']['game']];
         }
+        if (!empty($request['query']['original_source'])) {
+            $query[] = ['original_source', 'eq', $request['query']['original_source']];
+        }
+
 
         // 分页参数
         $params = [];

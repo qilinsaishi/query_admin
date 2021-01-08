@@ -35,6 +35,19 @@
                   </select>
                   </div>
               </div>
+			  <div class="form-group">
+                  <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon2">初始来源</span>
+                  <select name="original_source" class="form-control">
+                    <option value="">--请选择--</option>
+                    {foreach $originalSource as $k=>$v } 
+                    <option {eq name="$v" value="$search.original_source"}selected{/eq} value="{$v}">
+                        {$v}
+                    </option>
+                    {/foreach}
+                  </select>
+                  </div>
+              </div>
               <div class="form-group">
                 <input type="text" name="q" value="{$search.q}" class="form-control" placeholder="">
               </div>
