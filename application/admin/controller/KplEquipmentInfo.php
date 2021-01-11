@@ -16,6 +16,16 @@ use app\admin\controller\Admin;
 
 class KplEquipmentInfo extends Admin
 {
+    protected $sub_type_list =
+        [
+            1=>[
+                1=>'攻击',2=>'法术',3=>'防御',4=>'移动',5=>'打野',6=>'游走'
+            ],
+
+            2=>[
+                1=>'装备',2=>'道具',3=>'额外技能'
+            ],
+        ];
     public function index()
     {
         $request = Request::param();
@@ -69,13 +79,7 @@ class KplEquipmentInfo extends Admin
         $id = Request::param('id');
         $info = KplEquipmentInfoModel::get($id);
         $roleArray=$intoList=[];
-        if($info && $info['maps']){
-            $roleArray=json_decode($info['maps'],true);
-            $roleArray=array_filter($roleArray);
-        }
-        if($info && $info['into_list']){
-            $intoList=json_decode($info['into_list'],true);
-        }
+
 
         $data = [
             'info'  => $info,
@@ -170,6 +174,12 @@ class KplEquipmentInfo extends Admin
         //$role_list=$this->role_list;
 
         return $this->fetch('create');
+    }
+    public function subType(){
+        if (Request::isAjax()) {
+            $type = Request::param('type');print_r($type);exit;
+        }
+
     }
 
 
