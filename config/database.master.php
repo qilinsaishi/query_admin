@@ -15,11 +15,11 @@ return [
     // 服务器地址
     'hostname'        => '127.0.0.1',
     // 数据库名
-    'database'        => 'kitecms',
+    'database'        => 'query_admin',
     // 用户名
-    'username'        => 'root',
+    'username'        => 'query_list',
     // 密码
-    'password'        => 'root',
+    'password'        => 'r4n4X7AeBs3NYs3P',
     // 端口
     'hostport'        => '3306',
     // 连接dsn
@@ -62,10 +62,10 @@ return [
     'break_match_str' => [],
 	'db_query_list' => [
         'type' => 'mysql',
-        'hostname' => '192.168.1.44',
+        'hostname' => '127.0.0.1',
         'database' => 'query_list',
-        'username' => 'test_user',
-        'password' => '123456',
+        'username' => 'query_list',
+        'password' => 'r4n4X7AeBs3NYs3P',
         'charset' => 'utf8',
         'prefix' => '',
     ],
