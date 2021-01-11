@@ -17,7 +17,7 @@ return [
     // 数据库名
     'database'        => 'query_admin',
     // 用户名
-    'username'        => 'query_list',
+    'username'        => 'query_admin',
     // 密码
     'password'        => 'r4n4X7AeBs3NYs3P',
     // 端口
