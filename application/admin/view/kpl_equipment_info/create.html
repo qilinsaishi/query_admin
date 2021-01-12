@@ -75,12 +75,12 @@
 			</div>
 			<div class="form-group">
 			  <div class="row">
-				  <div class="col-md-4">
+				  <div class="col-md-6">
 				  
 					<div class="form-group">
 						<label>子分类</label>
 						<div class="row">
-						  <div class="col-md-4">
+						  <div class="col-md-6">
 							<select name="sub_type" id="sub_type_id" class="form-control" >
 								<option  value="">请选择-</option>
 								<option value="1">攻击</option>
@@ -136,7 +136,7 @@
 {block name="js"}
 <script>
 $(function(){
-	$("#sub_type_id2").css("display",'none');
+	
 	// 点击事件change
 	$('input[type=radio][name=type]').change(function () {
 		// 获取input radio选中值，方法一
@@ -147,7 +147,7 @@ $(function(){
             data: {type:type},
             success: function(r){
                 if (r.code == 200) {
-                    //location.reload();
+                    $("#sub_type_id").html(r.data);
                 }
             }
         });

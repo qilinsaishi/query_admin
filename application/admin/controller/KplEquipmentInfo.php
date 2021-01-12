@@ -79,12 +79,12 @@ class KplEquipmentInfo extends Admin
         $id = Request::param('id');
         $info = KplEquipmentInfoModel::get($id);
         $roleArray=$intoList=[];
-
+        $typeData=$this->sub_type_list;
+        $subTypeList=$typeData[$info['type']];
 
         $data = [
             'info'  => $info,
-           // 'role_list'=>$role_list,
-            'roleArray'=>$roleArray
+            'subTypeList'=>$subTypeList
         ];
 
         return $this->fetch('edit', $data);
@@ -177,7 +177,18 @@ class KplEquipmentInfo extends Admin
     }
     public function subType(){
         if (Request::isAjax()) {
-            $type = Request::param('type');print_r($type);exit;
+            $typeData=$this->sub_type_list;
+            $type = Request::param('type');
+            $strHtml='<option  value="">请选择-</option>';
+            if($type){
+                foreach ($typeData[$type] as $key=>$val){
+                    $strHtml.='<option  value="'.$key.'">'.$val.'</option>';
+                }
+                return $this->response(200, Lang::get('Success'),$strHtml);
+            }else{
+                return $this->response(201, Lang::get('Fail'));
+            }
+
         }
 
     }

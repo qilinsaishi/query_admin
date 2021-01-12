@@ -74,6 +74,28 @@
 			  </div>
 			  </div>
 			</div>
+			<div class="form-group">
+			  <div class="row">
+				  <div class="col-md-6">
+				  
+					<div class="form-group">
+						<label>子分类</label>
+						<div class="row">
+						  <div class="col-md-6">
+							<select name="sub_type" id="sub_type_id" class="form-control" >
+								<option>请选择</option>
+								{volist name="subTypeList" id="vo"}
+								<option value="{$key}"  {eq name="info.sub_type" value="$key"}selected{/eq} >
+									{$vo}
+								</option>
+								{/volist}
+							</select>
+						  </div>
+						</div>
+					</div>
+				  </div>
+			  </div>
+			</div>
 			
 			
             
@@ -123,30 +145,24 @@
 <script>
 
 $(function(){
-	var type="{$info.type}";
-	if(type==1){
-		$("#sub_type_id2").css("display",'none');
-		$("#sub_type_id").css("display",'block');
-	}else{
-		$("#sub_type_id").css("display",'none');
-		$("#sub_type_id2").css("display",'block');
-	}
-	
 	// 点击事件change
 	$('input[type=radio][name=type]').change(function () {
 		// 获取input radio选中值，方法一
 		var type = $('input:radio[name="type"]:checked').val();
-		if(type==1){
-			$("#sub_type_id2").css("display",'none');
-			$("#sub_type_id").css("display",'block');
-		}else{
-			$("#sub_type_id").css("display",'none');
-			$("#sub_type_id2").css("display",'block');
-		}
+		$.ajax({
+            type:'post',
+            url: "{:url('admin/KplEquipmentInfo/subType')}",
+            data: {type:type},
+            success: function(r){
+                if (r.code == 200) {
+                    $("#sub_type_id").html(r.data);
+                }
+            }
+        });
+		
 		
 	});
     
-	
 })
 layui.use('upload', function(){
   var $ = layui.jquery
