@@ -12,7 +12,7 @@
   <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
       <li class="active"><a href="#">召唤师技能</a></li>
-      <li class=""><a href="{:url('admin/LolSummonerInfo/create')}">{:lang('Create')}</a></li>
+      <li class=""><a href="{:url('admin/KplSummonerInfo/create')}">{:lang('Create')}</a></li>
     </ul>
 
     <div class="box box-solid">
@@ -65,7 +65,7 @@
                         </td>
                         
                         <td>
-                            <a href="{:url('admin/LolSummonerInfo/edit', ['id' => $vo['skill_id']])}"></i> {:lang('Edit')}</a>
+                            <a href="{:url('admin/KplSummonerInfo/edit', ['id' => $vo['skill_id']])}"></i> {:lang('Edit')}</a>
                             <!--<a onclick="remove('{$vo.skill_id}')" href="#"> {:lang('Delete')}</a>-->
                         </td>
                     </tr>
@@ -134,7 +134,7 @@
             }).then(function(result){
               if (result.value) {
                 $.ajax({
-                    url:"{:Url('admin/LolSummonerInfo/handle')}",
+                    url:"{:Url('admin/KplSummonerInfo/handle')}",
                     data:{'ids':chk_value, 'type':type},
                     type:'post',
                     dataType:'json',
@@ -165,7 +165,7 @@
         }).then(function(result){
           if (result.value) {
             $.ajax({
-                url:"{:Url('admin/LolSummonerInfo/remove')}",
+                url:"{:Url('admin/KplSummonerInfo/remove')}",
                 data:{'id':id},
                 type:'post',
                 dataType:'json',
