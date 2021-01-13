@@ -13,7 +13,7 @@ return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-    'hostname'        => '192.168.1.44',
+    'hostname'        => '127.0.0.1',
     // 数据库名
     'database'        => 'queryadmin',
     // 用户名
@@ -62,7 +62,7 @@ return [
     'break_match_str' => [],
 	'db_query_list' => [
         'type' => 'mysql',
-        'hostname' => '192.168.1.44',
+        'hostname' => '127.0.0.1',
         'database' => 'query_list',
         'username' => 'test_user',
         'password' => '123456',
