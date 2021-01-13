@@ -97,8 +97,8 @@
 			<div class="form-group">
 			  <label>所属战队</label>
 			  <div class="row">
-				<div class="col-md-12">
-				  <select class="form-control select2" name="team_id" style="width:40%">
+				<div class="col-md-6">
+				  <select class="form-control select2" name="team_id" style="width:60%">
 					<option value="">--请选择--</option>
 					{volist name="teamList" id="vo"}
 					<option value="{$vo.team_id}"  >{$vo.team_name}</option>
@@ -119,6 +119,15 @@
 						<input type="radio"  name="hot" value="1">是
 					</label>
 				</div>
+			  </div>
+			  </div>
+			</div>
+			
+			<div class="form-group">
+			  <label>{:lang('Description')}</label>
+			  <div class="row">
+			  <div class="col-md-6">
+			  <textarea class="form-control input-sm" name="description" rows="3" placeholder=""></textarea>
 			  </div>
 			  </div>
 			</div>
