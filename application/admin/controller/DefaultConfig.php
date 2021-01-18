@@ -44,6 +44,9 @@ class DefaultConfig extends Admin
 
         if (isset($list)) {
             foreach ($list as $v) {
+                $siteModel=new \app\common\model\Site();
+                $siteObj=$siteModel->getSiteNameById($v['site_id']);
+                $v['site_name']=$siteObj['name'] ?? '';
                 array_push($new_list, $v);
             }
         }
@@ -80,9 +83,16 @@ class DefaultConfig extends Admin
         $id = Request::param('id');
         $info = DefaultConfigModel::get($id);
         $typeList=config('app.config_type');
+        $siteList=[];
+        $siteModel=new \app\common\model\Site();
+        $siteList=$siteModel->getSiteList();
+        if($siteList){
+            $siteList=$siteList->toArray();
+        }
 
         $data = [
             'info'  => $info,
+            'siteList'=>$siteList,
             'typeList'=>$typeList
 
         ];
@@ -169,9 +179,16 @@ class DefaultConfig extends Admin
                 return $this->response(201, Lang::get('Fail'));
             }
         }
+        $siteList=[];
+        $siteModel=new \app\common\model\Site();
+        $siteList=$siteModel->getSiteList();
+        if($siteList){
+            $siteList=$siteList->toArray();
+        }
+
         $typeList=config('app.config_type');
 
-        return $this->fetch('create',['typeList'=>$typeList]);
+        return $this->fetch('create',['typeList'=>$typeList,'siteList'=>$siteList]);
     }
 
 

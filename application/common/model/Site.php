@@ -24,6 +24,10 @@ class Site extends Model
     {
         return Site::where('id', '>', 0)->order('id', 'asc')->find();
     }
+    public function getSiteNameById($id)
+    {
+        return Site::where('id', '=', $id)->find();
+    }
 
     public function getSiteList()
     {

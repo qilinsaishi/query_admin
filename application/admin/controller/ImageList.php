@@ -115,9 +115,11 @@ class ImageList extends Admin
         // 获取分类列表
 
         $category = ImageCategoryModel::getCategoryList($this->site_id,'lol');
+        $gameList=config('app.game_type');
 
         $data = [
             'category' => $category,
+            'gameList' => $gameList,
         ];
 
         return $this->fetch('create', $data);
@@ -154,9 +156,11 @@ class ImageList extends Admin
 
         $obj = new ImageListModel;
         $info = $obj->where('id', $request['id'])->find();
+        $gameList=config('app.game_type');
 
         $data = [
             'category' => $category,
+            'gameList' => $gameList,
             'info'  => $info,
         ];
 
