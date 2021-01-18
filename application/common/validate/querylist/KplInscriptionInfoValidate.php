@@ -3,7 +3,7 @@ namespace app\common\validate\querylist;
 
 use think\Validate;
 
-class KplSummonerInfoValidate extends Validate
+class KplInscriptionInfoValidate extends Validate
 {
     protected $rule = [
         'inscription_name'   => 'require',

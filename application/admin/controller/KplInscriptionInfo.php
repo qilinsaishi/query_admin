@@ -16,6 +16,13 @@ use app\admin\controller\Admin;
 
 class KplInscriptionInfo extends Admin
 {
+
+    protected $type_list =
+        [
+            "blue",
+            "red",
+            "yellow",
+        ];
     public function index()
     {
         $request = Request::param();
@@ -59,7 +66,7 @@ class KplInscriptionInfo extends Admin
             $kplInscriptionInfoObj= new KplInscriptionInfoModel();
             $kplInscriptionInfoObj->isUpdate(true)->allowField(true)->save($request);
 
-            if (is_numeric($kplInscriptionInfoObj->skill_id)) {
+            if (is_numeric($kplInscriptionInfoObj->inscription_id)) {
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
@@ -76,7 +83,7 @@ class KplInscriptionInfo extends Admin
 
         $data = [
             'info'  => $info,
-           // 'role_list'=>$role_list,
+            'typeList'=>$this->type_list,
            // 'roleArray'=>$roleArray
         ];
 
@@ -158,15 +165,19 @@ class KplInscriptionInfo extends Admin
             $kplInscriptionInfoObj = new KplInscriptionInfoModel();
             $kplInscriptionInfoObj->allowField(true)->save($request);
 
-            if (is_numeric($kplInscriptionInfoObj->skill_id)) {
+            if (is_numeric($kplInscriptionInfoObj->inscription_id)) {
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
             }
         }
         //$role_list=$this->role_list;
+        $data = [
+            'typeList'=>$this->type_list,
+            // 'roleArray'=>$roleArray
+        ];
 
-        return $this->fetch('create');
+        return $this->fetch('create',$data);
     }
 
 
