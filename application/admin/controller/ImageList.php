@@ -116,10 +116,17 @@ class ImageList extends Admin
 
         $category = ImageCategoryModel::getCategoryList($this->site_id,'lol');
         $gameList=config('app.game_type');
+        $siteList=[];
+        $siteModel=new \app\common\model\Site();
+        $siteList=$siteModel->getSiteList();
+        if($siteList){
+            $siteList=$siteList->toArray();
+        }
 
         $data = [
             'category' => $category,
             'gameList' => $gameList,
+            'siteList' => $siteList,
         ];
 
         return $this->fetch('create', $data);
@@ -157,10 +164,17 @@ class ImageList extends Admin
         $obj = new ImageListModel;
         $info = $obj->where('id', $request['id'])->find();
         $gameList=config('app.game_type');
+        $siteList=[];
+        $siteModel=new \app\common\model\Site();
+        $siteList=$siteModel->getSiteList();
+        if($siteList){
+            $siteList=$siteList->toArray();
+        }
 
         $data = [
             'category' => $category,
             'gameList' => $gameList,
+            'siteList' => $siteList,
             'info'  => $info,
         ];
 

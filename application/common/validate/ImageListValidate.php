@@ -6,15 +6,20 @@ use think\Validate;
 class ImageListValidate extends Validate
 {
     protected $rule = [
+		'logo'   => 'require',
         'name'   => 'require',
+		'flag'   => 'require',
     ];
 
     protected $message = [
-        'name.require'  => '请输入图片分类',
+		'logo.require'  => '请上传logo',
+        'name.require'  => '请输入名称',
+		'flag.require'  => '请输入标记',
+		
     ];
 
     protected $scene = [
-        'create'         => ['name'],
-        'edit'           => ['name'],
+        'create'         => ['logo','name','flag'],
+        'edit'           => ['logo','name','flag'],
     ];
 }

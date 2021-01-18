@@ -45,6 +45,14 @@
               </div>
               </div>
             </div>
+			<div class="form-group">
+              <label>标记 <span class="text-red">*</span></label>
+              <div class="row">
+              <div class="col-md-4">
+              <input type="text" name="flag" value="{$info.flag}" class="form-control input-sm" placeholder="">
+              </div>
+              </div>
+            </div>
             <div class="form-group">
               <label>{:lang('Url')} <span class="text-red">*</span></label>
               <div class="row">
@@ -53,14 +61,7 @@
               </div>
               </div>
             </div>
-            <div class="form-group">
-              <label>{:lang('Content')}</label>
-              <div class="row">
-              <div class="col-md-6">
-              <textarea class="form-control input-sm" name="content" rows="3" placeholder="">{$info.content}</textarea>
-              </div>
-              </div>
-            </div>
+            
             <div class="form-group">
               <label>{:lang('Category')} <span class="text-red">*</span></label>
               <div class="row">
@@ -92,6 +93,22 @@
               </div>
               </div>
             </div>
+			<div class="form-group"   >
+              <label>归属站点 <span class="text-red">*</span></label>
+              <div class="row">
+              <div class="col-md-4">
+              <select name="site_id"  class="form-control" >
+                <option  value="">请选择-</option>
+                {volist name="siteList" id="vo"}
+                <option {eq name="info.site_id" value="$vo.id"}selected{/eq} value="{$vo.id}">
+                    {$vo.name}
+                </option>
+                {/volist}
+              </select>
+              </div>
+              </div>
+            </div>
+			
             <div class="form-group">
               <label>{:lang('Sort')}</label>
               <div class="row">
@@ -123,6 +140,14 @@
                         </div>
                     </div>
                 </div>
+            </div>
+			<div class="form-group">
+              <label>{:lang('Content')}</label>
+              <div class="row">
+              <div class="col-md-6">
+              <textarea class="form-control input-sm" name="content" rows="3" placeholder="">{$info.content}</textarea>
+              </div>
+              </div>
             </div>
         </form>
       </div>
