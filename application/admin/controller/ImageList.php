@@ -37,6 +37,15 @@ class ImageList extends Admin
             $cid = [];
             $search['cid'] = '';
         }
+        if (isset($request['site_id']) && is_numeric($request['site_id'])) {
+            $site_id           = ['site_id','=',$request['site_id']];
+            $params['site_id'] = $request['site_id'];
+            $search['site_id'] = $request['site_id'];
+            array_push($map, $site_id);
+        }else {
+            $site_id = [];
+            $search['site_id'] = '';
+        }
         if (isset($request['q']) && $request['q']) {
             $q           = ['name','like','%'.$request['q'].'%'];
             $params['q'] = $request['q'];
@@ -50,27 +59,36 @@ class ImageList extends Admin
         // 分页列表
         $list = $obj
             ->where($map)
-            ->where('site_id', 'eq', $this->site_id)
+            //->where('site_id', 'eq', $this->site_id)
             ->order('id desc')
             ->paginate(20, false, [
                 'type'     => 'bootstrap',
                 'var_page' => 'page',
                 'query'    => $params,
             ]);
-
+        $siteModel=new \app\common\model\Site();
         if (!empty($list)) {
-            foreach ($list as $v) {
+            foreach ($list as &$v) {
+
+                $siteObj=$siteModel->getSiteNameById($v['site_id']);
+                $v->site_name=$siteObj['name'] ?? '';
                 $v->catename = ImageCategoryModel::getNameById($this->site_id,'lol',$v->cid);
             }
         }
 
         // 获取分类列表
         $category = ImageCategoryModel::getCategoryList($this->site_id,'lol');
+        $siteList=[];
+        $siteList=$siteModel->getSiteList();
+        if($siteList){
+            $siteList=$siteList->toArray();
+        }
 
         $data = [
             'search'   => $search,
             'category' => $category,
             'list'     => $list,
+            'siteList'     => $siteList,
             'page'     => $list->render(),
         
         ];
