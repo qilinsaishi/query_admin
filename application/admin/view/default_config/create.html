@@ -51,7 +51,7 @@
             <div class="form-group">
               <label>名称 <span class="text-red">*</span></label>
               <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-4">
               <input type="text" name="name" class="form-control input-sm" placeholder="">
               </div>
               </div>
@@ -60,7 +60,7 @@
             <div class="form-group" id="keytable">
               <label>键名<span class="text-red">*</span></label>
               <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-4">
               <input type="text" name="key" class="form-control input-sm" placeholder="">
               </div>
               </div>
@@ -68,7 +68,7 @@
 			<div class="form-group" id="valuetable">
               <label>键值<span class="text-red">*</span></label>
               <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-4">
               <input type="text" name="value" class="form-control input-sm" placeholder="">
               </div>
               </div>
@@ -76,7 +76,7 @@
 			<div class="form-group" id="logotable">
               <label>键值</label>
               <div class="row">
-              <div class="col-md-12">
+              <div class="col-md-4">
                 <div class="layui-upload-drag" id="logo">
                   
                   <div class="layui-upload-list" id="preview">
@@ -86,6 +86,21 @@
               </div>
               </div>
             </div>
+			<div class="form-group" id="attachtable">
+			  <label>键值</label>
+			  <div class="row">
+			  <div class="col-md-4">
+				<div class="input-group input-group-sm">
+				  <input type="text" name="value" class="form-control">
+					<span class="input-group-btn">
+					  <button type="button" id="attach" class="btn btn-default btn-flat">{:lang('Upload')}</button>
+					</span>
+				</div>
+			  </div>
+			  </div>
+			</div>
+			
+			
             
             <div class="form-group">
               <label>排序</label>
@@ -140,20 +155,50 @@ layui.use('upload', function(){
     }
   });
   
+  upload.render({ //允许上传的文件后缀
+    elem: "#attach"
+    ,url: "{:url('admin/upload/uploadAttach')}"
+    ,accept: "file" //普通文件
+    ,exts: "zip|rar|7z|xlsx|doc|docx" //只允许上传压缩文件
+    ,done: function(res){
+      if (res.code == 200) {
+        $("[name='value']").val(res.data.url);
+      } else {
+        swal({
+          position: 'center',
+          type: 'error',
+          title: res.msg,
+          showConfirmButton: false,
+          toast:false,
+          timer: 2000
+        });
+      }
+    }
+  });
+  
 });
 </script>
 <script type="text/javascript">
 	$('#logotable').css('display','none');
 	$('#valuetable').css('display','none');
+	$('#attachtable').css('display','none');
 	function getTableType(){
 		var value=$("#tableType").val();
 		if(value=='text'){
 			$('#valuetable').css('display','block');
 			$('#logotable').css('display','none');
+			$('#attachtable').css('display','none');
 		}
-		if(value=='file'){
+		if(value=='images'){
 			$('#logotable').css('display','block');
 			$('#valuetable').css('display','none');
+			$('#attachtable').css('display','none');
+		}
+		if(value=='file'){
+			$('#attachtable').css('display','block');
+			$('#valuetable').css('display','none');
+			$('#logotable').css('display','none');
+			$("[name='value']").val('');
 		}
 		
 	};

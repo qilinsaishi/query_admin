@@ -142,7 +142,7 @@ return [
     'show_error_msg'         => false,
     // 异常处理handle类 留空使用 \think\exception\Handle
     'exception_handle'       => '',
-	'config_type'=>['text'=>'文本','file'=>'文件'],
+	'config_type'=>['text'=>'文本','images'=>'图片','file'=>'文件'],
 	'game_type'=>['lol','kpl'],
 	'original_source'=>['wanplus','cpseo'],
 

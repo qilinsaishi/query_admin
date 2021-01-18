@@ -89,6 +89,20 @@
               </div>
               </div>
             </div>
+			
+			<div class="form-group" id="attachtable">
+			  <label>键值</label>
+			  <div class="row">
+			  <div class="col-md-4">
+				<div class="input-group input-group-sm">
+				  <input type="text" name="value"  value="{$info.value}" class="form-control">
+					<span class="input-group-btn">
+					  <button type="button" id="attach" class="btn btn-default btn-flat">{:lang('Upload')}</button>
+					</span>
+				</div>
+			  </div>
+			  </div>
+			</div>
             
             <div class="form-group">
               <label>{:lang('Sort')}</label>
@@ -142,19 +156,50 @@ layui.use('upload', function(){
     }
   });
   
+  upload.render({ //允许上传的文件后缀
+    elem: "#attach"
+    ,url: "{:url('admin/upload/uploadAttach')}"
+    ,accept: "file" //普通文件
+    ,exts: "zip|rar|7z|xlsx|doc|docx" //只允许上传压缩文件
+    ,done: function(res){
+      if (res.code == 200) {
+        $("[name='value']").val(res.data.url);
+      } else {
+        swal({
+          position: 'center',
+          type: 'error',
+          title: res.msg,
+          showConfirmButton: false,
+          toast:false,
+          timer: 2000
+        });
+      }
+    }
+  });
+  
 });
 </script>
 <script type="text/javascript">
 	var type="{$info.type}";
+	
 	if(type=='text'){
 		$('#logotable').css('display','none');
 		$('#valuetable').css('display','block');
+		$('#attachtable').css('display','none');
 	}
-	if(type=='file'){
+	if(type=='images'){
 		$('#valuetable').css('display','none');
 		$('#logotable').css('display','block');
+		$('#attachtable').css('display','none');
 		
 	}
+	if(type=='file'){
+		$('#attachtable').css('display','block');
+		$('#valuetable').css('display','none');
+		$('#logotable').css('display','none');
+		
+	}
+	
 	
 	
 	function getTableType(){
@@ -162,11 +207,19 @@ layui.use('upload', function(){
 		if(value=='text'){
 			$('#valuetable').css('display','block');
 			$('#logotable').css('display','none');
+			$('#attachtable').css('display','none');
 		}
-		if(value=='file'){
+		if(value=='images'){
 			$('#logotable').css('display','block');
 			$('#valuetable').css('display','none');
+			$('#attachtable').css('display','none');
 			$("#logo").html('<div class="layui-upload-list" id="preview"><p>上传</p></div>');
+		}
+		if(value=='file'){
+			$('#attachtable').css('display','block');
+			$('#logotable').css('display','none');
+			$('#valuetable').css('display','none');
+			
 		}
 		
 	};
