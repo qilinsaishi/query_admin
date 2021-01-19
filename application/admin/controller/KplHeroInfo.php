@@ -65,6 +65,14 @@ class KplHeroInfo extends Admin
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
+            if(isset($request['aka']) && $request['aka']){
+
+                if(strpos($request['aka'],'，') !==false){
+                    $request['aka']=str_replace('，',',',$request['aka']);
+                }
+                $request['aka']=explode(',',$request['aka']);
+                $request['aka']=json_encode($request['aka']);
+            }
             $request['stat']=json_encode($request['statArray']);
             $request['update_time'] = date("Y-m-d H:i:s");
             $heroInfoObj = new KplHeroInfoModel();
@@ -79,7 +87,7 @@ class KplHeroInfo extends Admin
 
         $id = Request::param('id');
         $info = KplHeroInfoModel::get($id);
-        $akaArray = $statArray=$skinlist=[];
+        $akaArray = $statArray=$skinlist=$skillList=[];
 
         if ($info && $info['aka']) {
             $akaArray = json_decode($info['aka'], true);
@@ -104,6 +112,7 @@ class KplHeroInfo extends Admin
             'heroType' => $hero_type,
             'akaArray' => $akaArray,
             'statArray' => $statArray,
+            'skillList' => $skillList
         ];
 
         return $this->fetch('edit', $data);
@@ -179,6 +188,15 @@ class KplHeroInfo extends Admin
             }
             $request['create_time'] = date("Y-m-d H:i:s");
             $request['update_time'] = date("Y-m-d H:i:s");
+            if(isset($request['aka']) && $request['aka']){
+
+                if(strpos($request['aka'],'，') !==false){
+                    $request['aka']=str_replace('，',',',$request['aka']);
+                }
+                $request['aka']=explode(',',$request['aka']);
+                $request['aka']=json_encode($request['aka']);
+            }
+            $request['skill_list']=json_encode([]);
 
             $heroInfoObj = new KplHeroInfoModel();
             $heroInfoObj->allowField(true)->save($request);
@@ -191,7 +209,19 @@ class KplHeroInfo extends Admin
         }
         $hero_type=$this->hero_type;
 
-        return $this->fetch('create', ['hero_type' => $hero_type]);
+        return $this->fetch('create', ['heroType' => $hero_type]);
+    }
+    //皮肤列表
+    public function skinList(){
+        $id = Request::param('id');
+        $info = KplHeroInfoModel::get($id);
+        $skinlist=[];
+        if ($info && $info['skin_list']) {
+            $skinlist = json_decode($info['skin_list'], true);
+        }
+        $this->assign('skinlist', $skinlist);
+        return $this->fetch('skin_list');
+        //print_r($skinlist);exit;
     }
 
 

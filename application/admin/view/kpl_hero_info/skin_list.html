@@ -11,81 +11,48 @@
 {block name="content"}
   <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
-      <li class="active"><a href="#">KPL英雄信息</a></li>
-      <li class=""><a href="{:url('admin/KplHeroInfo/create')}">{:lang('Create')}</a></li>
+      <li class="active"><a href="#">KPL英雄皮肤管理</a></li>
+      <li class=""><a href="{:url('admin/KplHeroInfo/skinCreate')}">{:lang('Create')}</a></li>
     </ul>
 
-    <div class="box box-solid">
-        <div class="box-header with-border">
-          <h3 class="box-title">{:lang('Filter')}</h3>
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <form action="#" method="get" class="form-inline">
-				<div class="form-group">
-                  <div class="input-group">
-                  <span class="input-group-addon" id="basic-addon1">类型</span>
-                  <select name="type" class="form-control">
-                    <option value="">--请选择--</option>
-                    {foreach $heroType as $k=>$v } 
-                    <option {eq name="k" value="$search.type"}selected{/eq} value="{$k}">
-                        {$v}
-                    </option>
-                    {/foreach}
-                  </select>
-                  </div>
-              </div>
-			  <div class="form-group">
-				<input type="text" name="q" value="{$search.q}" class="form-control" placeholder="">
-			  </div>
-			  <button type="submit" class="btn btn-primary btn-flat"> <i class="fa fa-search"></i> {:lang('Search')}</button>
-            </form>
-        </div>
-        <!-- /.box-body -->
-    </div>
+  
 
     <div class="tab-content">
         <div class="tab-pane active table-responsive no-padding">
             <table class="table table-condensed table-hover">
                 <thead>
                     <tr>
-                        <th><input id="checkAll" type="checkbox"></th>
-                        <th>#ID</th>
-                        <th>英雄名称</th>
-						<th>中文名</th>
-						<th>英文名</th>
-                        <th>队员Logo</th>
-					
-                        <th>{:lang('Action')}</th>
+                    
+                        <th>皮肤名称</th>
+                        <th>图标</th>
+                       
                     </tr>
                 </thead>
                 <tbody>
-                    {volist name="list" id="vo"}
-                    <tr id = "tr_{$vo.hero_id}">
-                        <td><input name="ids[]" value="{$vo.hero_id}" type="checkbox"></td>
-                        <td>{$vo.hero_id}</td>
-                        <td>
-                            {$vo.hero_name}
-                        </td>
-						<td>
-                            {$vo.cn_name}
-                        </td>
-						<td>
-                            {$vo.en_name}
-                        </td>
+                    {volist name="skinlist" id="vo"}
+                    <tr>
                        
                         <td>
-                            <img src="{$vo.logo}?x-oss-process=image/resize,m_lfit,h_60,w_60">
+                            {$vo.name}
+                        </td>
+						
+                        <td>
+                            <div class="layui-upload-drag" id="logo">
+							  <input type="hidden" name="bigImg" value="{$vo.bigImg}">
+							  <div class="layui-upload-list" id="preview">
+								  {empty name="vo.bigImg"}
+								  <p>{:lang('Upload')}</p>
+								  {else /}
+								  <img class="layui-upload-img img-responsive" src="{$vo.bigImg}" />
+								  {/empty}
+							  </div>
+							</div>
                         </td>
                        
-                        <td>
-                            <a href="{:url('admin/KplHeroInfo/edit', ['id' => $vo['hero_id']])}"></i> {:lang('Edit')}</a>
-							<a href="{:url('admin/KplHeroInfo/skinList', ['id' => $vo['hero_id']])}"></i>皮肤管理</a>
-                            <!--<a onclick="remove('{$vo.hero_id}')" href="#"> {:lang('Delete')}</a>-->
-                        </td>
+                       
                     </tr>
                     {/volist}
-                    {empty name="list"}
+                    {empty name="skinlist"}
                     <tr>
                         <td colspan="7" class="text-center">{:lang("No record")}</td>
                     </tr>
@@ -98,22 +65,17 @@
     <!-- /.tab-content -->
     <div class="box-footer">
         <div class="row">
-          <!--<div class="col-md-6">
+          <div class="col-md-6">
             <form method="post" class="form-inline">
                 <div class="input-group">
-                    <div><select id="type" class="form-control">
-                        <option value="delete">{:lang('Delete')}</option>
-                    </select>
-                    </div>
+                    
                     <span class="input-group-btn"> 
                         <button type="button" onclick="handle()" class="btn btn-primary btn-flat"> {:lang('Save')} </button> 
                     </span>
                 </div>
             </form>
-          </div>-->
-          <div class="col-md-6">
-            <div class="text-right"> {$page} </div>
           </div>
+          
         </div>
     </div>
   </div>
