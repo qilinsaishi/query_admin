@@ -258,7 +258,7 @@ class ImageList extends Admin
     public function removeCategory()
     {
         $id = Request::param('id');
-        $del = SiteConfig::deleteCategoryConfig($this->site_id, $this->category, $id);
+        $del = ImageCategoryModel::destroy($id);
 
         if ($del !== false) {
             return $this->response(200, Lang::get('Success'));
@@ -269,8 +269,8 @@ class ImageList extends Admin
 
     public function handleCategory()
     {
-        $data = Request::instance()->param();print_r($data);exit;
-
+        $data = Request::instance()->param();
+        $imageCategoryModel=new ImageCategoryModel();
         $obj = new ImageListModel;
         switch ($data['type']) {
             case 'save':
@@ -279,9 +279,11 @@ class ImageList extends Admin
                         $updateData = [
                             'id'       => $data['id'][$k],
                             'name'     => $data['name'][$k],
+                            'game'     => $data['game'][$k],
                             'sort' => $data['sort'][$k],
                         ];
-                        $result = SiteConfig::updateCategoryConfig($this->site_id, $this->category, $updateData);
+
+                        $result = $imageCategoryModel->isUpdate(true)->allowField(true)->save($updateData);;
                     }
                 }
 
@@ -289,9 +291,12 @@ class ImageList extends Admin
                     foreach ($data['temp_name'] as $k => $v) {
                         $insertData = [
                             'name'     => $v,
+                            'site_id'     => $this->site_id,
+                            'game' => $data['temp_game'][$k],
                             'sort' => $data['temp_sort'][$k],
                         ];
-                        $result = SiteConfig::insertCategoryConfig($this->site_id, $this->category, $insertData);
+                        $result =$imageCategoryModel->allowField(true)->insert($insertData);
+                        //$result = SiteConfig::insertCategoryConfig($this->site_id, $this->category, $insertData);
                     }
                 }
 

@@ -72,11 +72,8 @@
                             <td>
                                 <input class="form-control input-sm" name="temp_name[]" type="text">
                             </td>
-                            <td>
-                                <input class="form-control input-sm" name="temp_sort[]" type="text">
-                            </td>
 							 <td>
-								<select name="temp_game[]"  class="form-control game_type" >
+								<select name="temp_game[]"  class="form-control" >
 									<option>--{:lang('Select')}--</option>
 									{volist name="gameList" id="v"}
 									<option  value="{$v}">
@@ -85,6 +82,10 @@
 									{/volist}
 								</select>
 							</td>
+                            <td>
+                                <input class="form-control input-sm" name="temp_sort[]" type="text">
+                            </td>
+							
                             <td>
                                 <button onclick="temp_add(this);" type="button" class="btn btn-block btn-default btn-flat input-sm">
                                     <i class="fa fa-fw fa-plus-circle"></i>
@@ -136,7 +137,7 @@
     function temp_add(obj){
         var html = '<tr><td></td>';
         html += '<td><input class="form-control input-sm" name="temp_name[]" type="text"></td>';
-		html += '<td><select name="temp_game[]"  class="form-control"><option>--请选择游戏--</option><option value="1">lol</option><option value="2">kpl</option></select></td>';
+		html += '<td><select name="temp_game[]"  class="form-control"><option>--请选择游戏--</option><option value="lol">lol</option><option value="kpl">kpl</option></select></td>';
         html += '<td><input class="form-control input-sm" name="temp_sort[]" type="text"></td>';
         html += '<td><button onclick="temp_add(this);" type="button" class="btn btn-block btn-default btn-flat input-sm"><i class="fa fa-fw fa-plus-circle"></i></button></td>';
         html += '<td><button onclick="temp_del(this);" type="button" class="btn btn-block btn-default btn-flat input-sm"><i class="fa fa-fw fa-minus"></i></button>';
@@ -166,7 +167,7 @@
             chk_name.push($(this).val()); 
         });
 		 var chk_game=[]; 
-        $('input[name="game[]"]').each(function(){ 
+        $('select[name="game[]"]').each(function(){
             chk_game.push($(this).val()); 
         });
         var chk_sort =[]; 
@@ -178,13 +179,13 @@
             temp_name.push($(this).val()); 
         });
 		var temp_game =[]; 
-        $('input[name="temp_game[]"]').each(function(){ 
+        $('select[name="temp_game[]"]').each(function(){ 
             temp_game.push($(this).val()); 
         });
         var temp_sort =[]; 
         $('input[name="temp_sort[]"]').each(function(){ 
             temp_sort.push($(this).val()); 
-        });
+        });console.log(temp_game);
         var type = $('#type option:selected').val() ;
         if(chk_id.length < 1 && temp_name.length < 1){
                 swal({

@@ -1,60 +1,56 @@
 <?php
+
 namespace app\admin\controller;
 
-use app\common\model\DefaultConfig as DefaultConfigModel;
-use app\common\validate\DefaultConfigValidate;
+use app\common\model\Collect;
+use app\common\model\querylist\KplHeroInfo as KplHeroInfoModel;
+use app\common\validate\querylist\KplHeroInfoValidate;
 use think\Db;
 use think\facade\Request;
 use think\facade\Session;
 use think\facade\Lang;
+use think\facade\Config;
 use app\common\model\Auth;
 use app\admin\controller\Admin;
 
 
-class DefaultConfig extends Admin
+class KplHeroInfo extends Admin
 {
+    //职业列表
+    protected $hero_type = [
+        1 => '战士',
+        2 => '法师',
+        3 => '坦克',
+        4 => '刺客',
+        5 => '射手',
+        6 => '辅助',
+        10 => '限免',
+        11 => '新手'
+    ];
+
     public function index()
     {
         $request = Request::param();
-
-        $params = [];
-        $search = [];
-
-        if (isset($request['q'])) {
-            $q           = trim($request['q']);
-            $params['q'] = $request['q'];
-            $search['q'] = $request['q'];
-        }else {
-            $q = '';
-            $search['q'] = '';
-        }
-
-        $defaultObj = new DefaultConfigModel();
-        $list = $defaultObj
-            ->field('*')
-            ->whereOr('name','like','%'.$q.'%')
-            ->order('id desc')
-            ->paginate(20, false, [
-                'type'     => 'bootstrap',
-                'var_page' => 'page',
-                'query'    => $params,
-            ]);
-
-        $new_list = [];
-
-        if (isset($list)) {
-            foreach ($list as $v) {
-                $siteModel=new \app\common\model\Site();
-                $siteObj=$siteModel->getSiteNameById($v['site_id']);
-                $v['site_name']=$siteObj['name'] ?? '';
-                array_push($new_list, $v);
-            }
-        }
-
-        $this->assign('search', $search);
-        $this->assign('list', $new_list);
+        $query = [
+            'type'     => isset($request['type']) ? $request['type'] : '',
+            'q'       => isset($request['q']) ? $request['q'] : '',
+        ];
+        $args = [
+            'query'  => $query,
+            'field'  => '',
+            'order'  => 'id desc',
+            'params' => $query,
+            'limit'  => 20,
+        ];
+        $hero_type=$this->hero_type;
+        // 分页列表
+        $heroInfoModel = new KplHeroInfoModel();
+        $list = $heroInfoModel->getList($args);
+        $this->assign('search', $query);
+        $this->assign('list', $list);
         $this->assign('page', $list->render());
 
+        $this->assign('heroType', $hero_type);
         return $this->fetch('index');
     }
 
@@ -63,17 +59,18 @@ class DefaultConfig extends Admin
         // 处理AJAX提交数据
         if (Request::isAjax()) {
             $request = Request::param();
-            // 验证数据
-            $validate = new DefaultConfigValidate();
+            // 验证数据 json_decode($info['stat'], true);
+            $validate = new KplHeroInfoValidate();
             $validateResult = $validate->scene('edit')->check($request);
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
+            $request['stat']=json_encode($request['statArray']);
+            $request['update_time'] = date("Y-m-d H:i:s");
+            $heroInfoObj = new KplHeroInfoModel();
+            $heroInfoObj->isUpdate(true)->allowField(true)->save($request);
 
-            $defaultConfigObj= new DefaultConfigModel();
-            $defaultConfigObj->isUpdate(true)->allowField(true)->save($request);
-
-            if (is_numeric($defaultConfigObj->id)) {
+            if (is_numeric($heroInfoObj->hero_id)) {
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
@@ -81,20 +78,32 @@ class DefaultConfig extends Admin
         }
 
         $id = Request::param('id');
-        $info = DefaultConfigModel::get($id);
-        $typeList=config('app.config_type');
-        $siteList=[];
-        $siteModel=new \app\common\model\Site();
-        $siteList=$siteModel->getSiteList();
-        if($siteList){
-            $siteList=$siteList->toArray();
+        $info = KplHeroInfoModel::get($id);
+        $akaArray = $statArray=$skinlist=[];
+
+        if ($info && $info['aka']) {
+            $akaArray = json_decode($info['aka'], true);
+            if(!empty($akaArray)){
+                $info['aka']=join(',',$akaArray);
+            }
         }
 
-        $data = [
-            'info'  => $info,
-            'siteList'=>$siteList,
-            'typeList'=>$typeList
+        if ($info && $info['stat']) {
+            $statArray = json_decode($info['stat'], true);
+        }
+        if ($info && $info['skin_list']) {
+            $skinlist = json_decode($info['skin_list'], true);
+        }
+        if ($info && $info['skill_list']) {
+            $skillList = json_decode($info['skill_list'], true);
+        }
 
+        $hero_type=$this->hero_type;
+        $data = [
+            'info' => $info,
+            'heroType' => $hero_type,
+            'akaArray' => $akaArray,
+            'statArray' => $statArray,
         ];
 
         return $this->fetch('edit', $data);
@@ -104,7 +113,7 @@ class DefaultConfig extends Admin
     {
         $id = Request::param('id');
 
-        $return = DefaultConfigModel::destroy($id);
+        $return = KplHeroInfoModel::destroy($id);
 
         if ($return !== false) {
             return $this->response(200, Lang::get('Success'));
@@ -117,7 +126,7 @@ class DefaultConfig extends Admin
     {
         $request = Request::instance()->param();
 
-        $obj = new DefaultConfigModel;
+        $obj = new KplHeroInfoModel();
         switch ($request['type']) {
             case 'delete':
                 foreach ($request['ids'] as $v) {
@@ -156,7 +165,6 @@ class DefaultConfig extends Admin
     }
 
 
-
     public function create()
     {
         // 处理AJAX提交数据
@@ -164,31 +172,26 @@ class DefaultConfig extends Admin
             $request = Request::param();
 
             // 验证数据
-            $validate = new DefaultConfigValidate();
+            $validate = new KplHeroInfoValidate();
             $validateResult = $validate->scene('create')->check($request);
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
-            //$request['site_id']=$this->site_id;
-            $defaultConfigObj = new DefaultConfigModel();
-            $defaultConfigObj->allowField(true)->save($request);
+            $request['create_time'] = date("Y-m-d H:i:s");
+            $request['update_time'] = date("Y-m-d H:i:s");
 
-            if (is_numeric($defaultConfigObj->id)) {
+            $heroInfoObj = new KplHeroInfoModel();
+            $heroInfoObj->allowField(true)->save($request);
+
+            if (is_numeric($heroInfoObj->hero_id)) {
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
             }
         }
-        $siteList=[];
-        $siteModel=new \app\common\model\Site();
-        $siteList=$siteModel->getSiteList();
-        if($siteList){
-            $siteList=$siteList->toArray();
-        }
+        $hero_type=$this->hero_type;
 
-        $typeList=config('app.config_type');
-
-        return $this->fetch('create',['typeList'=>$typeList,'siteList'=>$siteList]);
+        return $this->fetch('create', ['hero_type' => $hero_type]);
     }
 
 

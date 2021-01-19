@@ -642,4 +642,66 @@ if (!function_exists('get_cat_url')) {
             $sign = sha1($code);
             return $sign;
         }
+
+        function curl_get($url, $referer = '')
+        {
+
+            $header = array(
+                'Accept: application/json',
+                //'Referer: '.$referer,
+            );
+            if ($referer) {
+                array_push($header, $referer);
+            }
+            $curl = curl_init();
+            //设置抓取的url
+            curl_setopt($curl, CURLOPT_URL, $url);
+            //设置头文件的信息作为数据流输出
+            curl_setopt($curl, CURLOPT_HEADER, 0);
+            // 超时设置,以秒为单位
+            curl_setopt($curl, CURLOPT_TIMEOUT, 1);
+
+            // 超时设置，以毫秒为单位
+            // curl_setopt($curl, CURLOPT_TIMEOUT_MS, 500);
+
+            // 设置请求头
+            // curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+            //设置获取的信息以文件流的形式返回，而不是直接输出。
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+            //执行命令
+            $data = curl_exec($curl);
+
+            $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+            $headers = substr($data, 0, $header_size);
+            $body = substr($data, $header_size);
+
+            if(strpos($data,'if(!LOLsummonerjs)var LOLsummonerjs=') !==false){
+                $data=str_replace('if(!LOLsummonerjs)var LOLsummonerjs=','',$data);
+                $data=str_replace(';','',$data);
+            }
+            if(strpos($data,'callback(') !==false){
+                $data=str_replace('callback(','',$data);
+                $data=str_replace(');','',$data);
+            }
+            if(strpos($data,'searchObj=') !==false){
+                $data=str_replace('var searchObj=','',$data);
+                $data=str_replace(';','',$data);
+            }
+
+
+            // 显示错误信息
+            if (curl_error($curl)) {
+                print "Error: " . curl_error($curl);
+            } else {
+                // 打印返回的内容
+
+                $res=json_decode($data,true);
+                curl_close($curl);
+
+                return $res;
+
+            }
+        }
     }
