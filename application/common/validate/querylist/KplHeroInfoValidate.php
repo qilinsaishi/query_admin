@@ -19,6 +19,6 @@ class KplHeroInfoValidate extends Validate
 
     protected $scene = [
         'create'         => ['hero_name','type','logo'],
-        'edit'           => ['logo'],
+        'edit'           => ['type','logo'],
     ];
 }
