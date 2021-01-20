@@ -12,46 +12,49 @@
   <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
       <li class="active"><a href="#">KPL英雄皮肤管理</a></li>
-      <li class=""><a href="{:url('admin/KplHeroInfo/skinCreate')}">{:lang('Create')}</a></li>
+      <li class=""><a href="{:url('admin/KplHeroInfo/skinCreate',['id' => $id])}">{:lang('Create')}</a></li>
     </ul>
-
-  
 
     <div class="tab-content">
         <div class="tab-pane active table-responsive no-padding">
             <table class="table table-condensed table-hover">
                 <thead>
                     <tr>
-                    
                         <th>皮肤名称</th>
                         <th>图标</th>
-                       
+                       <th>{:lang('Action')}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {volist name="skinlist" id="vo"}
-                    <tr>
-                       
-                        <td>
-                            {$vo.name}
-                        </td>
-						
-                        <td>
-                            <div class="layui-upload-drag" id="logo">
-							  <input type="hidden" name="bigImg" value="{$vo.bigImg}">
-							  <div class="layui-upload-list" id="preview">
+                    <input name="id" value="{$id}" type="hidden">
+					{volist name="skinlist" id="vo"}
+					<tr id ="tr_{$key+1}" >
+						<td>
+							<input class="form-control input-sm" name="name[]" type="text" value="{$vo.name}">
+						</td>
+						<td>
+							<div class="layui-upload-drag img_logo" id="logo{$key+1}" data-key="{$key+1}" >
+							  <input type="hidden" name="bigImg[]" value="{$vo.bigImg}">
+							  <div class="layui-upload-list" id="preview{$key+1}" >
 								  {empty name="vo.bigImg"}
 								  <p>{:lang('Upload')}</p>
 								  {else /}
-								  <img class="layui-upload-img img-responsive" src="{$vo.bigImg}" />
+								  <img class="layui-upload-img img-responsive" src="{$vo.bigImg}"  />
 								  {/empty}
 							  </div>
 							</div>
-                        </td>
-                       
-                       
-                    </tr>
-                    {/volist}
+						</td>
+						<td>
+						<a href="{:url('admin/KplHeroInfo/skinEdit', ['id' => $id,'key'=>$key])}"></i> {:lang('Edit')}</a>
+						<a onclick="remove('{$id}','{$key}')" href="#"> {:lang('Delete')}</a>
+						</td>
+					</tr>
+					{/volist}
+					{empty name="skinlist"}
+					<tr>
+						<td colspan="7" class="text-center">{:lang("No record")}</td>
+					</tr>
+					{/empty}
                     {empty name="skinlist"}
                     <tr>
                         <td colspan="7" class="text-center">{:lang("No record")}</td>
@@ -86,23 +89,36 @@
 <!-- 自定义js -->
 {block name="js"}
 <script type="text/javascript">
-    //批量操作
+//$(document).on('click', '.img_logo', function() { 
+		  
+//}); 
+    
+  //批量操作
     function handle(){
-        var chk_value =[]; 
-        $('input[name="ids[]"]:checked').each(function(){ 
-            chk_value.push($(this).val()); 
-        }); 
-        var type = $('#type option:selected').val() ;
-        if(chk_value.length < 1){
-            swal({
-                title: "{:lang('No record selected')}",
-                text: "",
-                type: "warning"
-            });
+        var chk_id =$('input[name="id"]').val(); 
+        
+        var chk_name =[]; 
+        $('input[name="name[]"]').each(function(){ 
+            chk_name.push($(this).val()); 
+        });
+		var chk_big_img=[]; 
+        $('input[name="bigImg[]"]').each(function(){ 
+            chk_big_img.push($(this).val()); 
+        });
+		
+        if(chk_id.length < 1 && temp_name.length < 1){
+                swal({
+                  position: 'center',
+                  type: 'success',
+                  title: '未选择任何记录',
+                  showConfirmButton: false,
+                  toast:false,
+                  timer: 2000
+                });
         }else{
             swal({
-              title: "{:lang('Are you sure')}",
-              type: "warning",
+              title: '确定要进行操作吗?',
+              type: 'warning',
               showCancelButton: true,
               confirmButtonColor: '#3085d6',
               cancelButtonColor: '#d33',
@@ -111,8 +127,12 @@
             }).then(function(result){
               if (result.value) {
                 $.ajax({
-                    url:"{:Url('admin/KplHeroInfo/handle')}",
-                    data:{'ids':chk_value, 'type':type},
+                    url:"{:Url('admin/KplHeroInfo/skinEdit')}",
+                    data:{
+                        'id':chk_id,
+                        'name':chk_name,
+						'logo':chk_big_img,
+                    },
                     type:'post',
                     dataType:'json',
                     success: function(xhr){
@@ -125,12 +145,15 @@
                         }
                     }
                 })
+              }else {
+                swal("取消操作", "", "error");
               }
             })
         }
     }
 
-    function remove(id){
+
+    function remove(id,key){
         swal({
           title: "{:lang('Are you sure')}",
           type: 'warning',
@@ -142,14 +165,14 @@
         }).then(function(result){
           if (result.value) {
             $.ajax({
-                url:"{:Url('admin/KplHeroInfo/remove')}",
-                data:{'id':id},
+                url:"{:Url('admin/KplHeroInfo/skinRemove')}",
+                data:{'id':id,'key':key},
                 type:'post',
                 dataType:'json',
                 success: function(xhr){
                     if(xhr.code == 200){
                         swal(xhr.msg, "","success").then(function(value){
-                            $("#tr_" + id).remove();
+                          $("#tr_" + id).remove();
                         });
                     }else{
                         swal(xhr.msg, "", "error");

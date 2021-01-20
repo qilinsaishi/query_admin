@@ -220,8 +220,88 @@ class KplHeroInfo extends Admin
             $skinlist = json_decode($info['skin_list'], true);
         }
         $this->assign('skinlist', $skinlist);
+        $this->assign('id', $id);
         return $this->fetch('skin_list');
         //print_r($skinlist);exit;
+    }
+    //皮肤编辑
+    public function skinEdit(){
+        // 处理AJAX提交数据
+        $heroInfoObj = new KplHeroInfoModel();
+        if (Request::isAjax()) {
+            $data= Request::param();
+            $id = $data['id'] ?? '';
+            $key= $data['key'] ?? '';
+            unset($data['id']);
+            unset($data['key']);
+            //echo 'id:'.$id.'key:'.$key;
+            $info = $heroInfoObj->get($id);
+            $skinlist = json_decode($info['skin_list'], true);
+            $skinlist[$key]=$data;
+            $updateData=json_encode($skinlist);
+            $cdata=[];
+            if(!empty($updateData)){
+                $cdata=[
+                    'hero_id'=>$id,
+                    'update_time'=>date('Y-m-d H:i:s'),
+                    'skin_list'=>$updateData
+                ];
+            }
+            $result = $heroInfoObj->isUpdate(true)->allowField(true)->save($cdata);
+            if ($result !== false) {
+                return $this->response(200, Lang::get('Success'));
+            }else{
+                return $this->response(201, Lang::get('Fail'));
+            }
+
+        }
+
+        $id = Request::param('id');
+        $key = Request::param('key');
+        $info = KplHeroInfoModel::get($id);
+        $skinlist = json_decode($info['skin_list'], true);
+        $info=$skinlist[$key];
+
+        $data = [
+            'info' => $info,
+            'id' => $id,
+            'keys' => $key,
+        ];
+
+        return $this->fetch('skin_edit', $data);
+    }
+    //新增皮肤
+    public function  skinCreate(){
+        $id = Request::param('id');
+    }
+    //删除皮肤
+    public function skinRemove(){
+        $id = Request::param('id');
+        $key= Request::param('key');
+        $heroInfoObj = new KplHeroInfoModel();echo 'id:'.$id.'key:'.$key;
+        $info = $heroInfoObj->get($id);
+        $skinlist = json_decode($info['skin_list'], true);
+        if($skinlist[$key]){
+            unset($skinlist[$key]);
+        }print_r($skinlist);exit;
+        $updateData=json_encode($skinlist);
+        $cdata=[
+            'hero_id'=>$id,
+            'update_time'=>date('Y-m-d H:i:s'),
+            'skin_list'=>$updateData
+        ];
+        $bigImg='https://game.gtimg.cn/images/yxzj/img201606/heroimg/533/533-bigskin-1.jpg';
+        $name='山林之子';
+
+        $return='';
+        $return=$heroInfoObj->isUpdate(true)->allowField(true)->save($cdata);
+
+        if ($return !== false) {
+            return $this->response(200, Lang::get('Success'));
+        } else {
+            return $this->response(201, Lang::get('Fail'));
+        }
+
     }
 
 
