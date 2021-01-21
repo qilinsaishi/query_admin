@@ -31,6 +31,10 @@ class KplInscriptionInfo extends BaseQueryList
         return $data;
     }
 
+    public function getSelect(){
+        return $this->field("inscription_name,inscription_id,logo")->select();
+    }
+
   
 
 

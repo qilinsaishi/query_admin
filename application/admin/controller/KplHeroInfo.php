@@ -105,14 +105,24 @@ class KplHeroInfo extends Admin
         if ($info && $info['skill_list']) {
             $skillList = json_decode($info['skill_list'], true);
         }
+        $skillList=[];
+        if ($info && $info['inscription_tips']) {
+            $skillList = json_decode($info['inscription_tips'], true);
+        }
+        //$this->assign('inscription_tips', $skillList);
 
+        $kplInscriptionModel=new \app\common\model\querylist\KplInscriptionInfo();
+        $kplInscriptionList=$kplInscriptionModel->getSelect();
+//print_r($skillList['sugglistIds']);exit;
         $hero_type=$this->hero_type;
         $data = [
             'info' => $info,
             'heroType' => $hero_type,
             'akaArray' => $akaArray,
             'statArray' => $statArray,
-            'skillList' => $skillList
+            'sugglistIds' => $skillList['sugglistIds'],
+            'suggTips'=>$skillList['suggTips'],
+            'kplInscriptionList'=>$kplInscriptionList->toArray(),
         ];
 
         return $this->fetch('edit', $data);
@@ -222,7 +232,7 @@ class KplHeroInfo extends Admin
         $this->assign('skinlist', $skinlist);
         $this->assign('id', $id);
         return $this->fetch('skin_list');
-        //print_r($skinlist);exit;
+
     }
     //皮肤编辑
     public function skinEdit(){
@@ -272,27 +282,64 @@ class KplHeroInfo extends Admin
     }
     //新增皮肤
     public function  skinCreate(){
+
+        $heroInfoObj = new KplHeroInfoModel();
+        // 处理AJAX提交数据
+        if (Request::isAjax()) {
+            $data= Request::param();
+            $id = $data['id'] ?? '';
+            unset($data['id']);
+            $tempArr=[
+                'name'=>$data['name'],
+                'bigImg'=>$data['bigImg'],
+            ];
+
+            //echo 'id:'.$id.'key:'.$key;
+            $info = $heroInfoObj->get($id);
+            $skinlist = json_decode($info['skin_list'], true);
+            $count=count($skinlist) ?? 0;
+            if($count){
+                $skinlist[$count]=$tempArr;
+            }
+            $updateData=json_encode($skinlist);
+            $cdata=[];
+            if(!empty($updateData)){
+                $cdata=[
+                    'hero_id'=>$id,
+                    'create_time'=> date("Y-m-d H:i:s"),
+                    'update_time'=> date("Y-m-d H:i:s"),
+                    'skin_list'=>$updateData
+                ];
+            }
+            $heroInfoObj = new KplHeroInfoModel();
+            $result = $heroInfoObj->isUpdate(true)->allowField(true)->save($cdata);
+
+            if ($result) {
+                return $this->response(200, Lang::get('Success'),['id'=>$id]);
+            } else {
+                return $this->response(201, Lang::get('Fail'));
+            }
+        }
         $id = Request::param('id');
+
+        return $this->fetch('skin_create', ['id' => $id]);
     }
     //删除皮肤
     public function skinRemove(){
         $id = Request::param('id');
         $key= Request::param('key');
-        $heroInfoObj = new KplHeroInfoModel();echo 'id:'.$id.'key:'.$key;
+        $heroInfoObj = new KplHeroInfoModel();
         $info = $heroInfoObj->get($id);
         $skinlist = json_decode($info['skin_list'], true);
         if($skinlist[$key]){
             unset($skinlist[$key]);
-        }print_r($skinlist);exit;
+        }
         $updateData=json_encode($skinlist);
         $cdata=[
             'hero_id'=>$id,
             'update_time'=>date('Y-m-d H:i:s'),
             'skin_list'=>$updateData
         ];
-        $bigImg='https://game.gtimg.cn/images/yxzj/img201606/heroimg/533/533-bigskin-1.jpg';
-        $name='山林之子';
-
         $return='';
         $return=$heroInfoObj->isUpdate(true)->allowField(true)->save($cdata);
 
@@ -302,6 +349,140 @@ class KplHeroInfo extends Admin
             return $this->response(201, Lang::get('Fail'));
         }
 
+    }
+
+    //技能列表
+    public function skillList(){
+        $id = Request::param('id');
+        $info = KplHeroInfoModel::get($id);
+        $skillList=[];
+        if ($info && $info['skill_list']) {
+            $skillList = json_decode($info['skill_list'], true);
+        }
+        $this->assign('skill_list', $skillList);
+        $this->assign('id', $id);
+        return $this->fetch('skill_list');
+
+    }
+    //新增技能
+    public function  skillCreate(){
+
+        $heroInfoObj = new KplHeroInfoModel();
+        // 处理AJAX提交数据
+        if (Request::isAjax()) {
+            $data= Request::param();
+            $id = $data['id'] ?? '';
+            unset($data['id']);
+            $tempArr=[
+                'name'=>$data['name'],
+                'killImg'=>$data['killImg'],
+                'cooling'=>$data['cooling'],
+                'consume'=>$data['consume'],
+                'skillDesc'=>$data['skillDesc'],
+            ];
+
+            //echo 'id:'.$id.'key:'.$key;
+            $info = $heroInfoObj->get($id);
+            $skilllist = json_decode($info['skill_list'], true);
+            $count=count($skilllist) ?? 0;
+            if($count >=0){
+                $skilllist[$count]=$tempArr;
+            }
+            $updateData=json_encode($skilllist);
+            $cdata=[];
+            if(!empty($updateData)){
+                $cdata=[
+                    'hero_id'=>$id,
+                    'create_time'=> date("Y-m-d H:i:s"),
+                    'update_time'=> date("Y-m-d H:i:s"),
+                    'skill_list'=>$updateData
+                ];
+            }
+            $heroInfoObj = new KplHeroInfoModel();
+            $result = $heroInfoObj->isUpdate(true)->allowField(true)->save($cdata);
+
+            if ($result) {
+                return $this->response(200, Lang::get('Success'),['id'=>$id]);
+            } else {
+                return $this->response(201, Lang::get('Fail'));
+            }
+        }
+        $id = Request::param('id');
+
+        return $this->fetch('skill_create', ['id' => $id]);
+    }
+    //删除技能
+    public function skillRemove(){
+        $id = Request::param('id');
+        $key= Request::param('key');
+        $heroInfoObj = new KplHeroInfoModel();
+        $info = $heroInfoObj->get($id);
+        $skilllist = json_decode($info['skill_list'], true);
+        if($skilllist[$key]){
+            unset($skilllist[$key]);
+        }
+        $updateData=json_encode($skilllist);
+        $cdata=[
+            'hero_id'=>$id,
+            'update_time'=>date('Y-m-d H:i:s'),
+            'skill_list'=>$updateData
+        ];
+        $return='';
+        $return=$heroInfoObj->isUpdate(true)->allowField(true)->save($cdata);
+
+        if ($return !== false) {
+            return $this->response(200, Lang::get('Success'),['key'=>$key]);
+        } else {
+            return $this->response(201, Lang::get('Fail'));
+        }
+
+    }
+
+    //编辑技能
+    public function skillEdit(){
+        // 处理AJAX提交数据
+        $heroInfoObj = new KplHeroInfoModel();
+        if (Request::isAjax()) {
+            $data= Request::param();
+            $id = $data['id'] ?? '';
+            $key= $data['key'] ?? '';
+            unset($data['id']);
+            unset($data['key']);
+            //echo 'id:'.$id.'key:'.$key;
+            $info = $heroInfoObj->get($id);
+            $skilllist = json_decode($info['skill_list'], true);
+            $skilllist[$key]=$data;
+            $updateData=json_encode($skilllist);
+            $cdata=[];
+            if(!empty($updateData)){
+                $cdata=[
+                    'hero_id'=>$id,
+                    'update_time'=>date('Y-m-d H:i:s'),
+                    'skill_list'=>$updateData
+                ];
+            }
+            $result = $heroInfoObj->isUpdate(true)->allowField(true)->save($cdata);
+            if ($result !== false) {
+                return $this->response(200, Lang::get('Success'));
+            }else{
+                return $this->response(201, Lang::get('Fail'));
+            }
+
+        }
+
+        $id = Request::param('id');
+        $key = Request::param('key');
+        $info = KplHeroInfoModel::get($id);
+        $skinlist = json_decode($info['skill_list'], true);
+        $info=$skinlist[$key];
+
+        $data = [
+            'info' => $info,
+            'id' => $id,
+            'keys' => $key,
+        ];
+
+        return $this->fetch('skill_edit', $data);
     }
 
 

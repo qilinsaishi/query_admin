@@ -81,6 +81,8 @@
                         <td>
                             <a href="{:url('admin/KplHeroInfo/edit', ['id' => $vo['hero_id']])}"></i> {:lang('Edit')}</a>
 							<a href="{:url('admin/KplHeroInfo/skinList', ['id' => $vo['hero_id']])}"></i>皮肤管理</a>
+							<a href="{:url('admin/KplHeroInfo/skillList', ['id' => $vo['hero_id']])}"></i>技能管理</a>
+							<a href="{:url('admin/KplHeroInfo/inscriptionTips', ['id' => $vo['hero_id']])}"></i>铭文建议</a>
                             <!--<a onclick="remove('{$vo.hero_id}')" href="#"> {:lang('Delete')}</a>-->
                         </td>
                     </tr>
