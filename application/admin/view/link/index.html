@@ -51,7 +51,8 @@
                         <th><input id="checkAll" type="checkbox"></th>
                         <th>#ID</th>
                         <th>{:lang('Title')}</th>
-                        <th>{:lang('Category')}</th>
+                        <th>站点名称</th>
+						<th>游戏类型</th>
                         <th>{:lang('Url')}</th>
                         <th>{:lang('Status')}</th>
                         <th>{:lang('Action')}</th>
@@ -63,7 +64,8 @@
                         <td><input name="ids[]" value="{$vo.id}" type="checkbox"></td>
                         <td>{$vo.id}</td>
                         <td>{$vo.name}</td>
-                        <td>{$vo.catename}</td>
+                        <td>{$vo.site_name}</td>
+						<td>{$vo.catename}</td>
                         <td>{$vo.url}</td>
                         <td>
                             {switch vo.status}

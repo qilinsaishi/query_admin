@@ -39,7 +39,7 @@ class Link extends Admin
         // 分页列表
         $list = $linktObj
             ->where($map)
-            ->where('site_id', 'eq', $this->site_id)
+            //->where('site_id', 'eq', $this->site_id)
             ->order('id desc')
             ->paginate(20, false, [
                 'type'     => 'bootstrap',
@@ -49,6 +49,9 @@ class Link extends Admin
 
         if (!empty($list)) {
             foreach ($list as $v) {
+                $siteModel=new \app\common\model\Site();
+                $siteObj=$siteModel->getSiteNameById($v['site_id']);
+                $v->site_name=$siteObj['name'] ?? '';
                 $v->catename = SiteConfig::getCategoryConfigName($this->site_id, $this->category, $v->cid);
             }
         }
@@ -89,7 +92,6 @@ class Link extends Admin
 
             // 写入content内容
             $contentData = [
-                'site_id' => $this->site_id,
                 'uid'     => $this->uid,
             ];
             $contentData = array_merge($request, $contentData);
@@ -105,9 +107,16 @@ class Link extends Admin
 
         // 获取分类列表
         $category = SiteConfig::getCategoryConfig($this->site_id, $this->category);
+        $siteList=[];
+        $siteModel=new \app\common\model\Site();
+        $siteList=$siteModel->getSiteList();
+        if($siteList){
+            $siteList=$siteList->toArray();
+        }
 
         $data = [
             'category' => $category,
+            'siteList' => $siteList,
         ];
 
         return $this->fetch('create', $data);
@@ -145,9 +154,16 @@ class Link extends Admin
 
         $obj = new LinkModel;
         $info = $obj->where('id', $request['id'])->find();
+        $siteList=[];
+        $siteModel=new \app\common\model\Site();
+        $siteList=$siteModel->getSiteList();
+        if($siteList){
+            $siteList=$siteList->toArray();
+        }
 
         $data = [
             'category' => $category,
+            'siteList'=>$siteList,
             'info'  => $info,
         ];
 
