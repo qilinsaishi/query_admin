@@ -66,18 +66,20 @@
               </div>
             </div>
 			<div class="form-group" id="valuetable">
-              <label>键值 <span class="text-red">*</span></label>
-              <div class="row">
-              <div class="col-md-6">
-              <input type="text" name="value" value="{$info.value}" class="form-control input-sm" placeholder="">
-              </div>
-              </div>
-            </div>
+			  <label>键值</label>
+			  <div class="row">
+			  <div class="col-md-6">
+			  <textarea class="form-control input-sm" name="textvalue" rows="8" placeholder="">{$info.value}</textarea>
+			  </div>
+			  </div>
+			</div>
+			
 			<div class="form-group" id="logotable">
               <label>键值</label>
               <div class="row">
               <div class="col-md-12">
                 <div class="layui-upload-drag" id="logo">
+				  <input type="hidden" name="logovalue" value="{$info.value}">
                   <div class="layui-upload-list" id="preview">
                       {empty name="info.value"}
                       <p>{:lang('Upload')}</p>
@@ -95,7 +97,7 @@
 			  <div class="row">
 			  <div class="col-md-4">
 				<div class="input-group input-group-sm">
-				  <input type="text" name="value"  value="{$info.value}" class="form-control">
+				  <input type="text" name="filevalue"  value="{$info.value}" class="form-control">
 					<span class="input-group-btn">
 					  <button type="button" id="attach" class="btn btn-default btn-flat">{:lang('Upload')}</button>
 					</span>
@@ -103,6 +105,7 @@
 			  </div>
 			  </div>
 			</div>
+			
             
             <div class="form-group">
               <label>{:lang('Sort')}</label>
@@ -141,7 +144,7 @@ layui.use('upload', function(){
     ,url: "{:url('admin/upload/uploadFile')}"
     ,done: function(res){
       if (res.code == 200) {
-        $("[name='value']").val(res.data.url);
+        $("[name='logovalue']").val(res.data.url);
         $("#preview").html("<img class=\'layui-upload-img img-responsive\' src=\'"+res.data.url+"\'>");
       } else {
         swal({
@@ -163,7 +166,7 @@ layui.use('upload', function(){
     ,exts: "zip|rar|7z|xlsx|doc|docx" //只允许上传压缩文件
     ,done: function(res){
       if (res.code == 200) {
-        $("[name='value']").val(res.data.url);
+        $("[name='filevalue']").val(res.data.url);
       } else {
         swal({
           position: 'center',
@@ -186,6 +189,7 @@ layui.use('upload', function(){
 		$('#logotable').css('display','none');
 		$('#valuetable').css('display','block');
 		$('#attachtable').css('display','none');
+		
 	}
 	if(type=='images'){
 		$('#valuetable').css('display','none');
@@ -213,7 +217,7 @@ layui.use('upload', function(){
 			$('#logotable').css('display','block');
 			$('#valuetable').css('display','none');
 			$('#attachtable').css('display','none');
-			$("#logo").html('<div class="layui-upload-list" id="preview"><p>上传</p></div>');
+			$("#logo").html('<input type="hidden" name="logovalue" ><div class="layui-upload-list" id="preview"><p>上传</p></div>');
 		}
 		if(value=='file'){
 			$('#attachtable').css('display','block');

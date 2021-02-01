@@ -117,7 +117,6 @@ class ImageList extends Admin
 
             // 写入content内容
             $contentData = [
-                'site_id' => $this->site_id,
                 'uid'     => $this->uid,
             ];
             $contentData = array_merge($request, $contentData);

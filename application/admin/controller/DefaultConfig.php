@@ -63,6 +63,16 @@ class DefaultConfig extends Admin
         // 处理AJAX提交数据
         if (Request::isAjax()) {
             $request = Request::param();
+            if($request['type']=='text'){
+                $request['value']=$request['textvalue'];
+            }elseif($request['type']=='images'){
+                $request['value']=$request['logovalue'];
+            }elseif($request['type']=='file'){
+                $request['value']=$request['filevalue'];
+            }
+            unset($request['logovalue']);
+            unset($request['filevalue']);
+            unset($request['textvalue']);
             // 验证数据
             $validate = new DefaultConfigValidate();
             $validateResult = $validate->scene('edit')->check($request);
@@ -164,13 +174,24 @@ class DefaultConfig extends Admin
         // 处理AJAX提交数据
         if (Request::isAjax()) {
             $request = Request::param();
-
+            if($request['type']=='text'){
+                $request['value']=$request['textvalue'];
+            }elseif($request['type']=='images'){
+                $request['value']=$request['logovalue'];
+            }elseif($request['type']=='file'){
+                $request['value']=$request['filevalue'];
+            }
+            unset($request['logovalue']);
+            unset($request['filevalue']);
+            unset($request['textvalue']);
             // 验证数据
             $validate = new DefaultConfigValidate();
             $validateResult = $validate->scene('create')->check($request);
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
+
+
             //$request['site_id']=$this->site_id;
             $defaultConfigObj = new DefaultConfigModel();
             $defaultConfigObj->allowField(true)->save($request);
