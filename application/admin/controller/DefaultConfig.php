@@ -19,20 +19,31 @@ class DefaultConfig extends Admin
 
         $params = [];
         $search = [];
+        $map    = [];
 
         if (isset($request['q'])) {
-            $q           = trim($request['q']);
+            $q           = ['name','like','%'.$request['q'].'%'];
             $params['q'] = $request['q'];
             $search['q'] = $request['q'];
+            array_push($map, $q );
         }else {
             $q = '';
             $search['q'] = '';
+        }
+        if (isset($request['site_id']) && is_numeric($request['site_id'])) {
+            $site_id           = ['site_id','=',$request['site_id']];
+            $params['site_id'] = $request['site_id'];
+            $search['site_id'] = $request['site_id'];
+            array_push($map, $site_id);
+        }else {
+            $site_id = [];
+            $search['site_id'] = '';
         }
 
         $defaultObj = new DefaultConfigModel();
         $list = $defaultObj
             ->field('*')
-            ->whereOr('name','like','%'.$q.'%')
+            ->where($map)
             ->order('id desc')
             ->paginate(20, false, [
                 'type'     => 'bootstrap',
@@ -41,18 +52,23 @@ class DefaultConfig extends Admin
             ]);
 
         $new_list = [];
-
+        $siteModel=new \app\common\model\Site();
         if (isset($list)) {
             foreach ($list as $v) {
-                $siteModel=new \app\common\model\Site();
                 $siteObj=$siteModel->getSiteNameById($v['site_id']);
                 $v['site_name']=$siteObj['name'] ?? '';
                 array_push($new_list, $v);
             }
         }
 
+        $siteList=[];
+        $siteList=$siteModel->getSiteList();
+        if($siteList){
+            $siteList=$siteList->toArray();
+        }
         $this->assign('search', $search);
         $this->assign('list', $new_list);
+        $this->assign('siteList', $siteList);
         $this->assign('page', $list->render());
 
         return $this->fetch('index');

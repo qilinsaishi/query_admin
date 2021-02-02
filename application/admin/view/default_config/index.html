@@ -22,6 +22,20 @@
     <!-- /.box-header -->
     <div class="box-body">
       <form action="{:url('admin/defaultConfig/index')}" method="get" class="form-inline">
+		<div class="form-group">
+                  <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon1">所属站点</span>
+                  <select name="site_id" class="form-control">
+                    <option>--请选择--</option>
+                   
+                    {volist name="siteList" id="vo"}
+                    <option {eq name="vo.id" value="$search.site_id"}selected{/eq} value="{$vo.id}">
+                        {$vo.name}
+                    </option>
+                    {/volist}
+                  </select>
+                  </div>
+              </div>
         <div class="form-group">
           <input type="text" name="q" value="{$search.q}" class="form-control" placeholder="">
         </div>
