@@ -84,7 +84,7 @@ class DefaultConfig extends Admin
             $defaultConfigObj->isUpdate(true)->allowField(true)->save($request);
 
             if (is_numeric($defaultConfigObj->id)) {
-                $api_host=config('app.api_host').'/lol/refresh?dataType=defaultConfig';
+                $api_host=config('app.api_host').'/lol/refresh?dataType=defaultConfig&key_name='.$request['key'];
                 file_get_contents($api_host);
                 return $this->response(200, Lang::get('Success'));
             } else {
@@ -197,7 +197,7 @@ class DefaultConfig extends Admin
             $defaultConfigObj->allowField(true)->save($request);
 
             if (is_numeric($defaultConfigObj->id)) {
-                $api_host=config('app.api_host').'/lol/refresh?dataType=defaultConfig';
+                $api_host=config('app.api_host').'/lol/refresh?dataType=defaultConfig&key_name='.$request['key'];
                 file_get_contents($api_host);
                 return $this->response(200, Lang::get('Success'));
             } else {

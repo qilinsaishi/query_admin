@@ -101,6 +101,14 @@
 			  </div>
 			</div>
 			
+			<div class="form-group" id="valuetable">
+			  <label>备注</label>
+			  <div class="row">
+			  <div class="col-md-6">
+			  <textarea class="form-control input-sm" name="remarks" rows="8" placeholder=""></textarea>
+			  </div>
+			  </div>
+			</div>
 			
             
             <div class="form-group">
@@ -181,7 +189,7 @@ layui.use('upload', function(){
 </script>
 <script type="text/javascript">
 	$('#logotable').css('display','none');
-	$('#valuetable').css('display','none');
+	$('#valuetable').css('display','block');
 	$('#attachtable').css('display','none');
 	function getTableType(){
 		var value=$("#tableType").val();
