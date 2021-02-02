@@ -187,6 +187,21 @@ layui.use('upload', function(){
   
 });
 </script>
+<script src="__STATIC__/ueditor/ueditor.config.js"></script>
+<script src="__STATIC__/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript">
+var ue = UE.getEditor('description', {
+    toolbars: [
+        ['fullscreen', 'source', 'undo', 'redo', 'selectall', '|', 'removeformat', 'formatmatch', 'autotypeset', 'cleardoc', '|', 'template', 'indent', 'horizontal','justifyleft', 'justifyright', 'justifycenter', 'justifyjustify', 'insertcode'],
+        ['fontfamily', 'fontsize', '|', 'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'link', 'unlink', 'inserttable', 'deletetable', 'simpleupload', 'insertimage']
+    ],
+    initialFrameWidth: '100%',
+    initialFrameHeight:300,
+    scaleEnabled:true,
+    serverUrl: '{:url("admin/ueditor/index")}',
+});
+
+</script>
 <script type="text/javascript">
 	$('#logotable').css('display','none');
 	$('#valuetable').css('display','block');

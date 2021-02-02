@@ -141,14 +141,16 @@
                     </div>
                 </div>
             </div>
+			
 			<div class="form-group">
-              <label>{:lang('Content')}</label>
-              <div class="row">
-              <div class="col-md-6">
-              <textarea class="form-control input-sm" name="content" rows="3" placeholder="">{$info.content}</textarea>
-              </div>
-              </div>
-            </div>
+			  <label>描述</label>
+			  <div class="row">
+			  <div class="col-md-6">
+			  <textarea id="description" name="content">{$info.content}</textarea>
+			  </div>
+			  </div>
+			</div>
+			
         </form>
       </div>
       <!-- /.tab-pane -->
@@ -193,6 +195,21 @@ layui.use('upload', function(){
   });
   
 });
+</script>
+<script src="__STATIC__/ueditor/ueditor.config.js"></script>
+<script src="__STATIC__/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript">
+var ue = UE.getEditor('description', {
+    toolbars: [
+        ['fullscreen', 'source', 'undo', 'redo', 'selectall', '|', 'removeformat', 'formatmatch', 'autotypeset', 'cleardoc', '|', 'template', 'indent', 'horizontal','justifyleft', 'justifyright', 'justifycenter', 'justifyjustify', 'insertcode'],
+        ['fontfamily', 'fontsize', '|', 'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'link', 'unlink', 'inserttable', 'deletetable', 'simpleupload', 'insertimage']
+    ],
+    initialFrameWidth: '100%',
+    initialFrameHeight:300,
+    scaleEnabled:true,
+    serverUrl: '{:url("admin/ueditor/index")}',
+});
+
 </script>
 <script type="text/javascript">
     function operate(){
