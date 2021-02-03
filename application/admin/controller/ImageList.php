@@ -123,6 +123,8 @@ class ImageList extends Admin
             $obj->allowField(true)->save($contentData);
 
             if (is_numeric($obj->id)) {
+                $api_host=config('app.api_host').'/lol/refresh?dataType=imageList&key_name='.$request['flag'];
+                file_get_contents($api_host);
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
@@ -167,6 +169,8 @@ class ImageList extends Admin
             $obj->isUpdate(true)->allowField(true)->save($request);
 
             if (is_numeric($obj->id)) {
+                $api_host=config('app.api_host').'/lol/refresh?dataType=imageList&key_name='.$request['flag'];
+                file_get_contents($api_host);
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
