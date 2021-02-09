@@ -656,7 +656,7 @@ if (!function_exists('get_cat_url')) {
 			curl_setopt($info,CURLOPT_SSL_VERIFYPEER,false);
 			curl_setopt($info,CURLOPT_SSL_VERIFYHOST,false);
 			curl_setopt($info,CURLOPT_URL,$url);
-			$output = curl_exec($info);print_r($output);exit;
+			$output = curl_exec($info);
 			curl_close($info);
 			return $output;
 		}
