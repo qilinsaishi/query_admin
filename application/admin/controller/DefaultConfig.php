@@ -101,9 +101,10 @@ class DefaultConfig extends Admin
 
             if (is_numeric($defaultConfigObj->id)) {
 
-                $api_host = config('app.api_host').'/lol/refresh?';
+                $api_host = config('app.api_host').'/lol/refresh?params=';
                 $options = array("dataType"=>'defaultConfig',"key_name"=>$request['key']);
-                $api_host .= http_build_query($options,'','&');
+                $options=json_encode($options);
+                $api_host=$api_host.$options;echo $api_host;exit;
                 file_get_contents($api_host);
                 return $this->response(200, Lang::get('Success'));
             } else {
