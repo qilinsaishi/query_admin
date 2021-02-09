@@ -133,10 +133,14 @@ class DefaultConfig extends Admin
     public function remove()
     {
         $id = Request::param('id');
-
+        $key = Request::param('key');
         $return = DefaultConfigModel::destroy($id);
 
         if ($return !== false) {
+            $url=url('/lol/refresh', ['dataType' => 'defaultConfig','key_name'=>$key]);
+            $api_host=str_replace(array('/index.php','','.html'),'',$url);
+            $api_host=config('app.api_host').$api_host;
+            file_get_contents($api_host);
             return $this->response(200, Lang::get('Success'));
         } else {
             return $this->response(201, Lang::get('Fail'));

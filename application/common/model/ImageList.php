@@ -13,4 +13,8 @@ class ImageList extends Model
             ->select();
 
     }
+    public function getInfoById($id)
+    {
+        return $this->where('id', $id)->find();
+    }
 }
