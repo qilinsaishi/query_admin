@@ -251,10 +251,14 @@ class ImageList extends Admin
     public function remove()
     {
         $id = Request::param('id');
-
+        $flag = Request::param('flag');
         // 删除
         $return = ImageListModel::destroy($id);
         if ($return !== false) {
+            $url=url('/lol/refresh', ['dataType' => 'imageList','key_name'=>$flag]);
+            $api_host=str_replace(array('/index.php','','.html'),'',$url);
+            $api_host=config('app.api_host').$api_host;
+            file_get_contents($api_host);
             return $this->response(200, Lang::get('Success'));
         } else {
             return $this->response(201, Lang::get('Fail'));

@@ -226,11 +226,15 @@ class Link extends Admin
     public function remove()
     {
         $id = Request::param('id');
-
+        $site_id = Request::param('site_id');
         // 删除
         $des = LinkModel::destroy($id);
 
         if ($des !== false) {
+            $url=url('/lol/refresh', ['dataType' => 'links','key_name'=>$site_id]);
+            $api_host=str_replace(array('/index.php','','.html'),'',$url);
+            $api_host=config('app.api_host').$api_host;
+            $a=file_get_contents($api_host);
             return $this->response(200, Lang::get('Success'));
         } else {
             return $this->response(201, Lang::get('Fail'));

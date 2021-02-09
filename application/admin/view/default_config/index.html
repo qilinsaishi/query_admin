@@ -77,7 +77,7 @@
 
           <td>
             <a href="{:url('admin/defaultConfig/edit', ['id' => $vo['id']])}"></i> {:lang('Edit')}</a>
-            <a onclick="remove('{$vo.id}')" href="#"> {:lang('Delete')}</a>
+            <a onclick="remove('{$vo.id}','{$vo.key}')" href="#"> {:lang('Delete')}</a>
           </td>
         </tr>
         {/volist}
@@ -159,7 +159,7 @@
     }
   }
 
-  function remove(id){
+  function remove(id,key){
     swal({
       title: "{:lang('Are you sure')}",
       type: 'warning',
@@ -172,7 +172,7 @@
       if (result.value) {
         $.ajax({
           url:"{:Url('admin/defaultConfig/remove')}",
-          data:{'id':id},
+          data:{'id':id,'key':key},
           type:'post',
           dataType:'json',
           success: function(xhr){
