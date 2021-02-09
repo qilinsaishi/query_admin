@@ -100,7 +100,9 @@ class Link extends Admin
             $obj->allowField(true)->save($contentData);
 
             if (is_numeric($obj->id)) {
-                $api_host=config('app.api_host').'/lol/refresh?dataType=links&key_name='.$request['site_id'];
+                $url=url('/lol/refresh', ['dataType' => 'links','key_name'=>$request['site_id']]);
+                $api_host=str_replace(array('/index.php','','.html'),'',$url);
+                $api_host=config('app.api_host').$api_host;
                 file_get_contents($api_host);
                 return $this->response(200, Lang::get('Success'));
             } else {
@@ -147,8 +149,8 @@ class Link extends Admin
 
             if (is_numeric($obj->id)) {
                 $url=url('/lol/refresh', ['dataType' => 'links','key_name'=>$request['site_id']]);
-
-                $api_host=str_replace(array('/index.php',''),config('app.api_host'),$url);
+                $api_host=str_replace(array('/index.php','','.html'),'',$url);
+                $api_host=config('app.api_host').$api_host;
                 $a=file_get_contents($api_host);
                 return $this->response(200, Lang::get('Success'));
             } else {
