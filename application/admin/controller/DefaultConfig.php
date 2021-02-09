@@ -103,7 +103,7 @@ class DefaultConfig extends Admin
                 $url=url('/lol/refresh', ['key_name'=>$request['key'],'dataType' => 'defaultConfig']);
                 $api_host=str_replace(array('/index.php','','.html'),'',$url);
                 $api_host=config('app.api_host').$api_host;
-                $a=curl_get($api_host);
+                $a=curl_get($api_host);echo $a;exit;
                 //file_get_contents($api_host);
                 return $this->response(200, Lang::get('Success'));
             } else {
