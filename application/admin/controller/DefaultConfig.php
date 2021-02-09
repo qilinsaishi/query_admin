@@ -100,10 +100,9 @@ class DefaultConfig extends Admin
             $defaultConfigObj->isUpdate(true)->allowField(true)->save($request);
 
             if (is_numeric($defaultConfigObj->id)) {
-                $url=url('/lol/refresh', ['dataType' => 'defaultConfig','key_name'=>$request['key']]);
+                $url=url('/lol/refresh', ['key_name'=>$request['key'],'dataType' => 'defaultConfig']);
                 $api_host=str_replace(array('/index.php','','.html'),'',$url);
                 $api_host=config('app.api_host').$api_host;
-                ini_set('user_agent','Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727;)');
                 file_get_contents($api_host);
                 return $this->response(200, Lang::get('Success'));
             } else {
