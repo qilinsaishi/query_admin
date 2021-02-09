@@ -96,9 +96,12 @@ class Link extends Admin
             ];
             $contentData = array_merge($request, $contentData);
             $contentData['game']=$game ?? '';
+
             $obj->allowField(true)->save($contentData);
 
             if (is_numeric($obj->id)) {
+                $api_host=config('app.api_host').'/lol/refresh?dataType=links&key_name='.$request['site_id'];
+                file_get_contents($api_host);
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
@@ -136,11 +139,16 @@ class Link extends Admin
             }
             $game=SiteConfig::getCategoryConfigName($this->site_id, $this->category,$request['cid']);
             $request['game']=$game ?? '';
+
             // 写入
+
             $obj = new LinkModel;
             $obj->isUpdate(true)->allowField(true)->save($request);
 
             if (is_numeric($obj->id)) {
+                $api_host=config('app.api_host').'/lol/refresh?dataType=links&key_name='.$request['site_id'];
+                //echo $api_host;exit;
+                $a=file_get_contents($api_host);
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
