@@ -148,7 +148,7 @@ class Link extends Admin
             if (is_numeric($obj->id)) {
                 $url=url('/lol/refresh', ['dataType' => 'links','key_name'=>$request['site_id']]);
                 $api_host=str_replace('/index.php',config('app.api_host'),$url);
-                
+
                 $a=file_get_contents($api_host);
                 return $this->response(200, Lang::get('Success'));
             } else {
