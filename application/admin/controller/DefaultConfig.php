@@ -102,9 +102,9 @@ class DefaultConfig extends Admin
             if (is_numeric($defaultConfigObj->id)) {
                 $url=url('/lol/refresh', ['key_name'=>$request['key'],'dataType' => 'defaultConfig']);
                 $api_host=str_replace(array('/index.php','','.html'),'',$url);
-                $api_host=config('app.api_host').$api_host;echo $api_host;exit;
-                $a=curl_get($api_host);echo $a;exit;
-                //file_get_contents($api_host);
+                $api_host=config('app.api_host').$api_host;
+                $a=curl_get($api_host);
+
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
@@ -138,10 +138,11 @@ class DefaultConfig extends Admin
         $return = DefaultConfigModel::destroy($id);
 
         if ($return !== false) {
-            $url=url('/lol/refresh', ['dataType' => 'defaultConfig','key_name'=>$key]);
+            $url=url('/lol/refresh', ['key_name'=>$key,'dataType' => 'defaultConfig']);
             $api_host=str_replace(array('/index.php','','.html'),'',$url);
             $api_host=config('app.api_host').$api_host;
-            file_get_contents($api_host);
+            $a=curl_get($api_host);
+
             return $this->response(200, Lang::get('Success'));
         } else {
             return $this->response(201, Lang::get('Fail'));
@@ -220,10 +221,10 @@ class DefaultConfig extends Admin
             $defaultConfigObj->allowField(true)->save($request);
 
             if (is_numeric($defaultConfigObj->id)) {
-                $url=url('/lol/refresh', ['dataType' => 'defaultConfig','key_name'=>$request['key']]);
+                $url=url('/lol/refresh', ['key_name'=>$request['key'],'dataType' => 'defaultConfig']);
                 $api_host=str_replace(array('/index.php','','.html'),'',$url);
                 $api_host=config('app.api_host').$api_host;
-                file_get_contents($api_host);
+                $a=curl_get($api_host);
 
                 return $this->response(200, Lang::get('Success'));
             } else {

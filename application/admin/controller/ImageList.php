@@ -123,10 +123,11 @@ class ImageList extends Admin
             $obj->allowField(true)->save($contentData);
 
             if (is_numeric($obj->id)) {
-                $url=url('/lol/refresh', ['dataType' => 'imageList','key_name'=>$request['flag']]);
+                $url=url('/lol/refresh', ['key_name'=>$request['flag'],'dataType' => 'imageList']);
                 $api_host=str_replace(array('/index.php','','.html'),'',$url);
                 $api_host=config('app.api_host').$api_host;
-                file_get_contents($api_host);
+                $a=curl_get($api_host);
+
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
@@ -171,10 +172,11 @@ class ImageList extends Admin
             $obj->isUpdate(true)->allowField(true)->save($request);
 
             if (is_numeric($obj->id)) {
-                $url=url('/lol/refresh', ['dataType' => 'imageList','key_name'=>$request['flag']]);
+                $url=url('/lol/refresh', ['key_name'=>$request['flag'],'dataType' => 'imageList']);
                 $api_host=str_replace(array('/index.php','','.html'),'',$url);
                 $api_host=config('app.api_host').$api_host;
-                file_get_contents($api_host);
+                $a=curl_get($api_host);
+
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
@@ -255,10 +257,10 @@ class ImageList extends Admin
         // 删除
         $return = ImageListModel::destroy($id);
         if ($return !== false) {
-            $url=url('/lol/refresh', ['dataType' => 'imageList','key_name'=>$flag]);
+            $url=url('/lol/refresh', ['key_name'=>$flag,'dataType' => 'imageList']);
             $api_host=str_replace(array('/index.php','','.html'),'',$url);
             $api_host=config('app.api_host').$api_host;
-            file_get_contents($api_host);
+            $a=curl_get($api_host);
             return $this->response(200, Lang::get('Success'));
         } else {
             return $this->response(201, Lang::get('Fail'));
