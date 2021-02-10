@@ -100,10 +100,9 @@ class DefaultConfig extends Admin
             $defaultConfigObj->isUpdate(true)->allowField(true)->save($request);
 
             if (is_numeric($defaultConfigObj->id)) {
-                $url=url('/lol/refresh', ['key_name'=>$request['key'],'dataType' => 'defaultConfig']);
-                $api_host=str_replace(array('/index.php','','.html'),'',$url);
-                $api_host=config('app.api_host').$api_host;
-                $a=curl_get($api_host);
+                $postData=['key_name'=>$request['key'],'dataType' => 'defaultConfig'];
+                $api_host=config('app.api_host').'/refresh';
+                $return=curl_post($api_host, $postData);
 
                 return $this->response(200, Lang::get('Success'));
             } else {
@@ -138,11 +137,9 @@ class DefaultConfig extends Admin
         $return = DefaultConfigModel::destroy($id);
 
         if ($return !== false) {
-            $url=url('/lol/refresh', ['key_name'=>$key,'dataType' => 'defaultConfig']);
-            $api_host=str_replace(array('/index.php','','.html'),'',$url);
-            $api_host=config('app.api_host').$api_host;
-            $a=curl_get($api_host);
-
+            $postData=['key_name'=>$key,'dataType' => 'defaultConfig'];
+            $api_host=config('app.api_host').'/refresh';
+            $return=curl_post($api_host, $postData);
             return $this->response(200, Lang::get('Success'));
         } else {
             return $this->response(201, Lang::get('Fail'));
@@ -221,11 +218,9 @@ class DefaultConfig extends Admin
             $defaultConfigObj->allowField(true)->save($request);
 
             if (is_numeric($defaultConfigObj->id)) {
-                $url=url('/lol/refresh', ['key_name'=>$request['key'],'dataType' => 'defaultConfig']);
-                $api_host=str_replace(array('/index.php','','.html'),'',$url);
-                $api_host=config('app.api_host').$api_host;
-                $a=curl_get($api_host);
-
+                $postData=['key_name'=>$request['key'],'dataType' => 'defaultConfig'];
+                $api_host=config('app.api_host').'/lol/refresh';
+                $return=curl_post($api_host, $postData);
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));

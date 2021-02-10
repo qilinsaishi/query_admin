@@ -100,10 +100,9 @@ class Link extends Admin
             $obj->allowField(true)->save($contentData);
 
             if (is_numeric($obj->id)) {
-                $url=url('/lol/refresh', ['key_name'=>$request['site_id'],'dataType' => 'links']);
-                $api_host=str_replace(array('/index.php','','.html'),'',$url);
-                $api_host=config('app.api_host').$api_host;
-                $a=curl_get($api_host);
+                $postData=['key_name'=>$request['site_id'],'dataType' => 'links'];
+                $api_host=config('app.api_host').'/refresh';
+                $return=curl_post($api_host, $postData);
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
@@ -148,11 +147,9 @@ class Link extends Admin
             $obj->isUpdate(true)->allowField(true)->save($request);
 
             if (is_numeric($obj->id)) {
-                $url=url('/lol/refresh', ['key_name'=>$request['site_id'],'dataType' => 'links']);
-                $api_host=str_replace(array('/index.php','','.html'),'',$url);
-                $api_host=config('app.api_host').$api_host;
-                $a=curl_get($api_host);
-
+                $postData=['key_name'=>$request['site_id'],'dataType' => 'links'];
+                $api_host=config('app.api_host').'/refresh';
+                $return=curl_post($api_host, $postData);
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
@@ -232,11 +229,9 @@ class Link extends Admin
         $des = LinkModel::destroy($id);
 
         if ($des !== false) {
-            $url=url('/lol/refresh', ['key_name'=>$site_id,'dataType' => 'links']);
-            $api_host=str_replace(array('/index.php','','.html'),'',$url);
-            $api_host=config('app.api_host').$api_host;
-            $a=curl_get($api_host);
-
+            $postData=['key_name'=>$site_id,'dataType' => 'links'];
+            $api_host=config('app.api_host').'/refresh';
+            $return=curl_post($api_host, $postData);
             return $this->response(200, Lang::get('Success'));
         } else {
             return $this->response(201, Lang::get('Fail'));
