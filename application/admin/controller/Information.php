@@ -67,7 +67,11 @@ class Information extends Admin
             $informationInfoObj->isUpdate(true)->allowField(true)->save($request);
 
             if (is_numeric($informationInfoObj->id)) {
+                $postData=['params'=>json_encode([$informationInfoObj->id]),'dataType' => 'information'];
                 return $this->response(200, Lang::get('Success'));
+                
+                $api_host=config('app.api_host').'/refresh';
+                $return=curl_post($api_host, $postData);
             } else {
                 return $this->response(201, Lang::get('Fail'));
             }
