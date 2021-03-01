@@ -62,7 +62,7 @@ class Information extends Admin
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
-            $request['update_time']=date("Y-m-d H:i:s");
+            $request['update_time']=date("Y-m-d H:i:s",time()+8*60*60);
             $informationInfoObj= new InformationModel();
             $informationInfoObj->isUpdate(true)->allowField(true)->save($request);
 
@@ -158,9 +158,8 @@ class Information extends Admin
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
-            $request['create_time']=date("Y-m-d H:i:s");
-            $request['update_time']=date("Y-m-d H:i:s");
-
+            $request['create_time']=date("Y-m-d H:i:s",time()+8*60*60);
+            $request['update_time']=date("Y-m-d H:i:s",time()+8*60*60);
             $informationInfoObj = new InformationModel();
             $informationInfoObj->allowField(true)->save($request);
 
