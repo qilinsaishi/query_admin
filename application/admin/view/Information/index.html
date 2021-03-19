@@ -112,6 +112,12 @@
                        
                         <td>
                             <a href="{:url('admin/Information/edit', ['id' => $vo['id']])}"></i> {:lang('Edit')}</a>
+							{if condition="$vo['game'] eq 'lol'"}
+								<a href="https://www.qilindianjing.com/newsdetail/{$vo['id']}" target="_blank"></i> 预览</a>
+							{elseif condition="$vo['game'] eq 'kpl'"}
+								<a href="https://www.qilingames.com/newsdetail/{$vo['id']}" target="_blank"></i> 预览</a>
+							{/if}
+							
                             <a onclick="remove('{$vo.id}')" href="#"> {:lang('Delete')}</a>
                         </td>
                     </tr>
