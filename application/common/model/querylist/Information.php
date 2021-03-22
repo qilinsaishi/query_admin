@@ -9,7 +9,7 @@ class Information extends BaseQueryList
     protected $pk = 'id';
 	protected $table = 'information';
 
-    protected $autoWriteTimestamp = true;
+    protected $autoWriteTimestamp = false;
 
     //protected $createTime = 'create_time';
     //protected $updateTime = 'update_time';

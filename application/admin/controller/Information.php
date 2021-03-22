@@ -43,6 +43,8 @@ class Information extends Admin
         // 分页列表
         $informationModel=new InformationModel();
         $list = $informationModel->getList($args);
+        $list=$list ?? [];
+
         $this->assign('search', $query);
         $this->assign('list', $list);
         $this->assign('page', $list->render());
@@ -87,6 +89,40 @@ class Information extends Admin
         ];
 
         return $this->fetch('edit', $data);
+    }
+    public function view()
+    {
+
+        $id = Request::param('id');
+        $info = InformationModel::get($id);
+        $info['keywords_list']=json_decode($info['keywords_list'],true);
+        $info['scws_list']=json_decode($info['scws_list'],true);
+        $info['5118_word_list']=json_decode($info['5118_word_list'],true);//
+
+
+        $keywords_list=$scws_list=$word_1185_list=[];
+        if(isset($info['keywords_list'])){
+            foreach ($info['keywords_list'] as $key=>$val){
+                if(!empty($val)){
+                    foreach ($val as $k=>&$v){
+                        $v['keywords']=$k;
+                    }
+                    $keywords_list[$key]=array_values($val);
+
+                }
+            }
+        }
+        $scws_list=$info['scws_list'] ?? [];
+        $word_1185_list=$info['5118_word_list'] ?? [];
+
+        $data = [
+            'info'  => $info,
+            'keywords_list'=>$keywords_list,
+            'scws_list'=>$scws_list,
+            'word_1185_list'=>$word_1185_list,
+        ];
+
+        return $this->fetch('view', $data);
     }
 
     public function remove()

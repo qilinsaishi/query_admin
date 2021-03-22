@@ -19,17 +19,16 @@
       <div class="tab-pane active">
         <form role="form" id="operate">
             <div class="form-group">
-              <label>标题 </label>
+              <label class="layui-form-label">标题 </label>
               <div class="row">
               <div class="col-md-6">
-              <input type="hidden" name="id" value="{$info.id}">
+				<input type="hidden" name="id" value="{$info.id}">
 			    <input type="text" name="title" value="{$info.title}"  class="form-control input-sm" placeholder="">
-              
               </div>
               </div>
             </div>
 			<div class="form-group">
-              <label>作者 </label>
+              <label class="layui-form-label">作者 </label>
               <div class="row">
               <div class="col-md-6">
               <input type="text" name="author" value="{$info.author}"  class="form-control input-sm" placeholder="">
@@ -37,7 +36,7 @@
               </div>
             </div>
 			<div class="form-group">
-              <label>对应来源</label>
+              <label class="layui-form-label">对应来源</label>
               <div class="row">
               <div class="col-md-6">
               <input type="text" name="source" value="{$info.source}"  class="form-control input-sm" placeholder="">
@@ -46,9 +45,9 @@
             </div>
 			
 			<div class="form-group">
-              <label>对应游戏 <span class="text-red">*</span></label>
+              <label class="layui-form-label">对应游戏 <span class="text-red">*</span></label>
               <div class="row">
-              <div class="col-md-4">
+              <div class="col-md-6">
               <select name="game" class="form-control">
                 <option>请选择</option>
                 {volist name="gameList" id="vo"}
@@ -62,9 +61,9 @@
             </div>
 			
 			<div class="form-group">
-              <label>文章类型 <span class="text-red">*</span></label>
+              <label class="layui-form-label">文章类型 <span class="text-red">*</span></label>
               <div class="row">
-              <div class="col-md-4">
+              <div class="col-md-6">
               <select name="type" class="form-control">
                 <option>请选择</option>
                 {volist name="typeList" id="vo"}
@@ -77,9 +76,9 @@
               </div>
             </div>
 			<div class="form-group">
-			  <label>状态</label>
+			  <label class="layui-form-label">状态</label>
 			  <div class="row">
-			  <div class="col-md-12">
+			  <div class="col-md-6">
 				<div class="radio">
 					<label class="radio-inline">
 						<input type="radio" {eq name="info.status" value="1"}checked{/eq} name="status" value="1">正常
@@ -87,15 +86,18 @@
 					<label class="radio-inline">
 						<input type="radio" {eq name="info.status" value="2"}checked{/eq} name="status" value="2">隐藏
 					</label>
+					<label class="radio-inline">
+						<input type="radio"  name="status" value="3">预约发布
+					</label>
 				</div>
 			  </div>
 			  </div>
 			</div>
             
 			<div class="form-group">
-              <label>Logo</label>
+              <label class="layui-form-label">缩略图</label>
               <div class="row">
-              <div class="col-md-12">
+              <div class="col-md-6">
                 <div class="layui-upload-drag" id="logo">
                   <input type="hidden" name="logo" value="{$info.logo}">
                   <div class="layui-upload-list" id="preview">
@@ -113,7 +115,7 @@
 			  <label>内容</label>
 			  <div class="row">
 			  <div class="col-md-12">
-			  <textarea id="editor" name="content">{$info.content}</textarea>
+			  <textarea id="editor" name="content" >{$info.content}</textarea>
 			  </div>
 			  </div>
 			</div>
@@ -126,6 +128,8 @@
     <div class="box-footer">
         <div class="btn-group">
             <button class="btn btn-primary btn-flat" onclick="operate();" type="button"> {:lang('Save')}</button>
+			<button class="btn btn-default btn-flat" onclick="preview();" style="margin-left:20px;" type="button"> 预览</button>
+			
         </div>
     </div>
   </div>
@@ -172,7 +176,7 @@ var ue = UE.getEditor('editor', {
         ['fontfamily', 'fontsize', '|', 'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'link', 'unlink', 'inserttable', 'deletetable', 'simpleupload', 'insertimage']
     ],
     initialFrameWidth: '100%',
-    initialFrameHeight:300,
+    initialFrameHeight:700,
     scaleEnabled:true,
     serverUrl: '{:url("admin/ueditor/index")}',
 });
@@ -181,6 +185,38 @@ var ue = UE.getEditor('editor', {
     function operate(){
         $.ajax({
             url:"{:url('admin/Information/edit')}",
+            data:$("#operate").serialize(),
+            type:'post',
+            dataType:'json',
+            success:function(xhr){
+                if(xhr.code == 200){
+                    swal({
+                      position: 'center',
+                      type: 'success',
+                      title: xhr.msg,
+                      showConfirmButton: false,
+                      toast:false,
+                      timer: 2000
+                    });
+                } else{
+                    swal({
+                      position: 'center',
+                      type: 'error',
+                      title: xhr.msg,
+                      showConfirmButton: false,
+                      toast:false,
+                      timer: 2000
+                    });
+                }
+            }
+        });
+    }
+	
+	//预览
+	function preview(){
+		$post_url="{$site_url}/preview/";
+        $.ajax({
+            url:post_url,
             data:$("#operate").serialize(),
             type:'post',
             dataType:'json',

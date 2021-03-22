@@ -70,7 +70,9 @@
                         <th>对应来源</th>
 						<th>文章类型</th>
                         <th>Logo</th>
-					
+						<th>原站点创建时间</th>
+						<th>创建时间</th>
+						<th>更新时间</th>
                         <th>{:lang('Action')}</th>
                     </tr>
                 </thead>
@@ -109,15 +111,18 @@
                         <td>
                             {notempty name="vo.logo"} <img src="{$vo.logo}?x-oss-process=image/resize,m_lfit,h_60,w_60" width="60" height="60">{/notempty}
                         </td>
-                       
+						<td>
+                            {$vo.site_time}
+                        </td>
+						<td>
+                            {$vo.create_time}
+                        </td>
+						<td>
+                            {$vo.update_time}
+                        </td>
                         <td>
                             <a href="{:url('admin/Information/edit', ['id' => $vo['id']])}"></i> {:lang('Edit')}</a>
-							{if condition="$vo['game'] eq 'lol'"}
-								<a href="https://www.qilindianjing.com/newsdetail/{$vo['id']}" target="_blank"></i> 预览</a>
-							{elseif condition="$vo['game'] eq 'kpl'"}
-								<a href="https://www.qilingames.com/newsdetail/{$vo['id']}" target="_blank"></i> 预览</a>
-							{/if}
-							
+							<a href="{:url('admin/Information/view', ['id' => $vo['id']])}"></i> 分词列表</a>
                             <a onclick="remove('{$vo.id}')" href="#"> {:lang('Delete')}</a>
                         </td>
                     </tr>
@@ -160,7 +165,53 @@
 
 <!-- 自定义js -->
 {block name="js"}
+
+<script>
+$(".scws_list").click(function(){
+	var scws_list=$(this).attr('data_scws_list');
+	alert(scws_list);
+});
+function scws_list(data){
+	layui.use('layer', function(){ //独立版的layer无需执行这一句
+	var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+	var html='<div style="padding: 20px 10px;"><table border="1"><th>word</th><th>times</th><th>weight</th><th>en</th><th>keyword_id</th>';
+	
+	   var json =data;  //自定义一个json数组
+            $.each(json, function (index, obj) {
+				html +='<tr><td width="60">'+ obj.word +'</td><td width="20">'+ obj.times +'</td><td width="120">'+ obj.weight +'</td><td width="40">'+ obj.attr +'</td><td width="60">'+ obj.keyword_id +'</td></tr>';
+            });
+
+
+	html += '</table></div>';
+	  
+	layer.open({
+			type: 1
+			,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+			,area: ['360px', '240px']
+			,id: 'layerDemo' //防止重复弹出
+			,content: html
+			,btn: '关闭全部'
+			,btnAlign: 'c' //按钮居中
+			,shade: 0 //不显示遮罩
+			,yes: function(){
+			  layer.closeAll();
+			}
+	});
+});
+}
+function participle(){
+	alert(2221);
+}
+function modal(){
+
+}
+
+
+</script>
 <script type="text/javascript">
+
+
+
     //批量操作
     function handle(){
         var chk_value =[]; 
