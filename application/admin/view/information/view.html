@@ -1,0 +1,234 @@
+<!-- 模板继承 -->
+{extend name="public:base" /}
+
+<!-- 页面标题 -->
+{block name="title"}Administrator{/block}
+
+<!-- 自定义css -->
+{block name="css"}{/block}
+
+<!-- 内容区域 -->
+{block name="content"}
+  <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+      <li class=""><a href="{:url('admin/Information/index')}">资讯管理</a></li>
+      <li class=""><a href="{:url('admin/Information/create')}">{:lang('Create')}</a></li>
+      <li class="pull-right"><a href="javascript:history.back(-1);" class="text-muted"><i class="fa fa-chevron-circle-left"></i></a></li>
+    </ul>
+    <div class="tab-content">
+		<div class="layui-table-box">
+			{notempty name="keywords_list"}
+				 {volist name="keywords_list" id="vo"}
+					<legend>{if condition="$key == 'team'"}战队
+					{elseif condition="$key == 'player'"/}队员
+					{elseif condition="$key == 'hero'"/}英雄{else /}其他{/if}
+				  关键词</legend>
+				 <div class="layui-table-header">
+					<table cellspacing="0" cellpadding="0" border="0" class="layui-table" style="overflow: hidden;">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>数量</th>
+								<th>关键字</th>
+							</tr>
+						</thead>
+						<tbody>
+						{notempty name="vo"}
+						{volist name="vo" id="v"}
+							<tr class="">
+								<td class="">
+									<div class="layui-table-cell">{$v.id}</div>
+								</td>
+								<td class="">
+									<div class="layui-table-cell">{$v.count}</div>
+								</td>
+								<td class="">
+									<div class="layui-table-cell">{$v.keywords}</div>
+								</td>	
+							</tr>
+						{/volist}
+						{/notempty}
+					</tbody>
+					</table>
+				</div>
+				 {/volist}
+			{/notempty}
+			
+				 <legend>scws关键字列表</legend>
+				 <div class="layui-table-header">
+					<table cellspacing="0" cellpadding="0" border="0" class="layui-table" style="overflow: hidden;">
+						<thead>
+							<tr>
+								<th>关键字</th>
+								<th>出现次数</th>
+								<th>权重</th>
+								<th>属性</th>
+								<th>关键字ID</th>
+							</tr>
+						</thead>
+						<tbody>
+						{notempty name="scws_list"}
+						{volist name="scws_list" id="v"}
+							<tr class="">
+								<td class="">
+									<div class="layui-table-cell">{$v.word}</div>
+								</td>
+								<td class="">
+									<div class="layui-table-cell">{$v.times}</div>
+								</td>
+								<td class="">
+									<div class="layui-table-cell">{$v.weight}</div>
+								</td>
+								<td class="">
+									<div class="layui-table-cell">{$v.attr}</div>
+								</td>
+								<td class="">
+									<div class="layui-table-cell">{$v.keyword_id}</div>
+								</td>								
+							</tr>
+						{/volist}
+						{/notempty}
+					</tbody>
+					</table>
+				</div>
+				<legend>5118分词列表</legend>
+				 <div class="layui-table-header">
+					<table cellspacing="0" cellpadding="0" border="0" class="layui-table" style="overflow: hidden;">
+						
+						<tbody>
+						{notempty name="word_1185_list"}
+						{volist name="word_1185_list" id="vo"}
+							<tr class="">
+								<td class="">
+									<div class="layui-table-cell">{$vo}</div>
+								</td>
+								
+							</tr>
+						{/volist}
+						{/notempty}
+					</tbody>
+					</table>
+				</div>
+			
+		</div>
+		
+		
+		
+      <!-- /.tab-pane -->
+    </div>
+    <!-- /.tab-content -->
+ 
+  </div>
+{/block}
+
+<!-- 自定义js -->
+{block name="js"}
+<script>
+layui.use('upload', function(){
+  var $ = layui.jquery
+  ,upload = layui.upload;
+  //拖拽上传
+  upload.render({
+    elem: "#logo"
+    ,accept: 'image'
+    ,multiple: false
+    ,number: 1
+    ,url: "{:url('admin/upload/uploadFile')}"
+    ,done: function(res){
+      if (res.code == 200) {
+        $("[name='logo']").val(res.data.url);
+        $("#preview").html("<img class=\'layui-upload-img img-responsive\' src=\'"+res.data.url+"\'>");
+      } else {
+        swal({
+          position: 'center',
+          type: 'error',
+          title: res.msg,
+          showConfirmButton: false,
+          toast:false,
+          timer: 2000
+        });
+      }
+    }
+  });
+  
+});
+</script>
+<script src="__STATIC__/ueditor/ueditor.config.js"></script>
+<script src="__STATIC__/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript">
+var ue = UE.getEditor('editor', {
+    toolbars: [
+        ['fullscreen', 'source', 'undo', 'redo', 'selectall', '|', 'removeformat', 'formatmatch', 'autotypeset', 'cleardoc', '|', 'template', 'indent', 'horizontal','justifyleft', 'justifyright', 'justifycenter', 'justifyjustify', 'insertcode'],
+        ['fontfamily', 'fontsize', '|', 'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'link', 'unlink', 'inserttable', 'deletetable', 'simpleupload', 'insertimage']
+    ],
+    initialFrameWidth: '100%',
+    initialFrameHeight:600,
+    scaleEnabled:true,
+    serverUrl: '{:url("admin/ueditor/index")}',
+});
+</script>
+<script type="text/javascript">
+    function operate(){
+        $.ajax({
+            url:"{:url('admin/Information/edit')}",
+            data:$("#operate").serialize(),
+            type:'post',
+            dataType:'json',
+            success:function(xhr){
+                if(xhr.code == 200){
+                    swal({
+                      position: 'center',
+                      type: 'success',
+                      title: xhr.msg,
+                      showConfirmButton: false,
+                      toast:false,
+                      timer: 2000
+                    });
+                } else{
+                    swal({
+                      position: 'center',
+                      type: 'error',
+                      title: xhr.msg,
+                      showConfirmButton: false,
+                      toast:false,
+                      timer: 2000
+                    });
+                }
+            }
+        });
+    }
+	
+	//预览
+	function preview(){
+		$post_url="{$site_url}/preview/";
+        $.ajax({
+            url:post_url,
+            data:$("#operate").serialize(),
+            type:'post',
+            dataType:'json',
+            success:function(xhr){
+                if(xhr.code == 200){
+                    swal({
+                      position: 'center',
+                      type: 'success',
+                      title: xhr.msg,
+                      showConfirmButton: false,
+                      toast:false,
+                      timer: 2000
+                    });
+                } else{
+                    swal({
+                      position: 'center',
+                      type: 'error',
+                      title: xhr.msg,
+                      showConfirmButton: false,
+                      toast:false,
+                      timer: 2000
+                    });
+                }
+            }
+        });
+    }
+
+</script>
+{/block}
