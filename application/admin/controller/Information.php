@@ -98,8 +98,6 @@ class Information extends Admin
         $info['keywords_list']=json_decode($info['keywords_list'],true);
         $info['scws_list']=json_decode($info['scws_list'],true);
         $info['5118_word_list']=json_decode($info['5118_word_list'],true);//
-
-
         $keywords_list=$scws_list=$word_1185_list=[];
         if(isset($info['keywords_list'])){
             foreach ($info['keywords_list'] as $key=>$val){
@@ -194,6 +192,8 @@ class Information extends Admin
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
+            $request['published_time']=date("Y-m-d H:i:s",strtotime($request['published_time'])-8*60*60);
+
             $request['create_time']=date("Y-m-d H:i:s",time()-8*60*60);
             $request['update_time']=date("Y-m-d H:i:s",time()-8*60*60);
             $informationInfoObj = new InformationModel();
@@ -205,11 +205,17 @@ class Information extends Admin
                 return $this->response(201, Lang::get('Fail'));
             }
         }
-        //$role_list=$this->role_list;
+        $siteList=[];
+        $siteModel=new \app\common\model\Site();
+        $siteList=$siteModel->getSiteList();
+        if($siteList){
+            $siteList=$siteList->toArray();
+        }
         $gameList=config('app.game_type');
         $data = [
             'typeList'=>$this->type,
-            'gameList'=>$gameList
+            'gameList'=>$gameList,
+            'siteList'=>$siteList
         ];
 
         return $this->fetch('create',$data);

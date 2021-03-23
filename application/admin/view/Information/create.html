@@ -23,7 +23,7 @@
               <div class="row">
               <div class="col-md-6">
              
-			  <input type="text" name="title"   class="form-control input-sm" placeholder="">
+			  <input type="text" name="title"  id="titleId" class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
@@ -31,7 +31,7 @@
               <label class="layui-form-label">作者 </label>
               <div class="row">
               <div class="col-md-6">
-              <input type="text" name="author"   class="form-control input-sm" placeholder="">
+              <input type="text" name="author" id="authorId"  class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
@@ -40,7 +40,7 @@
               <label class="layui-form-label">对应来源</label>
               <div class="row">
               <div class="col-md-6">
-              <input type="text" name="source"   class="form-control input-sm" placeholder="" value="index" readonly="readonly">
+              <input type="text" name="source" id="sourceId"   class="form-control input-sm" placeholder="" value="index" readonly="readonly">
               </div>
               </div>
             </div>
@@ -49,11 +49,26 @@
               <label class="layui-form-label">对应游戏 <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-6">
-              <select name="game" class="form-control">
+              <select name="game" class="form-control"  id="gameId">
                 <option>请选择</option>
                 {volist name="gameList" id="vo"}
                 <option value="{$vo}">
                     {$vo}
+                </option>
+                {/volist}
+              </select>
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+              <label  class="layui-form-label">所属站点</label>
+              <div class="row">
+              <div class="col-md-6">
+              <select name="site_id" id="siteId" class="form-control">
+                <option  value="">请选择-</option>
+                {volist name="siteList" id="vo"}
+                <option value="{$vo.id}">
+                    {$vo.domain}
                 </option>
                 {/volist}
               </select>
@@ -65,7 +80,7 @@
               <label class="layui-form-label">文章类型 <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-6">
-              <select name="type" class="form-control">
+              <select name="type" class="form-control"  id="typeId">
                 <option>请选择</option>
                 {volist name="typeList" id="vo"}
                 <option  value="{$key}" >
@@ -80,7 +95,7 @@
               <label class="layui-form-label">发布时间</label>
               <div class="row">
               <div class="col-md-6">
-              <input type="text"  name="pubdate" id="pubdate" lay-verify="pubdate" placeholder="yyyy-MM-dd HH:ii:ss" class="layui-input" >
+              <input type="text"  name="published_time" id="published_time" lay-verify="published_time" placeholder="yyyy-MM-dd HH:ii:ss" class="layui-input" >
               </div>
               </div>
             </div>
@@ -110,7 +125,7 @@
               <div class="row">
               <div class="col-md-6">
                 <div class="layui-upload-drag" id="logo">
-                  <input type="hidden" name="logo">
+                  <input type="hidden" name="logo" id="logoId">
                   <div class="layui-upload-list" id="preview">
                   <p>{:lang('Upload')}</p>
                   </div>
@@ -135,7 +150,7 @@
     <div class="box-footer">
         <div class="btn-group">
             <button class="btn btn-primary btn-flat" onclick="operate();" type="button"> {:lang('Save')}</button>
-
+			<button class="btn btn-default btn-flat" onclick="preview();" style="margin-left:20px;" type="button"> 预览</button>
         </div>
     </div>
   </div>
@@ -153,7 +168,7 @@ layui.use(['upload','laydate'], function(){
   ,laydate = layui.laydate;
    
     laydate.render({
-    elem: '#pubdate'
+    elem: '#published_time'
     ,type: 'datetime'
   });
   
@@ -227,6 +242,48 @@ var ue = UE.getEditor('editor', {
             }
         });
     }
+	
+	//预览
+	function preview(){
+		//typeId
+		var title=$("#titleId").val();
+		var author=$("#authorId").val();
+		var source=$("#sourceId").val();
+		var game=$("#gameId").val();
+		var logo=$("#logoId").val();
+		var content = $('textarea[name="content"]').val();
+		var site_url=$("#siteId").find("option:selected").text();
+		var type=$("#typeId").find("option:selected").val();
+		var post_url=trim(site_url)+"/preview/";
+		var status = $("input[name='status']:checked").val();
+		var create_time = $("input[name='published_time']").val();
+        postcall( post_url, {title:title,author:author,source:source,type:type,status:status,create_time:create_time,game:game,logo:logo,content:content}, '_blank');
+    }
+	function trim(str)
+	{ 
+	  return str.replace(/(^\s*)|(\s*$)/g, ""); 
+	}
+	function postcall( url, params, target){
+		var tempform = document.createElement("form");
+		tempform.action = url;
+		tempform.method = "post";
+		tempform.style.display="none"
+		if(target) {
+		tempform.target = target;
+		}
+		for (var x in params) {
+		var opt = document.createElement("input");
+		opt.name = x;
+		opt.value = params[x];
+		tempform.appendChild(opt);
+		}
+		var opt = document.createElement("input");
+		opt.type = "submit";
+		tempform.appendChild(opt);
+		document.body.appendChild(tempform);
+		tempform.submit();
+		document.body.removeChild(tempform);
+	}
 
 </script>
 {/block}
