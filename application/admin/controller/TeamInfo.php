@@ -1,8 +1,10 @@
 <?php
+
 namespace app\admin\controller;
 
 use app\common\model\Collect;
-use app\common\model\querylist\CpseoTeamInfo as CpseoTeamInfoModel;
+use app\common\model\querylist\ChangeLogs;
+use app\common\model\querylist\TeamInfo as TeamInfoModel;
 use app\common\validate\querylist\CpseoTeamInfoValidate;
 use think\Db;
 use think\facade\Request;
@@ -13,28 +15,28 @@ use app\common\model\Auth;
 use app\admin\controller\Admin;
 
 
-class CpseoTeamInfo extends Admin
+class TeamInfo extends Admin
 {
     public function index()
     {
-        $request = Request::param();//print_r($request);exit;
+        $request = Request::param();
         $query = [
-            'q'       => isset($request['q']) ? $request['q'] : '',
-            'game'  => isset($request['game']) ? $request['game'] : '',
-            'original_source'  => isset($request['original_source']) ? $request['original_source'] : '',
+            'q' => isset($request['q']) ? $request['q'] : '',
+            'game' => isset($request['game']) ? $request['game'] : '',
+            'original_source' => isset($request['original_source']) ? $request['original_source'] : '',
         ];
         $args = [
-            'query'  => $query,
-            'field'  => '',
-            'order'  => 'team_id desc',
+            'query' => $query,
+            'field' => '',
+            'order' => 'team_id desc',
             'params' => $query,
-            'limit'  => 20,
+            'limit' => 20,
         ];
-        $gameList=config('app.game_type');
-        $originalSource=config('app.original_source');
+        $gameList = config('app.game_type');
+        $originalSource = config('app.original_source');
         // 分页列表
-        $seoTeamModel=new CpseoTeamInfoModel();
-        $list = $seoTeamModel->getList($args);
+        $teameamModel = new TeamInfoModel();
+        $list = $teameamModel->getList($args);
         $this->assign('search', $query);
         $this->assign('list', $list);
         $this->assign('page', $list->render());
@@ -55,32 +57,52 @@ class CpseoTeamInfo extends Admin
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
-            if(isset($request['aka']) && $request['aka']){
-                if(strpos($request['aka'],'，') !==false){
-                    $request['aka']=str_replace('，',',',$request['aka']);
+            if (isset($request['aka']) && $request['aka']) {
+                if (strpos($request['aka'], '，') !== false) {
+                    $request['aka'] = str_replace('，', ',', $request['aka']);
                 }
-                $request['aka']=explode(',',$request['aka']);
-                $request['aka']=json_encode($request['aka']);
+                $request['aka'] = explode(',', $request['aka']);
+                $request['aka'] = json_encode($request['aka']);
             }
-            $cpseoTeamInfoObj= new CpseoTeamInfoModel();
-            $cpseoTeamInfoObj->isUpdate(true)->allowField(true)->save($request);
+            //需要加事务
+            Db::startTrans();
+            try {
+                $teamInfoObj = new teamInfoModel();
+                $changeLog = ChangeLogs::checkInsertData('app\common\model\querylist\teamInfo', $request, $request['team_id'], 'team', $this->username, 'team_id');
+                if ($changeLog) {
+                    $rt = $teamInfoObj->isUpdate(true)->allowField(true)->save($request);
+                    if (is_numeric($teamInfoObj->team_id)) {
+                        // 提交事务
+                        Db::commit();
+                        return $this->response(200, Lang::get('Success'));
+                    } else {
+                        // 回滚事务
+                        Db::rollback();
+                        return $this->response(201, Lang::get('Fail'));
+                    }
+                } else {
+                    // 回滚事务
+                    Db::rollback();
+                }
 
-            if (is_numeric($cpseoTeamInfoObj->team_id)) {
-                return $this->response(200, Lang::get('Success'));
-            } else {
-                return $this->response(201, Lang::get('Fail'));
+            } catch (\Exception $e) {
+                dump($e->getMessage());
+                // 回滚事务
+                Db::rollback();
             }
+
+
         }
 
         $id = Request::param('id');
-        $info = CpseoTeamInfoModel::get($id);
-        $typeList=config('app.game_type');
-        $info['aka']=json_decode($info['aka'],true);
-        $info['race_stat']=json_decode($info['race_stat'],true);
-        if(!empty($info['aka'])){
-            $info['aka']=implode(',',$info['aka']);
-        }else{
-            $info['aka']='';
+        $info = teamInfoModel::get($id);
+        $typeList = config('app.game_type');
+        $info['aka'] = json_decode($info['aka'], true);
+        $info['race_stat'] = json_decode($info['race_stat'], true);
+        if (!empty($info['aka'])) {
+            $info['aka'] = implode(',', $info['aka']);
+        } else {
+            $info['aka'] = '';
         }
         /*if(!empty($info['race_stat'])){
             $info['race_stat']=implode(',',$info['race_stat']);
@@ -89,8 +111,8 @@ class CpseoTeamInfo extends Admin
         }*/
 
         $data = [
-            'info'  => $info,
-            'typeList'=>$typeList
+            'info' => $info,
+            'typeList' => $typeList
         ];
 
         return $this->fetch('edit', $data);
@@ -100,7 +122,7 @@ class CpseoTeamInfo extends Admin
     {
         $id = Request::param('id');
 
-        $return = CpseoTeamInfoModel::destroy($id);
+        $return = teamInfoModel::destroy($id);
 
         if ($return !== false) {
             return $this->response(200, Lang::get('Success'));
@@ -113,7 +135,7 @@ class CpseoTeamInfo extends Admin
     {
         $request = Request::instance()->param();
 
-        $obj = new CpseoTeamInfoModel;
+        $obj = new teamInfoModel;
         switch ($request['type']) {
             case 'delete':
                 foreach ($request['ids'] as $v) {
@@ -152,7 +174,6 @@ class CpseoTeamInfo extends Admin
     }
 
 
-
     public function create()
     {
         // 处理AJAX提交数据
@@ -165,30 +186,29 @@ class CpseoTeamInfo extends Admin
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
-            $request['site_id']=$this->site_id;
-            if(isset($request['aka']) && $request['aka']){
-                if(strpos($request['aka'],'，') !==false){
-                    $request['aka']=str_replace('，',',',$request['aka']);
+            $request['site_id'] = $this->site_id;
+            if (isset($request['aka']) && $request['aka']) {
+                if (strpos($request['aka'], '，') !== false) {
+                    $request['aka'] = str_replace('，', ',', $request['aka']);
                 }
-                $request['aka']=explode(',',$request['aka']);
-                $request['aka']=json_encode($request['aka']);
+                $request['aka'] = explode(',', $request['aka']);
+                $request['aka'] = json_encode($request['aka']);
             }
 
-            $cpseoTeamInfoObj = new CpseoTeamInfoModel();
-            $cpseoTeamInfoObj->allowField(true)->save($request);
+            $teamInfoObj = new teamInfoModel();
+            $teamInfoObj->allowField(true)->save($request);
 
-            if (is_numeric($cpseoTeamInfoObj->team_id)) {
+            if (is_numeric($teamInfoObj->team_id)) {
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
             }
         }
-        $typeList=config('app.game_type');
+        $typeList = config('app.game_type');
         //$typeList=config('app.config_type');
 
-        return $this->fetch('create',['typeList'=>$typeList]);
+        return $this->fetch('create', ['typeList' => $typeList]);
     }
-
 
 
 }

@@ -12,7 +12,7 @@
   <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
       <li class="active"><a href="#">战队信息</a></li>
-      <li class=""><a href="{:url('admin/CpseoTeamInfo/create')}">{:lang('Create')}</a></li>
+      <li class=""><a href="{:url('admin/TeamInfo/create')}">{:lang('Create')}</a></li>
     </ul>
 
     <div class="box box-solid">
@@ -89,7 +89,7 @@
                          <td>{$vo.create_time}</td>
 						 <td>{$vo.update_time}</td>
                         <td>
-                            <a href="{:url('admin/CpseoTeamInfo/edit', ['id' => $vo['team_id']])}"></i> {:lang('Edit')}</a>
+                            <a href="{:url('admin/TeamInfo/edit', ['id' => $vo['team_id']])}"></i> {:lang('Edit')}</a>
                             <!--<a onclick="remove('{$vo.team_id}')" href="#"> {:lang('Delete')}</a>-->
                         </td>
                     </tr>
@@ -158,7 +158,7 @@
             }).then(function(result){
               if (result.value) {
                 $.ajax({
-                    url:"{:Url('admin/CpseoTeamInfo/handle')}",
+                    url:"{:Url('admin/TeamInfo/handle')}",
                     data:{'ids':chk_value, 'type':type},
                     type:'post',
                     dataType:'json',
@@ -189,7 +189,7 @@
         }).then(function(result){
           if (result.value) {
             $.ajax({
-                url:"{:Url('admin/CpseoTeamInfo/remove')}",
+                url:"{:Url('admin/TeamInfo/remove')}",
                 data:{'id':id},
                 type:'post',
                 dataType:'json',

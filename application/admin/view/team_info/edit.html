@@ -11,8 +11,8 @@
 {block name="content"}
   <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
-      <li class=""><a href="{:url('admin/CpseoTeamInfo/index')}">cpSeo战队</a></li>
-      <li class="active"><a href="">{:lang('Create')}</a></li>
+      <li class=""><a href="{:url('admin/TeamInfo/index')}">cpSeo战队</a></li>
+      <li class=""><a href="{:url('admin/TeamInfo/create')}">{:lang('Create')}</a></li>
       <li class="pull-right"><a href="javascript:history.back(-1);" class="text-muted"><i class="fa fa-chevron-circle-left"></i></a></li>
     </ul>
     <div class="tab-content">
@@ -22,7 +22,8 @@
               <label>名称 <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-6">
-              <input type="text" name="team_name" class="form-control input-sm" placeholder="">
+              <input type="hidden" name="team_id" value="{$info.team_id}">
+              {$info.team_name}
               </div>
               </div>
             </div>
@@ -30,7 +31,7 @@
               <label>外文名称 <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-6">
-              <input type="text" name="en_name" class="form-control input-sm" placeholder="">
+              <input type="text" name="en_name"  value="{$info.en_name}" class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
@@ -38,7 +39,7 @@
               <label>别名</label>
               <div class="row">
               <div class="col-md-6">
-              <input type="text" name="aka"  class="form-control input-sm" placeholder="">
+              <input type="text" name="aka" value="{$info.aka}"  class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
@@ -46,7 +47,7 @@
               <label>团队创建日期</label>
               <div class="row">
               <div class="col-md-6">
-              <input type="text" name="established_date"  class="form-control input-sm" placeholder="">
+              <input type="text" name="established_date"  value="{$info.established_date}"  class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
@@ -54,7 +55,7 @@
               <label>现任教练</label>
               <div class="row">
               <div class="col-md-6">
-              <input type="text" name="coach"  class="form-control input-sm" placeholder="">
+              <input type="text" name="coach" value="{$info.coach}"  class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
@@ -62,7 +63,7 @@
               <label>所在地区</label>
               <div class="row">
               <div class="col-md-6">
-              <input type="text" name="location"  class="form-control input-sm" placeholder="">
+              <input type="text" name="location" value="{$info.location}"  class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
@@ -73,7 +74,7 @@
               <select name="game" class="form-control">
                 <option>请选择</option>
                 {volist name="typeList" id="vo"}
-                <option value="{$vo}">
+                <option value="{$vo}"  {eq name="info.game" value="$vo"}selected{/eq} >
                     {$vo}
                 </option>
                 {/volist}
@@ -81,14 +82,19 @@
               </div>
               </div>
             </div>
-            <div class="form-group">
+            
+			<div class="form-group">
               <label>战队的主Logo</label>
               <div class="row">
               <div class="col-md-12">
                 <div class="layui-upload-drag" id="logo">
-                  <input type="hidden" name="logo">
+                  <input type="hidden" name="logo" value="{$info.logo}">
                   <div class="layui-upload-list" id="preview">
-                  <p>{:lang('Upload')}</p>
+                      {empty name="info.logo"}
+                      <p>{:lang('Upload')}</p>
+                      {else /}
+                      <img class="layui-upload-img img-responsive" src="{$info.logo}" />
+                      {/empty}
                   </div>
                 </div>
               </div>
@@ -100,20 +106,21 @@
 			  <div class="col-md-12">
 				<div class="radio">
 					<label class="radio-inline">
-						<input type="radio"  name="hot" value="0" checked>否
+						<input type="radio" {eq name="info.hot" value="0"}checked{/eq} name="hot" value="0">否
 					</label>
 					<label class="radio-inline">
-						<input type="radio"  name="hot" value="1">是
+						<input type="radio" {eq name="info.hot" value="1"}checked{/eq} name="hot" value="1">是
 					</label>
 				</div>
 			  </div>
 			  </div>
 			</div>
+			
 			<div class="form-group">
 			  <label>战队历程</label>
 			  <div class="row">
 			  <div class="col-md-12">
-			  <textarea id="team_history" name="team_history"></textarea>
+			  <textarea id="team_history" name="team_history">{$info.team_history}</textarea>
 			  </div>
 			  </div>
 			</div>
@@ -123,7 +130,7 @@
 			  <label>荣誉</label>
 			  <div class="row">
 			  <div class="col-md-12">
-			  <textarea id="honor_list" name="honor_list"></textarea>
+			  <textarea id="honor_list" name="honor_list">{$info.honor_list}</textarea>
 			  </div>
 			  </div>
 			</div>
@@ -140,12 +147,12 @@
 			  <label>描述</label>
 			  <div class="row">
 			  <div class="col-md-12">
-			  <textarea id="description" name="description"></textarea>
+			  <textarea id="description" name="description">{$info.description}</textarea>
 			  </div>
 			  </div>
 			</div>
+			
             
-          
         </form>
       </div>
       <!-- /.tab-pane -->
@@ -228,7 +235,7 @@ var ue2 = UE.getEditor('description', {
 <script type="text/javascript">
     function operate(){
         $.ajax({
-            url:"{:url('admin/CpseoTeamInfo/create')}",
+            url:"{:url('admin/TeamInfo/edit')}",
             data:$("#operate").serialize(),
             type:'post',
             dataType:'json',

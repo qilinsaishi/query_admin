@@ -2,6 +2,8 @@
 namespace app\admin\controller;
 
 use app\common\model\Collect;
+use app\common\model\querylist\ChangeLogs;
+use app\common\model\querylist\CpseoTeamInfo as CpseoTeamInfoModel;
 use app\common\model\querylist\PlayerInfo as PlayerInfoModel;
 
 use app\common\model\querylist\TeamInfo;
@@ -65,17 +67,37 @@ class PlayerInfo extends Admin
                 $request['aka']=explode(',',$request['aka']);
                 $request['aka']=json_encode($request['aka']);
             }
-            $request['team_history']=addslashes($request['team_history']);
-            $request['event_history']=addslashes($request['event_history']);
+            $request['team_history']=$request['team_history'];
+            $request['event_history']=$request['event_history'];
 
-            $playerInfoObj= new PlayerInfoModel();
-            $playerInfoObj->isUpdate(true)->allowField(true)->save($request);
+            //需要加事务
+            Db::startTrans();
+            try {
+                $playerInfoObj= new PlayerInfoModel();
+                $changeLog = ChangeLogs::checkInsertData('app\common\model\querylist\PlayerInfo', $request, $request['player_id'], 'player', $this->username, 'player_id');
+                if ($changeLog) {
+                    $playerInfoObj->isUpdate(true)->allowField(true)->save($request);
+                    if (is_numeric($playerInfoObj->player_id)) {
+                        // 提交事务
+                        Db::commit();
+                        return $this->response(200, Lang::get('Success'));
+                    } else {
+                        // 回滚事务
+                        Db::rollback();
+                        return $this->response(201, Lang::get('Fail'));
+                    }
 
-            if (is_numeric($playerInfoObj->player_id)) {
-                return $this->response(200, Lang::get('Success'));
-            } else {
-                return $this->response(201, Lang::get('Fail'));
+                } else {
+                    // 回滚事务
+                    Db::rollback();
+                }
+
+            } catch (\Exception $e) {
+                dump($e->getMessage());
+                // 回滚事务
+                Db::rollback();
             }
+
         }
 
         $id = Request::param('id');

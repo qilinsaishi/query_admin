@@ -2,8 +2,8 @@
 namespace app\admin\controller;
 
 use app\common\model\Collect;
+use app\common\model\querylist\ChangeLogs;
 use app\common\model\querylist\Information as InformationModel;
-
 use app\common\validate\querylist\InformationValidate;
 use think\Db;
 use think\facade\Request;
@@ -64,19 +64,39 @@ class Information extends Admin
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
-            $request['update_time']=date("Y-m-d H:i:s",time()-8*60*60);
-            $informationInfoObj= new InformationModel();
-            $informationInfoObj->isUpdate(true)->allowField(true)->save($request);
 
-            if (is_numeric($informationInfoObj->id)) {
-                $postData=['params'=>json_encode([$informationInfoObj->id]),'dataType' => 'information'];
-                $api_host=config('app.api_host').'/refresh';
-                $return=curl_post($api_host, $postData);
-                return $this->response(200, Lang::get('Success'));
+            //需要加事务
+            Db::startTrans();
+            try {
+                $informationInfoObj= new InformationModel();
+                $changeLog = ChangeLogs::checkInsertData('app\common\model\querylist\Information', $request, $request['id'], 'information', $this->username, 'id');
+                if ($changeLog) {
+                    $request['update_time']=date("Y-m-d H:i:s",time()-8*60*60);
+                    $informationInfoObj->isUpdate(true)->allowField(true)->save($request);
+                    if (is_numeric($informationInfoObj->id)) {
+                        $postData=['params'=>json_encode([$informationInfoObj->id]),'dataType' => 'information'];
+                        $api_host=config('app.api_host').'/refresh';
+                        $return=curl_post($api_host, $postData);
+                        // 提交事务
+                        Db::commit();
+                        return $this->response(200, Lang::get('Success'));
+                    } else {
+                        // 回滚事务
+                        Db::rollback();
+                        return $this->response(201, Lang::get('Fail'));
+                    }
 
-            } else {
-                return $this->response(201, Lang::get('Fail'));
+                } else {
+                    // 回滚事务
+                    Db::rollback();
+                }
+
+            } catch (\Exception $e) {
+                dump($e->getMessage());
+                // 回滚事务
+                Db::rollback();
             }
+
         }
         $id = Request::param('id');
         $info = InformationModel::get($id);
