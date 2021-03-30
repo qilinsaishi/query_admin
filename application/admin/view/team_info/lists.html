@@ -1,0 +1,210 @@
+<!-- 模板继承 -->
+{extend name="public:base" /}
+
+<!-- 页面标题 -->
+{block name="title"}Administrator{/block}
+
+<!-- 自定义css -->
+{block name="css"}{/block}
+
+<!-- 内容区域 -->
+{block name="content"}
+  <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#">战队列表</a></li>
+      <li class=""><a href="#">{:lang('Create')}</a></li>
+    </ul>
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+          <h3 class="box-title">{:lang('Filter')}</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <form action="#" method="get" class="form-inline">
+			  <div class="form-group">
+                  <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon1">对应游戏</span>
+                  <select name="game" class="form-control">
+                    <option value="">--请选择--</option>
+                    {foreach $gameList as $k=>$v } 
+                    <option {eq name="$v" value="$search.game"}selected{/eq} value="{$v}">
+                        {$v}
+                    </option>
+                    {/foreach}
+                  </select>
+                  </div>
+              </div>
+			  <div class="form-group">
+                  <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon2">初始来源</span>
+                  <select name="original_source" class="form-control">
+                    <option value="">--请选择--</option>
+                    {foreach $originalSource as $k=>$v } 
+                    <option {eq name="$v" value="$search.original_source"}selected{/eq} value="{$v}">
+                        {$v}
+                    </option>
+                    {/foreach}
+                  </select>
+                  </div>
+              </div>
+              <div class="form-group">
+                <input type="text" name="q" value="{$search.q}" class="form-control" placeholder="">
+              </div>
+              <button type="submit" class="btn btn-primary btn-flat"> <i class="fa fa-search"></i> {:lang('Search')}</button>
+            </form>
+        </div>
+        <!-- /.box-body -->
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active table-responsive no-padding">
+            <table class="table table-condensed table-hover" id="category">
+                <thead>
+                    <tr>
+                        <th><input id="checkAll" type="checkbox"></th>
+                        <th>战队ID</th>
+						<th>TID</th>
+                        <th>战队名称</th>
+						<th>中文名称</th>
+						<th>英文名称</th>
+						<th>创建日期</th>
+						<th>所在地区</th>
+						<th>源站点ID</th>
+                        <th>游戏类型</th>
+						<th>初始来源</th>
+                        <th>战队Logo</th>
+						<th>{:lang('Creation date')}</th>
+						<th>更新时间</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    {volist name="list" id="vo"}
+                    <tr id = "tr_{$vo.team_id}">
+                        <td><input name="ids[]" value="{$vo.team_id}" type="checkbox"></td>
+                        <td>{$vo.team_id}</td>
+						 <td>{$vo.tid}</td>
+                        <td>
+                            {$vo.team_name}
+                        </td>
+						 <td>{$vo.cn_name}</td>
+						 <td>{$vo.en_name}</td>
+						 <td>{$vo.established_date}</td>
+						 <td>{$vo.location}</td>
+						 <td>{$vo.site_id}</td>
+                        <td>{$vo.game}</td>
+						<td>{$vo.original_source}</td>
+                        <td>
+                            <img src="{$vo.logo}?x-oss-process=image/resize,m_lfit,h_60,w_60" width="60"  height='60'>
+                        </td>
+                         <td>{$vo.create_time}</td>
+						 <td>{$vo.update_time}</td>
+                        
+                    </tr>
+                    {/volist}
+                    {empty name="list"}
+                    <tr>
+                        <td colspan="7" class="text-center">{:lang("No record")}</td>
+                    </tr>
+                    {/empty}
+                </tbody>
+            </table>
+        </div>
+        <!-- /.tab-pane -->
+    </div>
+    <!-- /.tab-content -->
+    <div class="box-footer">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="text-right"> {$page} </div>
+          </div>
+        </div>
+    </div>
+  </div>
+
+
+{/block}
+
+<!-- 自定义js -->
+{block name="js"}
+<script type="text/javascript">
+$(document).ready(function(){
+        $("#category").treetable({ expandable: true });
+        $("#category").treetable('expandAll');
+    });
+    //批量操作
+    function handle(){
+        var chk_value =[]; 
+        $('input[name="ids[]"]:checked').each(function(){ 
+            chk_value.push($(this).val()); 
+        }); 
+        var type = $('#type option:selected').val() ;
+        if(chk_value.length < 1){
+            swal({
+                title: "{:lang('No record selected')}",
+                text: "",
+                type: "warning"
+            });
+        }else{
+            swal({
+              title: "{:lang('Are you sure')}",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: "{:lang('Yes')}",
+              cancelButtonText: "{:lang('No')}",
+            }).then(function(result){
+              if (result.value) {
+                $.ajax({
+                    url:"{:Url('admin/TeamInfo/handle')}",
+                    data:{'ids':chk_value, 'type':type},
+                    type:'post',
+                    dataType:'json',
+                    success: function(xhr){
+                        if(xhr.code == 200){
+                            swal(xhr.msg, "","success").then(function(value){
+                              window.location.reload();
+                            });
+                        }else{
+                            swal(xhr.msg, "", "error");
+                        }
+                    }
+                })
+              }
+            })
+        }
+    }
+
+    function remove(id){
+        swal({
+          title: "{:lang('Are you sure')}",
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: "{:lang('Yes')}",
+          cancelButtonText: "{:lang('No')}",
+        }).then(function(result){
+          if (result.value) {
+            $.ajax({
+                url:"{:Url('admin/TeamInfo/remove')}",
+                data:{'id':id},
+                type:'post',
+                dataType:'json',
+                success: function(xhr){
+                    if(xhr.code == 200){
+                        swal(xhr.msg, "","success").then(function(value){
+                            $("#tr_" + id).remove();
+                        });
+                    }else{
+                        swal(xhr.msg, "", "error");
+                    }
+                }
+            })
+          }
+        })
+    }
+</script>
+{/block}

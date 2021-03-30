@@ -5,6 +5,7 @@ namespace app\admin\controller;
 use app\common\model\Collect;
 use app\common\model\querylist\ChangeLogs;
 use app\common\model\querylist\TeamInfo as TeamInfoModel;
+use app\common\model\querylist\TeamList;
 use app\common\validate\querylist\CpseoTeamInfoValidate;
 use think\Db;
 use think\facade\Request;
@@ -35,8 +36,8 @@ class TeamInfo extends Admin
         $gameList = config('app.game_type');
         $originalSource = config('app.original_source');
         // 分页列表
-        $teameamModel = new TeamInfoModel();
-        $list = $teameamModel->getList($args);
+        $teamInfoModel = new TeamInfoModel();
+        $list = $teamInfoModel->getList($args);
         $this->assign('search', $query);
         $this->assign('list', $list);
         $this->assign('page', $list->render());
@@ -44,6 +45,87 @@ class TeamInfo extends Admin
         $this->assign('originalSource', $originalSource);
 
         return $this->fetch('index');
+    }
+    public function lists()
+    {
+        $request = Request::param();
+        $query = [
+            'q' => isset($request['q']) ? $request['q'] : '',
+            'game' => isset($request['game']) ? $request['game'] : '',
+            'original_source' => isset($request['original_source']) ? $request['original_source'] : '',
+        ];
+        $args = [
+            'query' => $query,
+            'field' => '',
+            'order' => 'tid desc',
+            'params' => $query,
+            'limit' => 20,
+        ];
+        $gameList = config('app.game_type');
+        $originalSource = config('app.original_source');
+        // 分页列表
+        $teamInfoModel = new TeamList();
+        $list = $teamInfoModel->getList($args);
+        $this->assign('search', $query);
+        $this->assign('list', $list);
+        $this->assign('page', $list->render());
+        $this->assign('gameList', $gameList);
+        $this->assign('originalSource', $originalSource);
+
+        return $this->fetch('lists1');
+    }
+    public function updataList(){
+        $request = Request::param();
+
+        $tid=$request['tid'];
+        unset($request['tid']);
+        if($request['field']=='aka'){
+            if(strpos($request['value'],',')!==false){
+                $aka=explode(',',$request['value']);
+            }else{
+                $aka[]=$request['value'];
+            }
+            $request['value']=json_encode($aka);
+        }
+        $data[$request['field']]=$request['value'];
+        $teamListObj = new TeamList();
+        $return=$teamListObj->updateField($tid,$data);
+
+        if ($return !== false) {
+            return $this->response(200, Lang::get('Success'));
+        } else {
+            return $this->response(201, Lang::get('Fail'));
+        }
+
+    }
+    public function selectHmtl(){
+        $tid = Request::param('tid');
+        $field = Request::param('field');
+        $teamInfoModel = new TeamInfoModel();
+        $map['tid']=$tid;
+        $teamInfos=$teamInfoModel->getFieldList($map,$field);
+        $html='<select class="filed_select" style="width:180px;height: 30px;line-height: 30px;margin: 0 auto;" name="'.$field.'"><option value="">请选择</option>';
+        if(count($teamInfos)>0){
+            foreach ($teamInfos as $key=>$val){
+                if($field=='aka'){
+                    $val=json_decode($val,true);
+                    if(!empty($val)){
+                        $val=join(',',$val);
+                    }else{
+                        $val='';
+                    }
+                }
+
+                if($val !=''){
+                   $html.='<option value="'.$key.'">'.$val.'</option>';
+                }
+            }
+        }
+        $html.='</select>';
+        $html.='<input type="hidden" name="tid" value="'.$tid.'">';
+        $html.='<input type="hidden" name="field" value="'.$field.'">';
+        return $this->response(200, Lang::get('Success'),$html);
+
     }
 
     public function edit()

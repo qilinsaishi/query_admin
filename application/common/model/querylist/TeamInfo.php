@@ -18,7 +18,7 @@ class TeamInfo extends BaseQueryList
     public function getList($request){
         $query = [];
         if (isset($request['query']['q'])) {
-            $query[] = ['team_name','like','%'.$request['query']['q'].'%'];
+            $query[] = ['team_name|site_id|team_id|cn_name|en_name|location','like','%'.$request['query']['q'].'%'];
         }
 
         if (!empty($request['query']['game'])) {
@@ -47,6 +47,16 @@ class TeamInfo extends BaseQueryList
     public function teamList($game=''){
         $data=[];
         $data=$this->where('game',$game)->field("team_id,team_name,game")->select()->toArray();
+        return $data;
+    }
+
+    public function getIds($map){
+        $data=$this->where($map)->column('tid');
+        return $data;
+    }
+    public function getFieldList($map,$field){
+        $data=[];
+        $data=$this->where($map)->column($field,'team_id');
         return $data;
     }
 

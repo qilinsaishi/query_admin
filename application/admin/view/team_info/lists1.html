@@ -1,0 +1,329 @@
+<!-- 模板继承 -->
+{extend name="public:base" /}
+
+<!-- 页面标题 -->
+{block name="title"}Administrator{/block}
+
+<!-- 自定义css -->
+{block name="css"}{/block}
+
+<!-- 内容区域 -->
+{block name="content"}
+  <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#">战队列表</a></li>
+      <li class=""><a href="#">{:lang('Create')}</a></li>
+    </ul>
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+          <h3 class="box-title">{:lang('Filter')}</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <form action="#" method="get" class="form-inline">
+			  <div class="form-group">
+                  <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon1">对应游戏</span>
+                  <select name="game" class="form-control">
+                    <option value="">--请选择--</option>
+                    {foreach $gameList as $k=>$v } 
+                    <option {eq name="$v" value="$search.game"}selected{/eq} value="{$v}">
+                        {$v}
+                    </option>
+                    {/foreach}
+                  </select>
+                  </div>
+              </div>
+			  <div class="form-group">
+                  <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon2">初始来源</span>
+                  <select name="original_source" class="form-control">
+                    <option value="">--请选择--</option>
+                    {foreach $originalSource as $k=>$v } 
+                    <option {eq name="$v" value="$search.original_source"}selected{/eq} value="{$v}">
+                        {$v}
+                    </option>
+                    {/foreach}
+                  </select>
+                  </div>
+              </div>
+              <div class="form-group">
+                <input type="text" name="q" value="{$search.q}" class="form-control" placeholder="">
+              </div>
+              <button type="submit" class="btn btn-primary btn-flat"> <i class="fa fa-search"></i> {:lang('Search')}</button>
+            </form>
+        </div>
+        <!-- /.box-body -->
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active table-responsive no-padding">
+			
+                    <div class="dd" data-plugin="nestable">
+					  <ol class="dd-list">
+					  
+					  <div class="dd-content" >
+						<li>
+							<span style="margin-left:30px;">TID</span>
+							<span style="margin-left:50px;">战队名称</span>
+							<span style="margin-left:50px;">中文名称</span>
+							<span style="margin-left:50px;">英文名称</span>
+							<span style="margin-left:50px;">别名</span>
+							<span style="margin-left:50px;">创建日期</span>
+							<span style="margin-left:50px;">所在地区</span>
+							<span style="margin-left:50px;">源站点ID</span>
+							<span style="margin-left:50px;">游戏类型</span>
+							<span style="margin-left:50px;">初始来源</span>
+							<span style="margin-left:50px;">缩略图</span>
+							<span style="margin-left:50px;">操作</span>
+						</li>
+						</div>
+						{volist name="list" id="vo"}
+						<li class="dd-item dd-item-alt " >
+						  <div class="dd-handle"></div>
+						  <div class="dd-content">
+						  <span>{$vo.tid}</span>
+						  <span class="list_team_name" onclick="editField({$vo.tid},'team_name');"  style="margin-left:60px;">{$vo.team_name}</span>
+						  <span class="list_cn_name" style="margin-left:70px;" onclick="editField({$vo.tid},'cn_name');">{$vo.cn_name}</span>
+						  <span class="list_en_name" style="margin-left:80px;" onclick="editField({$vo.tid},'en_name');">{$vo.en_name}</span>
+						  <span class="list_en_name" style="margin-left:70px;" onclick="editField({$vo.tid},'aka');">{$vo.aka}</span>
+						  <span class="list_established_date" style="margin-left:80px;" onclick="editField({$vo.tid},'established_date');">{$vo.established_date}</span>
+						  <span style="margin-left:70px;" onclick="editField({$vo.tid},'location');">{$vo.location}</span>
+						  <span style="margin-left:80px;" onclick="editField({$vo.tid},'site_id');">{$vo.site_id}</span>
+						  <span style="margin-left:80px;" onclick="editField({$vo.tid},'game');">{$vo.game}</span>
+						  <span style="margin-left:80px;" onclick="editField({$vo.tid},'original_source');">{$vo.original_source}</span>
+						  <span style="margin-left:70px;" onclick="editField({$vo.tid},'logo');">{$vo.logo}</span>
+						  <span style="margin-left:50px;">
+                            <a href="{:url('admin/TeamInfo/list_edit', ['id' => $vo['tid']])}"></i> {:lang('Edit')}</a>
+						  </span>
+						  </div>
+						  {notempty name="vo.child"}
+						  <ol class="dd-list" >
+							<table class='table table-condensed table-hover'>
+							<thead>
+								<tr>
+									<th>TID</th>
+									<th>战队ID</th>
+									<th>战队名称</th>
+									<th>中文名称</th>
+									<th>英文名称</th>
+									<th>别名</th>
+									<th>创建日期</th>
+									<th>所在地区</th>
+									<th>源站点ID</th>
+									<th>游戏类型</th>
+									<th>初始来源</th>
+									<th>缩略图</th>
+									<th>创建时间</th>
+									<th>更新时间</th>
+								</tr>
+							</thead>
+							<tbody>
+							{volist name="vo.child" id="child"}
+							<tr>
+								<td class="dd-item dd-item-alt" data-id="{$child.team_id}">
+								  
+								  <tr>
+									<td>{$vo.tid}</td>
+									<td>{$child.team_id}</td>
+									<td>{$child.team_name}</td>
+									<td>{$child.cn_name}</td>
+									<td>{$child.en_name}</td>
+									<td>{$child.aka}</td>
+									<td>{$child.established_date}</td>
+									<td>{$child.location}</td>
+									<td>{$child.site_id}</td>
+									<td>{$child.game}</td>
+									<td>{$child.original_source}</td>
+									<td> <img src="{$child.logo}?x-oss-process=image/resize,m_lfit,h_60,w_60" width="20"  height='20'></td>
+									<td>{$child.create_time}</td>
+									<td>{$child.update_time}</td>
+								  </tr>
+								 
+								</td>
+							</tr>
+							{/volist}
+							</tbody>
+							</table>
+						  </ol>
+						  {/notempty}
+						</li>
+						{/volist}
+					  </ol>
+					</div>
+                   
+        </div>
+        <!-- /.tab-pane -->
+    </div>
+    <!-- /.tab-content -->
+    <div class="box-footer">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="text-right"> {$page} </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  
+  
+
+
+{/block}
+
+<!-- 自定义js -->
+{block name="js"}
+<script type="text/javascript">
+	//$(document).ready(function(){
+       // $("#category").treetable({ expandable: true });
+        //$("#category").treetable('expandAll');
+   // });
+
+    $('.dd').nestable({ 
+        maxDepth:3,
+    });
+	/*$(".list_team_name").click(function(){
+		var field=$(this).attr('data-field');
+	});*/
+	function editField(tid,field){
+		if (tid) {
+                $.ajax({
+                    url:"{:Url('admin/TeamInfo/selectHmtl')}",
+                    data:{'tid':tid, 'field':field},
+                    type:'post',
+                    dataType:'json',
+                    success: function(xhr){
+						var content='<div style="height: 36px;line-height: 30px;padding-left:40px;padding-top:30px;" >'+xhr.data;
+	
+						content +='<div class="layui-layer-btn layui-layer-btn-" style="text-align: center;margin-top:20px;"><a class="layui-layer-btn0 confirmSubmit" >确定</a><a class="layui-layer-btn1">取消</a></div></div>';
+                        if(xhr.code == 200){
+                            layui.use('layer', function(){
+							  var $ = layui.jquery;
+							  var layer = layui.layer;
+							
+							  //页面层
+								layer.open({
+								  type: 1,
+								  skin: 'layui-layer-rim', //加上边框
+								  area: ['280px', '200px'], //宽高
+								  content: content,
+								  
+								});
+							  
+							  
+							});
+                        }else{
+                            swal(xhr.msg, "", "error");
+                        }
+                    }
+                })
+              }
+		
+	
+	}
+	
+	/***/
+
+
+    //批量操作
+    function handle(){
+        var chk_value =[]; 
+        $('input[name="ids[]"]:checked').each(function(){ 
+            chk_value.push($(this).val()); 
+        }); 
+        var type = $('#type option:selected').val() ;
+        if(chk_value.length < 1){
+            swal({
+                title: "{:lang('No record selected')}",
+                text: "",
+                type: "warning"
+            });
+        }else{
+            swal({
+              title: "{:lang('Are you sure')}",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: "{:lang('Yes')}",
+              cancelButtonText: "{:lang('No')}",
+            }).then(function(result){
+              if (result.value) {
+                $.ajax({
+                    url:"{:Url('admin/TeamInfo/handle')}",
+                    data:{'ids':chk_value, 'type':type},
+                    type:'post',
+                    dataType:'json',
+                    success: function(xhr){
+                        if(xhr.code == 200){
+                            swal(xhr.msg, "","success").then(function(value){
+                              window.location.reload();
+                            });
+                        }else{
+                            swal(xhr.msg, "", "error");
+                        }
+                    }
+                })
+              }
+            })
+        }
+    }
+	$(document).on('click','.confirmSubmit',function(){
+		var tid = $('input[name="tid"]').val();
+		var values=$(".filed_select").find("option:selected").val(); 
+		var fields = $('input[name="field"]').val();
+		
+          if (tid) {
+            $.ajax({
+                url:"{:Url('admin/TeamInfo/updataList')}",
+                data:{'tid':tid,'value':values,'field':fields},
+                type:'post',
+                dataType:'json',
+                success: function(xhr){
+                    if(xhr.code == 200){
+                        swal(xhr.msg, "","success").then(function(value){
+                              window.location.reload();
+                            });
+                    }else{
+                        swal(xhr.msg, "", "error");
+                    }
+                }
+            })
+          }
+     
+		
+	});
+	
+	
+
+    function remove(id){
+        swal({
+          title: "{:lang('Are you sure')}",
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: "{:lang('Yes')}",
+          cancelButtonText: "{:lang('No')}",
+        }).then(function(result){
+          if (result.value) {
+            $.ajax({
+                url:"{:Url('admin/TeamInfo/remove')}",
+                data:{'id':id},
+                type:'post',
+                dataType:'json',
+                success: function(xhr){
+                    if(xhr.code == 200){
+                        swal(xhr.msg, "","success").then(function(value){
+                            $("#tr_" + id).remove();
+                        });
+                    }else{
+                        swal(xhr.msg, "", "error");
+                    }
+                }
+            })
+          }
+        })
+    }
+</script>
+{/block}
