@@ -79,23 +79,28 @@ class TeamInfo extends Admin
 
         $tid=$request['tid'];
         unset($request['tid']);
-        if($request['field']=='aka'){
-            if(strpos($request['value'],',')!==false){
-                $aka=explode(',',$request['value']);
-            }else{
-                $aka[]=$request['value'];
+        if($request['value']!='' || $request['value']>0){
+            if($request['field']=='aka'){
+                if(strpos($request['value'],',')!==false){
+                    $aka=explode(',',$request['value']);
+                }else{
+                    $aka[]=$request['value'];
+                }
+                $request['value']=json_encode($aka);
             }
-            $request['value']=json_encode($aka);
-        }
-        $data[$request['field']]=$request['value'];
-        $teamListObj = new TeamList();
-        $return=$teamListObj->updateField($tid,$data);
+            $data[$request['field']]=$request['value'];
+            $teamListObj = new TeamList();
+            $return=$teamListObj->updateField($tid,$data);
 
-        if ($return !== false) {
-            return $this->response(200, Lang::get('Success'));
-        } else {
-            return $this->response(201, Lang::get('Fail'));
+            if ($return !== false) {
+                return $this->response(200, Lang::get('Success'));
+            } else {
+                return $this->response(201, Lang::get('Fail'));
+            }
+        }else{
+            return $this->response(201, '数据值不能为空');
         }
+
 
     }
     public function selectHmtl(){

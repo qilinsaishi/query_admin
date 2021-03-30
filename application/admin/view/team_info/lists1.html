@@ -272,7 +272,7 @@
 		var tid = $('input[name="tid"]').val();
 		var values=$(".filed_select").find("option:selected").val(); 
 		var fields = $('input[name="field"]').val();
-		
+	
           if (tid) {
             $.ajax({
                 url:"{:Url('admin/TeamInfo/updataList')}",
