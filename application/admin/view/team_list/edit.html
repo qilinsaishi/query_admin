@@ -1,0 +1,173 @@
+<!-- 模板继承 -->
+{extend name="public:base" /}
+
+<!-- 页面标题 -->
+{block name="title"}Administrator{/block}
+
+<!-- 自定义css -->
+{block name="css"}{/block}
+
+<!-- 内容区域 -->
+{block name="content"}
+  <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+      <li class=""><a href="{:url('admin/TeamInfo/index')}">cpSeo战队</a></li>
+      <li class=""><a href="{:url('admin/TeamInfo/create')}">{:lang('Create')}</a></li>
+      <li class="pull-right"><a href="javascript:history.back(-1);" class="text-muted"><i class="fa fa-chevron-circle-left"></i></a></li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane active">
+        <form role="form" id="operate">
+			<div class="layui-table-body layui-table-main">
+				 <input type="hidden" name="tid" value="{$info.tid}">
+				<h3 class="layui-btn layui-btn-sm">描述信息</h3>
+				<table cellspacing="0" cellpadding="0" border="0" class="layui-table">
+					<tbody>
+						{volist name="list" id="vo"}
+						<tr  class="">
+							<td  class="layui-table-col-special">
+								<div class="layui-table-cell laytable-cell-radio">
+									<input type="radio" name="description" value="{$vo.team_id}" 
+									{eq name="info.description" value="$vo.team_id"}checked{/eq}>
+								</div>
+							</td>
+							<td  class="">
+							   <div class="layui-table-cell">{$vo.description}</div>
+							</td>
+							
+						</tr>
+					{/volist}
+					</tbody>
+				</table>
+				
+				<h3 class="layui-btn layui-btn-sm">缩略图</h3>
+				<table cellspacing="0" cellpadding="0" border="0" class="layui-table">
+					<tbody>
+						{volist name="list" id="vo"}
+						<tr  class="">
+							<td  class="layui-table-col-special" width="44">
+								<div class="layui-table-cell laytable-cell-radio">
+									<input type="radio" name="logo" value="{$vo.team_id}" 
+									{eq name="info.logo" value="$vo.team_id"}checked{/eq}>
+								</div>
+							</td>
+							<td  class="">
+							   <img  class="layui-upload-img img-responsive" src="{$vo.logo}?x-oss-process=image/resize,m_lfit,h_60,w_60" width="60"  height='60'>
+							</td>
+							
+						</tr>
+					{/volist}
+					</tbody>
+				</table>
+				
+				<h3 class="layui-btn layui-btn-sm">荣誉信息</h3>
+				<table cellspacing="0" cellpadding="0" border="0" class="layui-table">
+					<tbody>
+						{volist name="list" id="vo"}
+						<tr  class="">
+							<td width="44" class="layui-table-col-special">
+								<div class="layui-table-cell laytable-cell-radio">
+									<input type="radio" name="honor_list" value="{$vo.team_id}" 
+									{eq name="info.honor_list" value="$vo.team_id"}checked{/eq}>
+								</div>
+							</td>
+							<td  class="">
+							   <div class="layui-table-cell">{$vo.honor_list}</div>
+							</td>
+							
+						</tr>
+					{/volist}
+					</tbody>
+				</table>
+				
+				<h3 class="layui-btn layui-btn-sm">战绩信息</h3>
+				<table cellspacing="0" cellpadding="0" border="0" class="layui-table">
+					<tbody>
+						{volist name="list" id="vo"}
+						<tr  class="">
+							<td width="44" class="layui-table-col-special">
+								<div class="layui-table-cell laytable-cell-radio">
+									<input type="radio" name="race_stat" value="{$vo.team_id}" 
+									{eq name="info.race_stat" value="$vo.team_id"}checked{/eq}>
+								</div>
+							</td>
+							<td  class="">
+							   <div class="layui-table-cell">{$vo.race_stat}</div>
+							</td>
+							
+						</tr>
+					{/volist}
+					</tbody>
+				</table>
+				
+				<h3 class="layui-btn layui-btn-sm">战队历程</h3>
+				<table cellspacing="0" cellpadding="0" border="0" class="layui-table">
+					<tbody>
+						{volist name="list" id="vo"}
+						<tr  class="">
+							<td width="44" class="layui-table-col-special">
+								<div class="layui-table-cell laytable-cell-radio">
+									<input type="radio" name="team_history" value="{$vo.team_id}" 
+									{eq name="info.team_history" value="$vo.team_id"}checked{/eq}>
+								</div>
+							</td>
+							<td  class="">
+							   <div class="layui-table-cell">{$vo.team_history}</div>
+							</td>
+						</tr>
+					{/volist}
+					</tbody>
+				</table>
+				
+
+			</div>	
+            
+        </form>
+      </div>
+      <!-- /.tab-pane -->
+    </div>
+    <!-- /.tab-content -->
+    <div class="box-footer">
+        <div class="btn-group">
+            <button class="btn btn-primary btn-flat" onclick="operate();" type="button"> {:lang('Save')}</button>
+        </div>
+    </div>
+  </div>
+{/block}
+
+<!-- 自定义js -->
+{block name="js"}
+
+<script type="text/javascript">
+    function operate(){
+        $.ajax({
+            url:"{:url('admin/TeamList/edit')}",
+            data:$("#operate").serialize(),
+            type:'post',
+            dataType:'json',
+            success:function(xhr){
+                if(xhr.code == 200){
+                    swal({
+                      position: 'center',
+                      type: 'success',
+                      title: xhr.msg,
+                      showConfirmButton: false,
+                      toast:false,
+                      timer: 2000
+                    });
+                } else{
+                    swal({
+                      position: 'center',
+                      type: 'error',
+                      title: xhr.msg,
+                      showConfirmButton: false,
+                      toast:false,
+                      timer: 2000
+                    });
+                }
+            }
+        });
+    }
+
+</script>
+{/block}

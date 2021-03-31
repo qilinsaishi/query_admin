@@ -5,7 +5,12 @@
 {block name="title"}Administrator{/block}
 
 <!-- 自定义css -->
-{block name="css"}{/block}
+{block name="css"}
+<style>
+.layui-layer-content{height:200px;!important;}
+</style>
+
+{/block}
 
 <!-- 内容区域 -->
 {block name="content"}
@@ -69,13 +74,11 @@
 							<span style="margin-left:50px;">战队名称</span>
 							<span style="margin-left:50px;">中文名称</span>
 							<span style="margin-left:50px;">英文名称</span>
-							<span style="margin-left:50px;">别名</span>
 							<span style="margin-left:50px;">创建日期</span>
 							<span style="margin-left:50px;">所在地区</span>
 							<span style="margin-left:50px;">源站点ID</span>
 							<span style="margin-left:50px;">游戏类型</span>
 							<span style="margin-left:50px;">初始来源</span>
-							<span style="margin-left:50px;">缩略图</span>
 							<span style="margin-left:50px;">操作</span>
 						</li>
 						</div>
@@ -87,15 +90,14 @@
 						  <span class="list_team_name" onclick="editField({$vo.tid},'team_name');"  style="margin-left:60px;">{$vo.team_name}</span>
 						  <span class="list_cn_name" style="margin-left:70px;" onclick="editField({$vo.tid},'cn_name');">{$vo.cn_name}</span>
 						  <span class="list_en_name" style="margin-left:80px;" onclick="editField({$vo.tid},'en_name');">{$vo.en_name}</span>
-						  <span class="list_en_name" style="margin-left:70px;" onclick="editField({$vo.tid},'aka');">{$vo.aka}</span>
+						  
 						  <span class="list_established_date" style="margin-left:80px;" onclick="editField({$vo.tid},'established_date');">{$vo.established_date}</span>
 						  <span style="margin-left:70px;" onclick="editField({$vo.tid},'location');">{$vo.location}</span>
 						  <span style="margin-left:80px;" onclick="editField({$vo.tid},'site_id');">{$vo.site_id}</span>
 						  <span style="margin-left:80px;" onclick="editField({$vo.tid},'game');">{$vo.game}</span>
 						  <span style="margin-left:80px;" onclick="editField({$vo.tid},'original_source');">{$vo.original_source}</span>
-						  <span style="margin-left:70px;" onclick="editField({$vo.tid},'logo');">{$vo.logo}</span>
 						  <span style="margin-left:50px;">
-                            <a href="{:url('admin/TeamInfo/list_edit', ['id' => $vo['tid']])}"></i> {:lang('Edit')}</a>
+                            <a href="{:url('admin/TeamList/edit', ['id' => $vo['tid']])}"></i> {:lang('Edit')}</a>
 						  </span>
 						  </div>
 						  {notempty name="vo.child"}
@@ -108,13 +110,12 @@
 									<th>战队名称</th>
 									<th>中文名称</th>
 									<th>英文名称</th>
-									<th>别名</th>
+									
 									<th>创建日期</th>
 									<th>所在地区</th>
 									<th>源站点ID</th>
 									<th>游戏类型</th>
 									<th>初始来源</th>
-									<th>缩略图</th>
 									<th>创建时间</th>
 									<th>更新时间</th>
 								</tr>
@@ -130,13 +131,12 @@
 									<td>{$child.team_name}</td>
 									<td>{$child.cn_name}</td>
 									<td>{$child.en_name}</td>
-									<td>{$child.aka}</td>
+									
 									<td>{$child.established_date}</td>
 									<td>{$child.location}</td>
 									<td>{$child.site_id}</td>
 									<td>{$child.game}</td>
 									<td>{$child.original_source}</td>
-									<td> <img src="{$child.logo}?x-oss-process=image/resize,m_lfit,h_60,w_60" width="20"  height='20'></td>
 									<td>{$child.create_time}</td>
 									<td>{$child.update_time}</td>
 								  </tr>
@@ -166,7 +166,23 @@
     </div>
   </div>
   
-  
+  <div class="row col-sm-12" style="display:none;" id="show_div">
+        <form class="form-horizontal m-t" id="commentForm" novalidate="novalidate" style="margin-top:30px;margin-left:40px;">
+              <div class="form-group">
+                  <!--<label class="col-sm-3 control-label">姓名：</label>-->
+                  <div class="col-sm-8" id="selectField">
+                      <!--<input id="cname" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">-->
+                  </div>
+              </div>
+              
+              <div class="form-group">
+                  <div class="col-sm-4 col-sm-offset-3">
+                      <a class="btn btn-primary confirmSubmit" style="margin-top:10px;" type="submit">提交</a>
+                  </div>
+              </div>
+          </form>
+    </div>
+
 
 
 {/block}
@@ -174,43 +190,56 @@
 <!-- 自定义js -->
 {block name="js"}
 <script type="text/javascript">
-	//$(document).ready(function(){
-       // $("#category").treetable({ expandable: true });
-        //$("#category").treetable('expandAll');
-   // });
+
 
     $('.dd').nestable({ 
         maxDepth:3,
     });
-	/*$(".list_team_name").click(function(){
-		var field=$(this).attr('data-field');
-	});*/
+	
 	function editField(tid,field){
 		if (tid) {
                 $.ajax({
-                    url:"{:Url('admin/TeamInfo/selectHmtl')}",
+                    url:"{:Url('admin/TeamList/selectHmtl')}",
                     data:{'tid':tid, 'field':field},
                     type:'post',
                     dataType:'json',
                     success: function(xhr){
-						var content='<div style="height: 36px;line-height: 30px;padding-left:40px;padding-top:30px;" >'+xhr.data;
+						var content=xhr.data;
+						var title='';
+						if(field=='team_name'){
+							title='战队名称';
+						}else if(field=='cn_name'){
+							title='中文名称';
+						}else if(field=='en_name'){
+							title='英文名称';
+						}else if(field=='established_date'){
+							title='创建日期';//
+						}else if(field=='location'){
+							title='所在地区';
+						}else if(field=='site_id'){
+							title='原站点ID';
+						}else if(field=='game'){
+							title='游戏类型';
+						}else if(field=='game'){
+							title='游戏类型';
+						}else if(field=='original_source'){
+							title='初始来源';
+						}
 	
-						content +='<div class="layui-layer-btn layui-layer-btn-" style="text-align: center;margin-top:20px;"><a class="layui-layer-btn0 confirmSubmit" >确定</a><a class="layui-layer-btn1">取消</a></div></div>';
                         if(xhr.code == 200){
                             layui.use('layer', function(){
 							  var $ = layui.jquery;
 							  var layer = layui.layer;
-							
-							  //页面层
-								layer.open({
-								  type: 1,
-								  skin: 'layui-layer-rim', //加上边框
-								  area: ['280px', '200px'], //宽高
-								  content: content,
-								  
+							  $("#selectField").html(xhr.data);
+							   
+							var index = layer.open({
+								type: 1,  //可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+								title: [title, 'font-size:18px; color:orange;'],//数组第二项可以写任意css样式；如果你不想显示标题栏，你可以title: false
+								area: ['280px', '200px'],
+								shadeClose:true,
+								shade:0,
+								content: $('#show_div')
 								});
-							  
-							  
 							});
                         }else{
                             swal(xhr.msg, "", "error");
@@ -250,7 +279,7 @@
             }).then(function(result){
               if (result.value) {
                 $.ajax({
-                    url:"{:Url('admin/TeamInfo/handle')}",
+                    url:"{:Url('admin/TeamList/handle')}",
                     data:{'ids':chk_value, 'type':type},
                     type:'post',
                     dataType:'json',
@@ -268,34 +297,36 @@
             })
         }
     }
+	//
+	$(document).on('click','.layui-layer-close1',function(){
+		window.location.reload();
+	});
 	$(document).on('click','.confirmSubmit',function(){
+		$('.layui-layer-page').hide();
+		//var index = layer.open();
+		//layer.close(index); 
 		var tid = $('input[name="tid"]').val();
 		var values=$(".filed_select").find("option:selected").val(); 
 		var fields = $('input[name="field"]').val();
-	
-          if (tid) {
-            $.ajax({
-                url:"{:Url('admin/TeamInfo/updataList')}",
-                data:{'tid':tid,'value':values,'field':fields},
-                type:'post',
-                dataType:'json',
-                success: function(xhr){
-                    if(xhr.code == 200){
-                        swal(xhr.msg, "","success").then(function(value){
-                              window.location.reload();
-                            });
-                    }else{
-                        swal(xhr.msg, "", "error");
-                    }
-                }
-            })
-          }
-     
-		
+		  if (tid) {
+			$.ajax({
+				url:"{:Url('admin/TeamList/updataList')}",
+				data:{'tid':tid,'value':values,'field':fields},
+				type:'post',
+				dataType:'json',
+				success: function(xhr){
+					if(xhr.code == 200){
+						swal(xhr.msg, "","success").then(function(value){
+							  window.location.reload();
+						});
+					}else{
+						swal(xhr.msg, "", "error");
+					}
+				}
+			})
+		  }
 	});
 	
-	
-
     function remove(id){
         swal({
           title: "{:lang('Are you sure')}",
@@ -308,7 +339,7 @@
         }).then(function(result){
           if (result.value) {
             $.ajax({
-                url:"{:Url('admin/TeamInfo/remove')}",
+                url:"{:Url('admin/TeamList/remove')}",
                 data:{'id':id},
                 type:'post',
                 dataType:'json',
