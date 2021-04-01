@@ -320,7 +320,10 @@
 							  window.location.reload();
 						});
 					}else{
-						swal(xhr.msg, "", "error");
+						swal(xhr.msg, "","error").then(function(value){
+							  window.location.reload();
+						});
+						
 					}
 				}
 			})

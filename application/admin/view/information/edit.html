@@ -128,7 +128,6 @@
     <div class="box-footer">
         <div class="btn-group">
             <button class="btn btn-primary btn-flat" onclick="operate();" type="button"> {:lang('Save')}</button>
-			<button class="btn btn-default btn-flat" onclick="preview();" style="margin-left:20px;" type="button">预览</button>
 			
         </div>
     </div>
@@ -168,7 +167,7 @@ layui.use('upload', function(){
 });
 </script>
 <script src="__STATIC__/ueditor/ueditor.config.js"></script>
-<script src="__STATIC__/ueditor/ueditor.all.min.js"></script>
+<script src="__STATIC__/ueditor/ueditor.all.min.js?v=1"></script>
 <script type="text/javascript">
 var ue = UE.getEditor('editor', {
     toolbars: [
@@ -177,6 +176,7 @@ var ue = UE.getEditor('editor', {
     ],
     initialFrameWidth: '100%',
     initialFrameHeight:700,
+
     scaleEnabled:true,
     serverUrl: '{:url("admin/ueditor/index")}',
 });
