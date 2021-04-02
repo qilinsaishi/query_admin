@@ -46,9 +46,10 @@ class TeamList extends BaseQueryList
                 'var_page' => 'page',
                 'query'    => $params,
             ]);
-        $child=[];
+
         if(count($data)>0) {
             foreach ($data as &$val){
+                $child=[];
                 $postData=json_encode(['tid'=>$val['tid'],'type' => 'team']);
                 $api_host=config('app.api_host').'/getIntergration';
                 $return=curl_post($api_host, $postData);
@@ -77,8 +78,8 @@ class TeamList extends BaseQueryList
                     $val['aka']='-';
                 }
 
-                if(count($val['team_map'])>0) {
-                    foreach ($val['team_map'] as $k=>$v){
+                if(count($val['teamMap'])>0) {
+                    foreach ($val['teamMap'] as $k=>$v){
                         $child[$k]['team_name']=$v['info']['team_name'] ?? '-';
                         $child[$k]['team_id']=$v['info']['team_id'] ?? '-';
                         $child[$k]['en_name']=$v['info']['en_name'] ?? '-';

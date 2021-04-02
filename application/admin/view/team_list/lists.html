@@ -251,56 +251,11 @@
 	
 	}
 	
-	/***/
+	/**
 
-
-    //批量操作
-    function handle(){
-        var chk_value =[]; 
-        $('input[name="ids[]"]:checked').each(function(){ 
-            chk_value.push($(this).val()); 
-        }); 
-        var type = $('#type option:selected').val() ;
-        if(chk_value.length < 1){
-            swal({
-                title: "{:lang('No record selected')}",
-                text: "",
-                type: "warning"
-            });
-        }else{
-            swal({
-              title: "{:lang('Are you sure')}",
-              type: "warning",
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: "{:lang('Yes')}",
-              cancelButtonText: "{:lang('No')}",
-            }).then(function(result){
-              if (result.value) {
-                $.ajax({
-                    url:"{:Url('admin/TeamList/handle')}",
-                    data:{'ids':chk_value, 'type':type},
-                    type:'post',
-                    dataType:'json',
-                    success: function(xhr){
-                        if(xhr.code == 200){
-                            swal(xhr.msg, "","success").then(function(value){
-                              window.location.reload();
-                            });
-                        }else{
-                            swal(xhr.msg, "", "error");
-                        }
-                    }
-                })
-              }
-            })
-        }
-    }
-	//
 	$(document).on('click','.layui-layer-close1',function(){
 		window.location.reload();
-	});
+	});*/
 	$(document).on('click','.confirmSubmit',function(){
 		$('.layui-layer-page').hide();
 		//var index = layer.open();

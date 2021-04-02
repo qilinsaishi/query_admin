@@ -48,7 +48,22 @@ class PlayerInfo extends BaseQueryList
             ]);
         return $data;
     }
+    public function getIds($map){
+        $data=$this->where($map)->column('pid');
+        return $data;
+    }
+    public function getInfoList($map){
+        $data=[];
+        $data=$this->where($map)->select();
+        return $data;
+    }
 
+
+    public function getFieldList($map,$field){
+        $data=[];
+        $data=$this->where($map)->column($field,'player_id');
+        return $data;
+    }
 
 
 

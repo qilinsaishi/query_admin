@@ -95,10 +95,10 @@ class TeamList extends Admin
                 }
 
                 if($val !=''){
-                    if($field=='original_source'){
-                        $html.='<option value="'.$val.'">'.$val.'</option>';
-                    }else{
+                    if($field !='original_source' || $field !='game'){
                         $html.='<option value="'.$key.'">'.$val.'</option>';
+                    }else{
+                        $html.='<option value="'.$val.'">'.$val.'</option>';
                     }
 
                 }
@@ -137,8 +137,8 @@ class TeamList extends Admin
         $info = TeamListModel::with(['teamMap.info'])->get($id);
 
         $child=[];
-        if(count($info['team_map'])>0) {
-            foreach ($info['team_map'] as $k=>$v){
+        if(count($info['teamMap'])>0) {
+            foreach ($info['teamMap'] as $k=>$v){
                 $child[$k]['team_name']=$v['info']['team_name'] ?? '-';
                 $child[$k]['team_id']=$v['info']['team_id'] ?? '-';
                 $child[$k]['en_name']=$v['info']['en_name'] ?? '-';

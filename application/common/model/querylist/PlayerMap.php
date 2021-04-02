@@ -14,42 +14,12 @@ class PlayerMap extends BaseQueryList
     protected $createTime = 'created_at';
     protected $updateTime = 'update_at';
 
-    /*public function getCreateAtAttr($value)
-    {
-        return date('Y-m-d H:i:s', $value);
-    }*/
-
-    public function getList($request){
-        $query = [];
-
-        if (isset($request['query']['q'])) {
-            $query[] = ['player_name|position|en_name','like','%'.$request['query']['q'].'%'];
-        }
-
-        if (!empty($request['query']['game'])) {
-            $query[] = ['game', 'eq', $request['query']['game']];
-        }
-        if (!empty($request['query']['original_source'])) {
-            $query[] = ['original_source', 'eq', $request['query']['original_source']];
-        }
-
-
-        // 分页参数
-        $params = [];
-        if (!empty($request['params'])) {
-            $params = $request['params'];
-        }
-        $data=$this->where($query)
-            ->order('player_id desc')
-            ->paginate(20, false, [
-                'type'     => 'bootstrap',
-                'var_page' => 'page',
-                'query'    => $params,
-            ]);
-        return $data;
+    public function info(){
+        //多对多
+        //第一个参数是关联的模型，第二个参数是中间表(第三个表)的表名
+        //第三个参数是关联模型的关联id，第4个参数当前模型的关联id
+        return $this->belongsTo('PlayerInfo','player_id','player_id');
     }
-
-
 
 
 
