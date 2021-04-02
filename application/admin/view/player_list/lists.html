@@ -1,0 +1,301 @@
+<!-- 模板继承 -->
+{extend name="public:base" /}
+
+<!-- 页面标题 -->
+{block name="title"}Administrator{/block}
+
+<!-- 自定义css -->
+{block name="css"}{/block}
+
+<!-- 内容区域 -->
+{block name="content"}
+  <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#">队员信息</a></li>
+      <li class=""><a href="{:url('admin/PlayerInfo/create')}">{:lang('Create')}</a></li>
+    </ul>
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+          <h3 class="box-title">{:lang('Filter')}</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <form action="#" method="get" class="form-inline">
+			  <div class="form-group">
+                  <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon1">对应游戏</span>
+                  <select name="game" class="form-control">
+                    <option value="">--请选择--</option>
+                    {foreach $gameList as $k=>$v } 
+                    <option {eq name="$v" value="$search.game"}selected{/eq} value="{$v}">
+                        {$v}
+                    </option>
+                    {/foreach}
+                  </select>
+                  </div>
+              </div>
+			  <div class="form-group">
+                  <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon2">初始来源</span>
+                  <select name="original_source" class="form-control">
+                    <option value="">--请选择--</option>
+                    {foreach $originalSource as $k=>$v } 
+                    <option {eq name="$v" value="$search.original_source"}selected{/eq} value="{$v}">
+                        {$v}
+                    </option>
+                    {/foreach}
+                  </select>
+                  </div>
+              </div>
+              <div class="form-group">
+                <input type="text" name="q" value="{$search.q}" class="form-control" placeholder="">
+              </div>
+              <button type="submit" class="btn btn-primary btn-flat"> <i class="fa fa-search"></i> {:lang('Search')}</button>
+            </form>
+        </div>
+        <!-- /.box-body -->
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active table-responsive no-padding">
+			
+			<div class="dd" data-plugin="nestable">
+			  <ol class="dd-list">
+			  
+			  <div class="dd-content" >
+				<li>
+					<span style="margin-left:30px;">PID</span>
+					<span style="margin-left:25px;">队员ID</span>
+					<span style="margin-left:50px;">选手名称</span>
+					<span style="margin-left:50px;">中文名称</span>
+					<span style="margin-left:60px;">英文名称</span>
+					<span style="margin-left:50px;">位置</span>
+					<span style="margin-left:30px;">所在地区</span>
+					<span style="margin-left:60px;">源站点ID</span>
+					<span style="margin-left:50px;">游戏类型</span>
+					<span style="margin-left:50px;">初始来源</span>
+					<span style="margin-left:60px;">战队ID</span>
+					<span style="margin-left:50px;">操作</span>
+				</li>
+				</div>
+				{volist name="list" id="vo"}
+				<li class="dd-item dd-item-alt " >
+				  <div class="dd-handle"></div>
+				  <div class="dd-content">
+				  <span>{$vo.pid}</span>
+				  <span class="list_cn_name" style="margin-left:30px;" >{$vo.player_id}</span>
+				  <span class="list_team_name" onclick="editField({$vo.pid},'player_name');"  style="margin-left:80px;">{$vo.player_name}</span>
+				  
+				  <span class="list_cn_name" style="margin-left:100px;" onclick="editField({$vo.pid},'cn_name');">{$vo.cn_name}</span>
+				  <span class="list_en_name" style="margin-left:100px;" onclick="editField({$vo.pid},'en_name');">{$vo.en_name}</span>
+				  <span class="list_established_date" style="margin-left:60px;" onclick="editField({$vo.pid},'position');">{$vo.position}</span>
+				  <span style="margin-left:45px;" onclick="editField({$vo.pid},'country');">{$vo.country}</span>
+				  <span style="margin-left:70px;" onclick="editField({$vo.pid},'site_id');">{$vo.site_id}</span>
+				  <span style="margin-left:80px;" onclick="editField({$vo.pid},'game');">{$vo.game}</span>
+				  <span style="margin-left:100px;" onclick="editField({$vo.pid},'original_source');">{$vo.original_source}</span>
+				  <span style="margin-left:60px;" onclick="editField({$vo.pid},'team_id');">{$vo.team_id}</span>
+				  <span style="margin-left:50px;">
+					<a href="{:url('admin/PlayerList/edit', ['id' => $vo['pid']])}"></i> {:lang('Edit')}</a>
+				  </span>
+				  </div>
+				  {notempty name="vo.child"}
+				  <ol class="dd-list" >
+					<table class='table table-condensed table-hover'>
+					<thead>
+						<tr>
+							<th>PID</th>
+							<th>选手ID</th>
+							<th>选手名称</th>
+							<th>中文名称</th>
+							<th>英文名称</th>
+							
+							<th>位置</th>
+							<th>所在地区</th>
+							<th>源站点ID</th>
+							<th>游戏类型</th>
+							<th>初始来源</th>
+							<th>战队ID</th>
+							<th>创建时间</th>
+							<th>更新时间</th>
+						</tr>
+					</thead>
+					<tbody>
+					{volist name="vo.child" id="child"}
+					<tr>
+						<td class="dd-item dd-item-alt" data-id="{$child.player_id}">
+						  
+						  <tr>
+							<td>{$vo.pid}</td>
+							<td>{$child.player_id}</td>
+							<td>{$child.player_name}</td>
+							<td>{$child.cn_name}</td>
+							<td>{$child.en_name}</td>
+							
+							<td>{$child.position}</td>
+							<td>{$child.country}</td>
+							<td>{$child.site_id}</td>
+							<td>{$child.game}</td>
+							<td>{$child.original_source}</td>
+							<td>{$child.team_id}</td>
+							<td>{$child.create_time}</td>
+							<td>{$child.update_time}</td>
+						  </tr>
+						 
+						</td>
+					</tr>
+					{/volist}
+					</tbody>
+					</table>
+				  </ol>
+				  {/notempty}
+				</li>
+				{/volist}
+			  </ol>
+			</div>
+                   
+        </div>
+        <!-- /.tab-pane -->
+    </div>
+    <!-- /.tab-content -->
+    <div class="box-footer">
+        <div class="row">
+          <!--<div class="col-md-6">
+            <form method="post" class="form-inline">
+                <div class="input-group">
+                    <div><select id="type" class="form-control">
+                        <option value="delete">{:lang('Delete')}</option>
+                    </select>
+                    </div>
+                    <span class="input-group-btn"> 
+                        <button type="button" onclick="handle()" class="btn btn-primary btn-flat"> {:lang('Save')} </button> 
+                    </span>
+                </div>
+            </form>
+          </div>-->
+          <div class="col-md-6">
+            <div class="text-right"> {$page} </div>
+          </div>
+        </div>
+    </div>
+  </div>
+
+<div class="row col-sm-12" style="display:none;" id="show_div">
+        <form class="form-horizontal m-t" id="commentForm" novalidate="novalidate" style="margin-top:30px;margin-left:40px;">
+              <div class="form-group">
+                  <!--<label class="col-sm-3 control-label">姓名：</label>-->
+                  <div class="col-sm-8" id="selectField">
+                      <!--<input id="cname" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">-->
+                  </div>
+              </div>
+              
+              <div class="form-group">
+                  <div class="col-sm-4 col-sm-offset-3">
+                      <a class="btn btn-primary confirmSubmit" style="margin-top:10px;" type="submit">提交</a>
+                  </div>
+              </div>
+          </form>
+    </div>
+{/block}
+
+<!-- 自定义js -->
+{block name="js"}
+<script type="text/javascript">
+     $('.dd').nestable({ 
+        maxDepth:3,
+    });
+	
+	function editField(pid,field){
+		if (pid) {
+                $.ajax({
+                    url:"{:Url('admin/playerList/selectHmtl')}",
+                    data:{'pid':pid, 'field':field},
+                    type:'post',
+                    dataType:'json',
+                    success: function(xhr){
+						var content=xhr.data;
+						var title='';
+						if(field=='player_name'){
+							title='战队名称';
+						}else if(field=='cn_name'){
+							title='中文名称';
+						}else if(field=='en_name'){
+							title='英文名称';
+						}else if(field=='position'){
+							title='位置';//
+						}else if(field=='country'){
+							title='所在地区';
+						}else if(field=='site_id'){
+							title='原站点ID';
+						}else if(field=='game'){
+							title='游戏类型';
+						}else if(field=='game'){
+							title='游戏类型';
+						}else if(field=='original_source'){
+							title='初始来源';
+						}else if(field=='team_id'){
+							title='战队ID';
+						}
+	
+                        if(xhr.code == 200){
+                            layui.use('layer', function(){
+							  var $ = layui.jquery;
+							  var layer = layui.layer;
+							  $("#selectField").html(xhr.data);
+							   
+							var index = layer.open({
+								type: 1,  //可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+								title: [title, 'font-size:18px; color:orange;'],//数组第二项可以写任意css样式；如果你不想显示标题栏，你可以title: false
+								area: ['280px', '200px'],
+								shadeClose:true,
+								shade:0,
+								content: $('#show_div')
+								});
+							});
+                        }else{
+                            swal(xhr.msg, "", "error");
+                        }
+                    }
+                })
+              }
+		
+	
+	}
+	
+	/**
+
+	$(document).on('click','.layui-layer-close1',function(){
+		window.location.reload();
+	});*/
+	$(document).on('click','.confirmSubmit',function(){
+		$('.layui-layer-page').hide();
+		//var index = layer.open();
+		//layer.close(index); 
+		var pid = $('input[name="pid"]').val();
+		var values=$(".filed_select").find("option:selected").val(); 
+		var fields = $('input[name="field"]').val();
+		  if (pid) {
+			$.ajax({
+				url:"{:Url('admin/playerList/updataList')}",
+				data:{'pid':pid,'value':values,'field':fields},
+				type:'post',
+				dataType:'json',
+				success: function(xhr){
+					if(xhr.code == 200){
+						swal(xhr.msg, "","success").then(function(value){
+							  window.location.reload();
+						});
+					}else{
+						swal(xhr.msg, "","error").then(function(value){
+							  window.location.reload();
+						});
+						
+					}
+				}
+			})
+		  }
+	});
+	
+    
+</script>
+{/block}
