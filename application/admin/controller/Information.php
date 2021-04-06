@@ -118,6 +118,7 @@ class Information extends Admin
         $info['keywords_list']=json_decode($info['keywords_list'],true);
         $info['scws_list']=json_decode($info['scws_list'],true);
         $info['5118_word_list']=json_decode($info['5118_word_list'],true);//
+        $info['baidu_word_list']=json_decode($info['baidu_word_list'],true);
         $keywords_list=$scws_list=$word_1185_list=[];
         if(isset($info['keywords_list'])){
             foreach ($info['keywords_list'] as $key=>$val){
@@ -132,12 +133,14 @@ class Information extends Admin
         }
         $scws_list=$info['scws_list'] ?? [];
         $word_1185_list=$info['5118_word_list'] ?? [];
+        $baidu_word_list=$info['baidu_word_list'] ?? [];
 
         $data = [
             'info'  => $info,
             'keywords_list'=>$keywords_list,
             'scws_list'=>$scws_list,
             'word_1185_list'=>$word_1185_list,
+            'baidu_word_list'=>$baidu_word_list,
         ];
 
         return $this->fetch('view', $data);

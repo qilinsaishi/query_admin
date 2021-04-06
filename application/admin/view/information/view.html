@@ -109,6 +109,33 @@
 					</tbody>
 					</table>
 				</div>
+				
+				<legend>百度分词列表</legend>
+				 <div class="layui-table-header">
+					<table cellspacing="0" cellpadding="0" border="0" class="layui-table" style="overflow: hidden;">
+						<thead>
+							<tr>
+								<th>关键字</th>
+								<th>权重</th>
+							</tr>
+						</thead>
+						<tbody>
+						{notempty name="baidu_word_list"}
+						{volist name="baidu_word_list" id="vo"}
+							<tr class="">
+								<td class="">
+									<div class="layui-table-cell">{$vo.tag}</div>
+								</td>
+								<td class="">
+									<div class="layui-table-cell">{$vo.score}</div>
+								</td>
+								
+							</tr>
+						{/volist}
+						{/notempty}
+					</tbody>
+					</table>
+				</div>
 			
 		</div>
 		
