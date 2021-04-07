@@ -101,11 +101,18 @@ class Information extends Admin
         $id = Request::param('id');
         $info = InformationModel::get($id);
         $gameList=config('app.game_type');
+        $siteList=[];
+        $siteModel=new \app\common\model\Site();
+        $siteList=$siteModel->getSiteList();
+        if($siteList){
+            $siteList=$siteList->toArray();
+        }
 
         $data = [
             'info'  => $info,
             'typeList'=>$this->type,
-            'gameList'=>$gameList
+            'gameList'=>$gameList,
+            'siteList'=>$siteList
         ];
 
         return $this->fetch('edit', $data);

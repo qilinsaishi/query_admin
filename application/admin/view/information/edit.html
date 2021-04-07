@@ -23,7 +23,7 @@
               <div class="row">
               <div class="col-md-6">
 				<input type="hidden" name="id" value="{$info.id}">
-			    <input type="text" name="title" value="{$info.title}"  class="form-control input-sm" placeholder="">
+			    <input type="text" name="title" value="{$info.title}" id="titleId" class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
@@ -31,7 +31,7 @@
               <label class="layui-form-label">作者 </label>
               <div class="row">
               <div class="col-md-6">
-              <input type="text" name="author" value="{$info.author}"  class="form-control input-sm" placeholder="">
+              <input type="text" name="author" value="{$info.author}" id="authorId" class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
@@ -39,7 +39,7 @@
               <label class="layui-form-label">对应来源</label>
               <div class="row">
               <div class="col-md-6">
-              <input type="text" name="source" value="{$info.source}"  class="form-control input-sm" placeholder="">
+              <input type="text" name="source" value="{$info.source}"  id="sourceId" class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
@@ -48,11 +48,26 @@
               <label class="layui-form-label">对应游戏 <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-6">
-              <select name="game" class="form-control" id="game">
+              <select name="game" class="form-control" id="gameId" >
                 <option>请选择</option>
                 {volist name="gameList" id="vo"}
                 <option  {eq name="$vo" value="$info.game"}selected{/eq} value="{$vo}">
                     {$vo}
+                </option>
+                {/volist}
+              </select>
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+              <label  class="layui-form-label">所属站点</label>
+              <div class="row">
+              <div class="col-md-6">
+              <select name="site_id" id="siteId" class="form-control">
+                <option  value="">请选择-</option>
+                {volist name="siteList" id="vo"}
+                <option value="{$vo.id}" {eq name="$vo.id" value="$info.site_id"}selected{/eq}>
+                    {$vo.domain}
                 </option>
                 {/volist}
               </select>
@@ -128,7 +143,7 @@
     <div class="box-footer">
         <div class="btn-group">
             <button class="btn btn-primary btn-flat" onclick="operate();" type="button"> {:lang('Save')}</button>
-			
+			<button class="btn btn-default btn-flat" onclick="preview();" style="margin-left:20px;" type="button"> 预览</button>
         </div>
     </div>
   </div>
@@ -214,35 +229,45 @@ var ue = UE.getEditor('editor', {
 	
 	//预览
 	function preview(){
-		$post_url="{$site_url}/preview/";
-        $.ajax({
-            url:post_url,
-            data:$("#operate").serialize(),
-            type:'post',
-            dataType:'json',
-            success:function(xhr){
-                if(xhr.code == 200){
-                    swal({
-                      position: 'center',
-                      type: 'success',
-                      title: xhr.msg,
-                      showConfirmButton: false,
-                      toast:false,
-                      timer: 2000
-                    });
-                } else{
-                    swal({
-                      position: 'center',
-                      type: 'error',
-                      title: xhr.msg,
-                      showConfirmButton: false,
-                      toast:false,
-                      timer: 2000
-                    });
-                }
-            }
-        });
+		//typeId
+		var title=$("#titleId").val();
+		var author=$("#authorId").val();
+		var source=$("#sourceId").val();
+		var game=$("#gameId").val();
+		var logo=$("#logoId").val();
+		var content = $('textarea[name="content"]').val();
+		var site_url=$("#siteId").find("option:selected").text();
+		var type=$("#typeId").find("option:selected").val();
+		var post_url=trim(site_url)+"/preview/";
+		var status = $("input[name='status']:checked").val();
+		var create_time = $("input[name='published_time']").val();
+        postcall( post_url, {title:title,author:author,source:source,type:type,status:status,create_time:create_time,game:game,logo:logo,content:content}, '_blank');
     }
+	function trim(str)
+	{ 
+	  return str.replace(/(^\s*)|(\s*$)/g, ""); 
+	}
+	function postcall( url, params, target){
+		var tempform = document.createElement("form");
+		tempform.action = url;
+		tempform.method = "post";
+		tempform.style.display="none"
+		if(target) {
+		tempform.target = target;
+		}
+		for (var x in params) {
+		var opt = document.createElement("input");
+		opt.name = x;
+		opt.value = params[x];
+		tempform.appendChild(opt);
+		}
+		var opt = document.createElement("input");
+		opt.type = "submit";
+		tempform.appendChild(opt);
+		document.body.appendChild(tempform);
+		tempform.submit();
+		document.body.removeChild(tempform);
+	}
 
 </script>
 {/block}

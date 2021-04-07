@@ -52,6 +52,7 @@
 					</table>
 				</div>
 				 {/volist}
+			
 			{/notempty}
 			
 				 <legend>scws关键字列表</legend>
@@ -87,6 +88,10 @@
 								</td>								
 							</tr>
 						{/volist}
+						{else /}
+							<tr>
+								<td colspan="7" class="text-center">{:lang("No record")}</td>
+							</tr>
 						{/notempty}
 					</tbody>
 					</table>
@@ -105,7 +110,12 @@
 								
 							</tr>
 						{/volist}
+						{else /}
+						<tr>
+							<td colspan="7" class="text-center">{:lang("No record")}</td>
+						</tr>
 						{/notempty}
+						
 					</tbody>
 					</table>
 				</div>
@@ -132,6 +142,10 @@
 								
 							</tr>
 						{/volist}
+						{else /}
+							<tr>
+								<td colspan="7" class="text-center">{:lang("No record")}</td>
+							</tr>
 						{/notempty}
 					</tbody>
 					</table>
