@@ -95,7 +95,7 @@
               <label class="layui-form-label">发布时间</label>
               <div class="row">
               <div class="col-md-6">
-              <input type="text"  name="published_time" id="published_time" lay-verify="published_time" placeholder="yyyy-MM-dd HH:ii:ss" class="layui-input" >
+              <input type="text"  name="time_to_publish" id="time_to_publish" lay-verify="time_to_publish" placeholder="yyyy-MM-dd HH:ii:ss" class="layui-input" >
               </div>
               </div>
             </div>
@@ -168,7 +168,7 @@ layui.use(['upload','laydate'], function(){
   ,laydate = layui.laydate;
    
     laydate.render({
-    elem: '#published_time'
+    elem: '#time_to_publish'
     ,type: 'datetime'
   });
   

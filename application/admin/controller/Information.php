@@ -222,10 +222,12 @@ class Information extends Admin
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
-            $request['published_time']=date("Y-m-d H:i:s",strtotime($request['published_time'])-8*60*60);
+            $request['time_to_publish']=date("Y-m-d H:i:s",strtotime($request['time_to_publish'])-8*60*60);
 
             $request['create_time']=date("Y-m-d H:i:s",time()-8*60*60);
             $request['update_time']=date("Y-m-d H:i:s",time()-8*60*60);
+            $request['baidu_word_list']=json_encode([]);
+
             $informationInfoObj = new InformationModel();
             $informationInfoObj->allowField(true)->save($request);
 
