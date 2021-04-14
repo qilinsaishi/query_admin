@@ -47,7 +47,7 @@
               <label>别名</label>
               <div class="row">
               <div class="col-md-6">
-              <input type="text" name="aka" value="{$info.aka}"  class="form-control input-sm" placeholder="">
+              <input type="text" name="aka" value="{$info.aka}"  class="form-control input-sm" placeholder=""><span style="color:red">多个别名用逗号隔开</span>
               </div>
               </div>
             </div>
@@ -131,12 +131,12 @@
 			  <label>{:lang('Description')}</label>
 			  <div class="row">
 			  <div class="col-md-6">
-			  <textarea class="form-control input-sm" name="description" rows="3" placeholder="">{$info.description}</textarea>
+			  <textarea class="form-control input-sm" name="description" rows="3" placeholder=""></textarea>
 			  </div>
 			  </div>
 			</div>
 			<div class="form-group">
-			  <label>战队历史</label>
+			  <label>战队历史<span style="color:red">（不要改）</span></label>
 			  <div class="row">
 			  <div class="col-md-12">
 			  <textarea id="editor" name="team_history">{$info.team_history}</textarea>
@@ -144,7 +144,7 @@
 			  </div>
 			</div>
 			<div class="form-group">
-			  <label>战绩历史</label>
+			  <label>战绩历史<span style="color:red">（不要改）</span></label>
 			  <div class="row">
 			  <div class="col-md-12">
 			  <textarea id="editor1" name="event_history">{$info.event_history}</textarea>
@@ -220,6 +220,7 @@ var ue1 = UE.getEditor('editor1', {
     scaleEnabled:true,
     serverUrl: '{:url("admin/ueditor/index")}',
 });
+
 </script>
 <script type="text/javascript">
 $(document).ready(function() {

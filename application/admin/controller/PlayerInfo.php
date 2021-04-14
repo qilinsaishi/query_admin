@@ -115,9 +115,10 @@ class PlayerInfo extends Admin
             $info['event_history']='';
         }*/
 
+
         $info['event_history']=!empty($info['event_history']) ?$info['event_history']: '';
         $teamModel=new TeamInfo();
-        $teamList=$teamModel->teamList('lol');
+        $teamList=$teamModel->teamList($info['game']);
         $typeList=config('app.game_type');
 
         $data = [
@@ -218,11 +219,24 @@ class PlayerInfo extends Admin
                 return $this->response(201, Lang::get('Fail'));
             }
         }
-        $teamModel=new TeamInfo();
-        $teamList=$teamModel->teamList('lol');
+
         $typeList=config('app.game_type');
 
-        return $this->fetch('create',['typeList'=>$typeList,'teamList'=>$teamList]);
+        return $this->fetch('create',['typeList'=>$typeList]);
+    }
+
+    public function getTeamList(){
+        $game = Request::param('game');
+        $teamModel=new TeamInfo();
+        $teamList=$teamModel->teamList($game);
+        $strHtml='<option value="">--请选择--</option>';
+
+        if(count($teamList)>0){
+            foreach ($teamList as $key=>$val){
+                $strHtml.='<option value="'.$val['team_id'].'">'.$val['team_name'].'</option>';
+            }
+        }
+        return $this->response(200, Lang::get('Success'),$strHtml);
     }
 
 

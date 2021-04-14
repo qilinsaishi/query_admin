@@ -70,7 +70,7 @@
               <label>游戏类型 <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-4">
-              <select name="game" class="form-control">
+              <select name="game" id="gameId" class="form-control" onchange="getTeamList();">
                 <option>请选择</option>
                 {volist name="typeList" id="vo"}
                 <option value="{$vo}">
@@ -98,11 +98,8 @@
 			  <label>所属战队</label>
 			  <div class="row">
 				<div class="col-md-6">
-				  <select class="form-control select2" name="team_id" style="width:60%">
-					<option value="">--请选择--</option>
-					{volist name="teamList" id="vo"}
-					<option value="{$vo.team_id}"  >{$vo.team_name}</option>
-					{/volist}
+				  <select class="form-control select2" id="team_id" name="team_id" style="width:60%">
+					
 				  </select>
 				</div>
 			  </div>
@@ -224,6 +221,30 @@ var ue1 = UE.getEditor('editor1', {
 		$('.select2').select2();
 
 	});
+	function getTeamList(){
+		var game=$("#gameId").val();
+		$.ajax({
+            url:"{:url('admin/PlayerInfo/getTeamList')}",
+            data:{'game':game},
+            type:'post',
+            dataType:'json',
+            success:function(xhr){
+                if(xhr.code == 200){
+                     $("#team_id").html(xhr.data);
+                } else{
+                    swal({
+                      position: 'center',
+                      type: 'error',
+                      title: xhr.msg,
+                      showConfirmButton: false,
+                      toast:false,
+                      timer: 2000
+                    });
+                }
+            }
+        });
+		
+	};
     function operate(){
         $.ajax({
             url:"{:url('admin/PlayerInfo/create')}",
