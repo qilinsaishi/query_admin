@@ -91,6 +91,7 @@ class TeamList extends BaseQueryList
                         $child[$k]['site_id']=$v['info']['site_id'] ?? '-';
                         $child[$k]['game']=$v['info']['game'] ?? '-';
                         $caka=json_decode($v['info']['aka'],true);
+                        $caka=$caka ?? [];
                         if(count($caka)>0){
                             $child[$k]['aka']=join(',',$caka);
                         }else{
