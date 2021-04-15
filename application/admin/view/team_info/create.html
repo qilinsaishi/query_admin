@@ -19,55 +19,55 @@
       <div class="tab-pane active">
         <form role="form" id="operate">
             <div class="form-group">
-              <label>名称 <span class="text-red">*</span></label>
+              <label class="layui-form-label">名称 <span class="text-red">*</span></label>
               <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-4">
               <input type="text" name="team_name" class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
 			<div class="form-group">
-              <label>外文名称 <span class="text-red">*</span></label>
+              <label class="layui-form-label">外文名称 <span class="text-red">*</span></label>
               <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-4">
               <input type="text" name="en_name" class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
 			<div class="form-group">
-              <label>别名</label>
+              <label class="layui-form-label">别名</label>
               <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-4">
               <input type="text" name="aka"  class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
 			<div class="form-group">
-              <label>团队创建日期</label>
+              <label class="layui-form-label">团队创建日期</label>
               <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-4">
               <input type="text" name="established_date"  class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
 			<div class="form-group">
-              <label>现任教练</label>
+              <label class="layui-form-label">现任教练</label>
               <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-4">
               <input type="text" name="coach"  class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
 			<div class="form-group">
-              <label>所在地区</label>
+              <label class="layui-form-label">所在地区</label>
               <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-4">
               <input type="text" name="location"  class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
 			<div class="form-group">
-              <label>游戏类型 <span class="text-red">*</span></label>
+              <label class="layui-form-label">游戏类型 <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-4">
               <select name="game" class="form-control">
@@ -82,9 +82,9 @@
               </div>
             </div>
             <div class="form-group">
-              <label>战队的主Logo</label>
+              <label class="layui-form-label">战队的主Logo</label>
               <div class="row">
-              <div class="col-md-12">
+              <div class="col-md-4">
                 <div class="layui-upload-drag" id="logo">
                   <input type="hidden" name="logo">
                   <div class="layui-upload-list" id="preview">
@@ -95,9 +95,9 @@
               </div>
             </div>
 			<div class="form-group">
-			  <label>是否热门战队</label>
+			  <label class="layui-form-label">是否热门战队</label>
 			  <div class="row">
-			  <div class="col-md-12">
+			  <div class="col-md-4">
 				<div class="radio">
 					<label class="radio-inline">
 						<input type="radio"  name="hot" value="0" checked>否
@@ -109,10 +109,10 @@
 			  </div>
 			  </div>
 			</div>
-			<div class="form-group">
-			  <label>战队历程</label>
+			<!--<div class="form-group">
+			  <label class="layui-form-label">战队历程</label>
 			  <div class="row">
-			  <div class="col-md-12">
+			  <div class="col-md-10">
 			  <textarea id="team_history" name="team_history"></textarea>
 			  </div>
 			  </div>
@@ -120,14 +120,14 @@
 			
 			
 			<div class="form-group">
-			  <label>荣誉</label>
+			  <label class="layui-form-label">荣誉</label>
 			  <div class="row">
-			  <div class="col-md-12">
+			  <div class="col-md-10">
 			  <textarea id="honor_list" name="honor_list"></textarea>
 			  </div>
 			  </div>
 			</div>
-			<!--<div class="form-group">
+			<div class="form-group">
 			  <label>战绩</label>
 			  <div class="row">
 			  <div class="col-md-12">
@@ -137,9 +137,9 @@
 			</div>-->
 			
 			<div class="form-group">
-			  <label>描述</label>
+			  <label class="layui-form-label">描述</label>
 			  <div class="row">
-			  <div class="col-md-12">
+			  <div class="col-md-10">
 			  <textarea id="description" name="description"></textarea>
 			  </div>
 			  </div>
@@ -194,7 +194,7 @@ layui.use('upload', function(){
 <script src="__STATIC__/ueditor/ueditor.config.js"></script>
 <script src="__STATIC__/ueditor/ueditor.all.min.js"></script>
 <script type="text/javascript">
-var ue = UE.getEditor('team_history', {
+/*var ue = UE.getEditor('team_history', {
     toolbars: [
         ['fullscreen', 'source', 'undo', 'redo', 'selectall', '|', 'removeformat', 'formatmatch', 'autotypeset', 'cleardoc', '|', 'template', 'indent', 'horizontal','justifyleft', 'justifyright', 'justifycenter', 'justifyjustify', 'insertcode'],
         ['fontfamily', 'fontsize', '|', 'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'link', 'unlink', 'inserttable', 'deletetable', 'simpleupload', 'insertimage']
@@ -213,7 +213,7 @@ var ue1 = UE.getEditor('honor_list', {
     initialFrameHeight:300,
     scaleEnabled:true,
     serverUrl: '{:url("admin/ueditor/index")}',
-});
+});*/
 var ue2 = UE.getEditor('description', {
     toolbars: [
         ['fullscreen', 'source', 'undo', 'redo', 'selectall', '|', 'removeformat', 'formatmatch', 'autotypeset', 'cleardoc', '|', 'template', 'indent', 'horizontal','justifyleft', 'justifyright', 'justifycenter', 'justifyjustify', 'insertcode'],

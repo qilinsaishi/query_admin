@@ -18,7 +18,7 @@ class TeamInfo extends BaseQueryList
     public function getList($request){
         $query = [];
         if (isset($request['query']['q'])) {
-            $query[] = ['team_name|site_id|team_id|cn_name|en_name|location','like','%'.$request['query']['q'].'%'];
+            $query[] = ['team_name|site_id|team_id|cn_name|en_name|location|tid','like','%'.$request['query']['q'].'%'];
         }
 
         if (!empty($request['query']['game'])) {
