@@ -64,6 +64,7 @@
                     <tr>
                         <th><input id="checkAll" type="checkbox"></th>
                         <th>#ID</th>
+						<th>PID</th>
                         <th>选手名称</th>
 						<th>中文名称</th>
 						<th>英文名称</th>
@@ -79,6 +80,7 @@
                     <tr id = "tr_{$vo.player_id}">
                         <td><input name="ids[]" value="{$vo.player_id}" type="checkbox"></td>
                         <td>{$vo.player_id}</td>
+						<td>{$vo.pid}</td>
                         <td>
                             {$vo.player_name}
                         </td>

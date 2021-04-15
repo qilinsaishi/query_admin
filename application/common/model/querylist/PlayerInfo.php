@@ -23,7 +23,7 @@ class PlayerInfo extends BaseQueryList
         $query = [];
 
         if (isset($request['query']['q'])) {
-            $query[] = ['player_name|position|en_name','like','%'.$request['query']['q'].'%'];
+            $query[] = ['player_name|position|en_name|player_id|pid','like','%'.$request['query']['q'].'%'];
         }
 
         if (!empty($request['query']['game'])) {
