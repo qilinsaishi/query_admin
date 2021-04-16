@@ -24,7 +24,7 @@ class TeamInfo extends Admin
         $query = [
             'q' => isset($request['q']) ? $request['q'] : '',
             'tid' => isset($request['tid']) ? $request['tid'] : '',
-            'game' => isset($request['game']) ? $request['game'] : '',
+            'game' => isset($request['game']) ? $request['game'] : 'lol',
             'original_source' => isset($request['original_source']) ? $request['original_source'] : '',
         ];
         $args = [
