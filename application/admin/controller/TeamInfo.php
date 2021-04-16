@@ -107,11 +107,6 @@ class TeamInfo extends Admin
         } else {
             $info['aka'] = '';
         }
-        /*if(!empty($info['race_stat'])){
-            $info['race_stat']=implode(',',$info['race_stat']);
-        }else{
-            $info['race_stat']='';
-        }*/
 
         $data = [
             'info' => $info,
@@ -211,6 +206,55 @@ class TeamInfo extends Admin
         //$typeList=config('app.config_type');
 
         return $this->fetch('create', ['typeList' => $typeList]);
+    }
+
+    public function selectHmtl()
+    {
+        $team_id = Request::param('team_id');
+        $game = Request::param('game');
+        $teamInfos = [];
+        $postData = json_encode(['game' => $game, 'type' => 'teamList']);
+        $api_host = config('app.api_host') . '/getIntergration';
+        $return = curl_post($api_host, $postData);
+        $teamInfos = json_decode($return, true);
+
+        // print_r($teamInfos);exit;
+        $html = '<select class="filed_select" style="width:180px;height: 30px;line-height: 30px;margin: 0 auto;" name="tid"><option value="">请选择</option>';
+        if (count($teamInfos) > 0) {
+            foreach ($teamInfos as $key => $val) {
+                if ($val != '') {
+                    $html .= '<option value="' . $val['tid'] . '">' . $val['team_name'] . '</option>';
+                }
+            }
+        }
+        $html .= '</select>';
+        $html .= '<input type="hidden" name="team_id" value="' . $team_id . '">';
+        return $this->response(200, Lang::get('Success'), $html);
+
+    }
+
+    public function updataInfo()
+    {
+        $request = Request::param();
+        $team_id=$request['team_id'] ?? 0;
+        $tid=$request['tid'] ?? 0;
+        unset($request['team_id']);
+        if ($tid > 0 && $team_id>0) {
+            $postData = json_encode(['tid' => $tid,'team_id' => $team_id,'type' => 'mergeTeam2mergedTeam']);
+
+            $api_host = config('app.api_host') . '/intergration';
+            $return = curl_post($api_host, $postData);
+            $return=json_decode($return,true);
+            $msg=join("\n",$return['log']);
+            if ($return['result']) {
+                return $this->response(200, $msg);
+            } else {
+                return $this->response(201, $msg);
+            }
+        } else {
+            return $this->response(201, '参数错误');
+        }
+
     }
 
 

@@ -64,7 +64,7 @@
                     <tr>
                         <th><input id="checkAll" type="checkbox"></th>
                         <th>#ID</th>
-						<th width="140">TID(<span><a href="{:url('admin/TeamInfo/index')}?tid=0"><button>未整合</button></a></span>&nbsp;&nbsp;<button><a href="{:url('admin/TeamInfo/index')}">全部</a></button></span>)</th>
+						<th width="160">TID（<span><a href="{:url('admin/TeamInfo/index')}?tid=0"><button>未整合</button></a></span>&nbsp;&nbsp;<button><a href="{:url('admin/TeamInfo/index')}">全部</a></button></span>）</th>
                         <th>战队名称</th>
 						<th>战队全称</th>
 						<th>中文名称</th>
@@ -83,7 +83,7 @@
                     <tr id = "tr_{$vo.team_id}">
                         <td><input name="ids[]" value="{$vo.team_id}" type="checkbox"></td>
                         <td>{$vo.team_id}</td>
-						<td align="center">{$vo.tid}</td>
+						<td align="center"><span class="tidclass">{$vo.tid}</span> {eq name="vo.tid" value="0"}（<span><button onclick="ntegratid('{$vo.team_id}','{$vo.team_name}','{$vo.game}');">整合</button></span>）{/eq}</td>
                         <td>
                             {$vo.team_name}
                         </td>
@@ -140,6 +140,23 @@
         </div>
     </div>
   </div>
+  
+  <div class="row col-sm-12" style="display:none;" id="show_div">
+        <form class="form-horizontal m-t" id="commentForm" novalidate="novalidate" style="margin-top:30px;margin-left:40px;">
+              <div class="form-group">
+                  <!--<label class="col-sm-3 control-label">姓名：</label>-->
+                  <div class="col-sm-8" id="selectField">
+                      <!--<input id="cname" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">-->
+                  </div>
+              </div>
+              
+              <div class="form-group">
+                  <div class="col-sm-4 col-sm-offset-3">
+                      <a class="btn btn-primary confirmSubmit" style="margin-top:10px;" type="submit">提交</a>
+                  </div>
+              </div>
+          </form>
+    </div>
 
 
 {/block}
@@ -190,6 +207,66 @@
             })
         }
     }
+	//弹出下拉框
+	function ntegratid(team_id,team_name,game){
+		if (team_id) {
+			$.ajax({
+				url:"{:Url('admin/TeamInfo/selectHmtl')}",
+				data:{'team_id':team_id,'game':game},
+				type:'post',
+				dataType:'json',
+				success: function(xhr){
+					var content=xhr.data;
+					var title=team_name;
+					if(xhr.code == 200){
+						layui.use('layer', function(){
+						  var $ = layui.jquery;
+						  var layer = layui.layer;
+						  $("#selectField").html(xhr.data);
+						var index = layer.open({
+							type: 1,  //可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+							title: [title, 'font-size:18px; color:orange;'],//数组第二项可以写任意css样式；如果你不想显示标题栏，你可以title: false
+							area: ['280px', '200px'],
+							shadeClose:true,
+							shade:0,
+							content: $('#show_div')
+							});
+						});
+					}else{
+						swal(xhr.msg, "", "error");
+					}
+				}
+			})
+		  }
+		
+	}
+	//保持
+	$(document).on('click','.confirmSubmit',function(){
+		$('.layui-layer-page').hide();
+		 
+		var team_id = $('input[name="team_id"]').val();
+		var tid=$(".filed_select").find("option:selected").val(); 
+		  if (tid) {
+			$.ajax({
+				url:"{:Url('admin/TeamInfo/updataInfo')}",
+				data:{'tid':tid,'team_id':team_id},
+				type:'post',
+				dataType:'json',
+				success: function(xhr){
+					if(xhr.code == 200){
+						swal(xhr.msg, "","success").then(function(value){
+							  window.location.reload();
+						});
+					}else{
+						swal(xhr.msg, "","error").then(function(value){
+							  window.location.reload();
+						});
+						
+					}
+				}
+			})
+		  }
+	});
 
     function remove(id){
         swal({
