@@ -64,7 +64,7 @@
                     <tr>
                         <th><input id="checkAll" type="checkbox"></th>
                         <th>#ID</th>
-						<th>TID</th>
+						<th width="140">TID(<span><a href="{:url('admin/TeamInfo/index')}?tid=0"><button>未整合</button></a></span>&nbsp;&nbsp;<button><a href="{:url('admin/TeamInfo/index')}">全部</a></button></span>)</th>
                         <th>战队名称</th>
 						<th>战队全称</th>
 						<th>中文名称</th>
@@ -83,7 +83,7 @@
                     <tr id = "tr_{$vo.team_id}">
                         <td><input name="ids[]" value="{$vo.team_id}" type="checkbox"></td>
                         <td>{$vo.team_id}</td>
-						<td>{$vo.tid}</td>
+						<td align="center">{$vo.tid}</td>
                         <td>
                             {$vo.team_name}
                         </td>

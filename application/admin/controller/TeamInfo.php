@@ -23,6 +23,7 @@ class TeamInfo extends Admin
         $request = Request::param();
         $query = [
             'q' => isset($request['q']) ? $request['q'] : '',
+            'tid' => isset($request['tid']) ? $request['tid'] : '',
             'game' => isset($request['game']) ? $request['game'] : '',
             'original_source' => isset($request['original_source']) ? $request['original_source'] : '',
         ];
