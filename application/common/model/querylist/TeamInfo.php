@@ -50,9 +50,9 @@ class TeamInfo extends BaseQueryList
         return $data;
     }
 
-    public function teamList($game=''){
+    public function teamList($map,$filed="team_id,team_name,game"){
         $data=[];
-        $data=$this->where('game',$game)->field("team_id,team_name,game")->select()->toArray();
+        $data=$this->where($map)->field($filed)->select()->toArray();
         return $data;
     }
 
@@ -68,8 +68,6 @@ class TeamInfo extends BaseQueryList
     public function updateField($id,$data){
         return $this->where('team_id',$id)->update($data);
     }
-
-
 
 
 

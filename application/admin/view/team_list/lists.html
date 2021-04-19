@@ -70,6 +70,7 @@
 					  
 					  <div class="dd-content" >
 						<li>
+							<span style="margin-left:50px;">整合</span>
 							<span style="margin-left:30px;">TID</span>
 							<span style="margin-left:50px;">战队名称</span>
 							<span style="margin-left:50px;">中文名称</span>
@@ -86,7 +87,8 @@
 						<li class="dd-item dd-item-alt " >
 						  <div class="dd-handle"></div>
 						  <div class="dd-content">
-						  <span>{$vo.tid}</span>
+						  <span><button onclick="ntegratid('{$vo.tid}','{$vo.team_name}','{$vo.game}',3);">整合</button></span>
+						  <span style="margin-left:30px;">{$vo.tid}</span>
 						  <span class="list_team_name" onclick="editField({$vo.tid},'team_name');"  style="margin-left:60px;">{$vo.team_name}</span>
 						  <span class="list_cn_name" style="margin-left:70px;" onclick="editField({$vo.tid},'cn_name');">{$vo.cn_name}</span>
 						  <span class="list_en_name" style="margin-left:80px;" onclick="editField({$vo.tid},'en_name');">{$vo.en_name}</span>
@@ -182,6 +184,23 @@
               </div>
           </form>
     </div>
+	
+	<div class="row col-sm-12" style="display:none;" id="show_div1">
+        <form class="form-horizontal m-t" id="commentForm" novalidate="novalidate" style="margin-top:30px;margin-left:40px;">
+              <div class="form-group">
+                  <!--<label class="col-sm-3 control-label">姓名：</label>-->
+                  <div class="col-sm-8" id="selectField1">
+                      <!--<input id="cname" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">-->
+                  </div>
+              </div>
+              
+              <div class="form-group">
+                  <div class="col-sm-4 col-sm-offset-3">
+                      <a class="btn btn-primary confirmSubmit1" style="margin-top:10px;" type="submit">提交</a>
+                  </div>
+              </div>
+          </form>
+    </div>
 
 
 
@@ -198,57 +217,90 @@
 	
 	function editField(tid,field){
 		if (tid) {
-                $.ajax({
-                    url:"{:Url('admin/TeamList/selectHmtl')}",
-                    data:{'tid':tid, 'field':field},
-                    type:'post',
-                    dataType:'json',
-                    success: function(xhr){
-						var content=xhr.data;
-						var title='';
-						if(field=='team_name'){
-							title='战队名称';
-						}else if(field=='cn_name'){
-							title='中文名称';
-						}else if(field=='en_name'){
-							title='英文名称';
-						}else if(field=='established_date'){
-							title='创建日期';//
-						}else if(field=='location'){
-							title='所在地区';
-						}else if(field=='site_id'){
-							title='原站点ID';
-						}else if(field=='game'){
-							title='游戏类型';
-						}else if(field=='game'){
-							title='游戏类型';
-						}else if(field=='original_source'){
-							title='初始来源';
-						}
-	
-                        if(xhr.code == 200){
-                            layui.use('layer', function(){
-							  var $ = layui.jquery;
-							  var layer = layui.layer;
-							  $("#selectField").html(xhr.data);
-							   
-							var index = layer.open({
-								type: 1,  //可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
-								title: [title, 'font-size:18px; color:orange;'],//数组第二项可以写任意css样式；如果你不想显示标题栏，你可以title: false
-								area: ['280px', '200px'],
-								shadeClose:true,
-								shade:0,
-								content: $('#show_div')
-								});
+			$.ajax({
+				url:"{:Url('admin/TeamList/selectHmtl')}",
+				data:{'tid':tid, 'field':field},
+				type:'post',
+				dataType:'json',
+				success: function(xhr){
+					var content=xhr.data;
+					var title='';
+					if(field=='team_name'){
+						title='战队名称';
+					}else if(field=='cn_name'){
+						title='中文名称';
+					}else if(field=='en_name'){
+						title='英文名称';
+					}else if(field=='established_date'){
+						title='创建日期';//
+					}else if(field=='location'){
+						title='所在地区';
+					}else if(field=='site_id'){
+						title='原站点ID';
+					}else if(field=='game'){
+						title='游戏类型';
+					}else if(field=='game'){
+						title='游戏类型';
+					}else if(field=='original_source'){
+						title='初始来源';
+					}
+
+					if(xhr.code == 200){
+						layui.use('layer', function(){
+						  var $ = layui.jquery;
+						  var layer = layui.layer;
+						  $("#selectField").html(xhr.data);
+						   
+						var index = layer.open({
+							type: 1,  //可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+							title: [title, 'font-size:18px; color:orange;'],//数组第二项可以写任意css样式；如果你不想显示标题栏，你可以title: false
+							area: ['280px', '200px'],
+							shadeClose:true,
+							shade:0,
+							content: $('#show_div')
 							});
-                        }else{
-                            swal(xhr.msg, "", "error");
-                        }
-                    }
-                })
-              }
-		
+						});
+					}else{
+						swal(xhr.msg, "", "error");
+					}
+				}
+			})
+        }
 	
+	}
+	
+	//弹出下拉框
+	function ntegratid(tid,team_name,game,type){
+		if (tid) {
+			$.ajax({
+				url:"{:Url('admin/TeamInfo/selectHmtl')}",
+				data:{'tid':tid,'game':game,'type':type},
+				type:'post',
+				dataType:'json',
+				success: function(xhr){
+					var content=xhr.data;
+					var title=team_name;
+					if(xhr.code == 200){
+						layui.use('layer', function(){
+						  var $ = layui.jquery;
+						  var layer = layui.layer;
+						  $("#selectField1").html(xhr.data);
+						var index = layer.open({
+							type: 1,  //可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+							title: [title, 'font-size:18px; color:orange;'],//数组第二项可以写任意css样式；如果你不想显示标题栏，你可以title: false
+							area: ['280px', '200px'],
+							shadeClose:true,
+							shade:0,
+							content: $('#show_div1')
+							});
+						});
+					}else{
+						swal(xhr.msg, "", "error");
+					}
+				}
+			})
+		}
+		
 	}
 	
 	/**
@@ -314,5 +366,36 @@
           }
         })
     }
+	
+	//保持
+	$(document).on('click','.confirmSubmit1',function(){
+		$('.layui-layer-page').hide();
+		 
+		var tid = $('input[name="tid"]').val();
+		var type = $('input[name="type"]').val();
+
+		var tid_2=$(".filed_select").find("option:selected").val(); 
+		if (tid) {
+			$.ajax({
+				url:"{:Url('admin/TeamInfo/updataInfo')}",
+				data:{'tid':tid,'tid_2':tid_2,'type':type},
+				type:'post',
+				dataType:'json',
+				success: function(xhr){
+					if(xhr.code == 200){
+						swal(xhr.msg, "","success").then(function(value){
+							  window.location.reload();
+						});
+					}else{
+						swal(xhr.msg, "","error").then(function(value){
+							  window.location.reload();
+						});
+						
+					}
+				}
+			})
+		}
+		
+	});
 </script>
 {/block}

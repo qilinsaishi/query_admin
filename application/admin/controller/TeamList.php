@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use app\common\model\Collect;
 use app\common\model\querylist\ChangeLogs;
+use app\common\model\querylist\TeamInfo;
 use app\common\model\querylist\TeamInfo as TeamInfoModel;
 use app\common\model\querylist\TeamList as TeamListModel;
 use app\common\validate\querylist\CpseoTeamInfoValidate;
@@ -134,39 +135,43 @@ class TeamList extends Admin
         $api_host=config('app.api_host').'/getIntergration';
         $return=curl_post($api_host, $postData);
         $return=json_decode($return,true);
-        $info = TeamListModel::with(['teamMap.info'])->get($id);
+        $info = TeamListModel::get($id);
+        $teamModel=new TeamInfo();
+        $where['tid']=$info['tid'];
+        $teamList=$teamModel->teamList($where,"*");
+        $teamList=$teamList ?? [];
 
         $child=[];
-        if(count($info['teamMap'])>0) {
-            foreach ($info['teamMap'] as $k=>$v){
-                $child[$k]['team_name']=$v['info']['team_name'] ?? '-';
-                $child[$k]['team_id']=$v['info']['team_id'] ?? '-';
-                $child[$k]['en_name']=$v['info']['en_name'] ?? '-';
-                $child[$k]['cn_name']=$v['info']['cn_name'] ?? '-';
-                $child[$k]['established_date']=$v['info']['established_date'] ?? '-';
-                $child[$k]['coach']=$v['info']['coach'] ?? '-';
-                $child[$k]['logo']=$v['info']['logo'] ?? '';
-                $child[$k]['location']=$v['info']['location'] ?? '-';
-                $child[$k]['site_id']=$v['info']['site_id'] ?? '-';
-                $child[$k]['game']=$v['info']['game'] ?? '-';
-                $child[$k]['description']=$v['info']['description'] ?? '-';
-                $child[$k]['honor_list']=$v['info']['honor_list'] ?? '-';
-                $child[$k]['team_history']=htmlspecialchars_decode(strip_tags($v['info']['team_history'])) ?? '-';
-                $child[$k]['race_stat']=$v['info']['race_stat'] ?? '-';
-                $caka=json_decode($v['info']['aka'],true);
+        if(count($teamList)>0) {
+            foreach ($teamList as $k=>$v){
+                $child[$k]['team_name']=$v['team_name'] ?? '-';
+                $child[$k]['team_id']=$v['team_id'] ?? '-';
+                $child[$k]['en_name']=$v['en_name'] ?? '-';
+                $child[$k]['cn_name']=$v['cn_name'] ?? '-';
+                $child[$k]['established_date']=$v['established_date'] ?? '-';
+                $child[$k]['coach']=$v['coach'] ?? '-';
+                $child[$k]['logo']=$v['logo'] ?? '';
+                $child[$k]['location']=$v['location'] ?? '-';
+                $child[$k]['site_id']=$v['site_id'] ?? '-';
+                $child[$k]['game']=$v['game'] ?? '-';
+                $child[$k]['description']=$v['description'] ?? '-';
+                $child[$k]['honor_list']=$v['honor_list'] ?? '-';
+                $child[$k]['team_history']=htmlspecialchars_decode(strip_tags($v['team_history'])) ?? '-';
+                $child[$k]['race_stat']=$v['race_stat'] ?? '-';
+                $caka=json_decode($v['aka'],true);
                 if(count($caka)>0){
                     $child[$k]['aka']=join(',',$caka);
                 }else{
                     $child[$k]['aka']='-';
                 }
-                $child[$k]['original_source']=$v['info']['original_source'] ?? '';
-                $child[$k]['create_time']=$v['info']['create_time'] ?? '';
-                $child[$k]['update_time']=$v['info']['update_time'] ?? '';
-                $child[$k]['tid']=$v['info']['tid'] ?? '';
-                unset($v['info']);
+                $child[$k]['original_source']=$v['original_source'] ?? '';
+                $child[$k]['create_time']=$v['create_time'] ?? '';
+                $child[$k]['update_time']=$v['update_time'] ?? '';
+                $child[$k]['tid']=$v['tid'] ?? '';
+                
             }
         }
-        $info['team_name']=$return['structure']['team_name'] ?? '-';
+        $info['team_name']=$return['data']['team_name'] ?? '-';
         $info['game']=$return['structure']['game'] ?? '-';
         $info['cn_name']=$return['structure']['cn_name'] ?? '-';
         $info['en_name']=$return['structure']['en_name'] ?? '-';
@@ -190,7 +195,7 @@ class TeamList extends Admin
             $info['aka']='-';
         }
         $list=$child;
-        unset($info['team_map']);
+
 
         $data = [
             'list' => $list,

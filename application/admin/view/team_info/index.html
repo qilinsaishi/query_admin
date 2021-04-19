@@ -64,7 +64,7 @@
                     <tr>
                         <th><input id="checkAll" type="checkbox"></th>
                         <th>#ID</th>
-						<th width="160">TID（<span><a href="{:url('admin/TeamInfo/index')}?tid=0"><button>未整合</button></a></span>&nbsp;&nbsp;<button><a href="{:url('admin/TeamInfo/index')}">全部</a></button></span>）</th>
+						<th width="180" >TID（<span ><a href="{:url('admin/TeamInfo/index')}?tid=0"><button >未整合</button></a></span>&nbsp;&nbsp;&nbsp;&nbsp;<button><a href="{:url('admin/TeamInfo/index')}">全部</a></button></span>）</th>
                         <th>战队名称</th>
 						<th>战队全称</th>
 						<th>中文名称</th>
@@ -83,7 +83,11 @@
                     <tr id = "tr_{$vo.team_id}">
                         <td><input name="ids[]" value="{$vo.team_id}" type="checkbox"></td>
                         <td>{$vo.team_id}</td>
-						<td align="center"><span class="tidclass">{$vo.tid}</span> {eq name="vo.tid" value="0"}（<span><button onclick="ntegratid('{$vo.team_id}','{$vo.team_name}','{$vo.game}');">整合</button></span>）{/eq}</td>
+						<td align='center'><span class="tidclass">{$vo.tid}</span> {eq name="vo.tid" value="0"}
+						<span><button  onclick="ntegratid('{$vo.team_id}','{$vo.team_name}','{$vo.game}',1);">并入</button></span>&nbsp;&nbsp;&nbsp;&nbsp;<span><button  onclick="ntegratid('{$vo.team_id}','{$vo.team_name}','{$vo.game}',4);">合并</button></span>
+						{else /}
+						（<span><button onclick="ntegratid('{$vo.team_id}','{$vo.team_name}','{$vo.game}',2);">已整合</button></span>）
+						{/eq}</td>
                         <td>
                             {$vo.team_name}
                         </td>
@@ -208,11 +212,11 @@
         }
     }
 	//弹出下拉框
-	function ntegratid(team_id,team_name,game){
+	function ntegratid(team_id,team_name,game,type){
 		if (team_id) {
 			$.ajax({
 				url:"{:Url('admin/TeamInfo/selectHmtl')}",
-				data:{'team_id':team_id,'game':game},
+				data:{'team_id':team_id,'game':game,'type':type},
 				type:'post',
 				dataType:'json',
 				success: function(xhr){
@@ -237,19 +241,28 @@
 					}
 				}
 			})
-		  }
+		}
 		
 	}
+	
 	//保持
 	$(document).on('click','.confirmSubmit',function(){
 		$('.layui-layer-page').hide();
 		 
 		var team_id = $('input[name="team_id"]').val();
-		var tid=$(".filed_select").find("option:selected").val(); 
-		  if (tid) {
+		var type = $('input[name="type"]').val();
+		
+		if(type==1 || type==4){
+			var value=$(".filed_select").find("option:selected").val();
+			if(type==1){
+				var data={'tid':value,'team_id':team_id,'type':type};
+			}else if(type==4){
+				var data={'team_id':team_id,'team_id_2':value,'type':type};
+			}
+			
 			$.ajax({
 				url:"{:Url('admin/TeamInfo/updataInfo')}",
-				data:{'tid':tid,'team_id':team_id},
+				data:data,
 				type:'post',
 				dataType:'json',
 				success: function(xhr){
@@ -265,7 +278,11 @@
 					}
 				}
 			})
-		  }
+
+		}else{
+			 window.location.reload();
+		}
+		
 	});
 
     function remove(id){

@@ -118,7 +118,8 @@ class PlayerInfo extends Admin
 
         $info['event_history']=!empty($info['event_history']) ?$info['event_history']: '';
         $teamModel=new TeamInfo();
-        $teamList=$teamModel->teamList($info['game']);
+        $map['game']=$info['game'];
+        $teamList=$teamModel->teamList($map);
         $typeList=config('app.game_type');
 
         $data = [
@@ -228,7 +229,8 @@ class PlayerInfo extends Admin
     public function getTeamList(){
         $game = Request::param('game');
         $teamModel=new TeamInfo();
-        $teamList=$teamModel->teamList($game);
+        $map['game']=$game;
+        $teamList=$teamModel->teamList($map);
         $strHtml='<option value="">--请选择--</option>';
 
         if(count($teamList)>0){
