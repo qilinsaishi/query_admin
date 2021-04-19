@@ -168,7 +168,7 @@ class TeamList extends Admin
                 $child[$k]['create_time']=$v['create_time'] ?? '';
                 $child[$k]['update_time']=$v['update_time'] ?? '';
                 $child[$k]['tid']=$v['tid'] ?? '';
-                
+
             }
         }
         $info['team_name']=$return['data']['team_name'] ?? '-';

@@ -271,13 +271,26 @@ class TeamInfo extends Admin
             if($type==1){
                 //合并到已整合的战队
                 $postData = json_encode(['tid' => $tid,'team_id' => $team_id,'type' => 'mergeTeam2mergedTeam']);
+                $updataCache=json_encode([
+                    'teamInfo'=>['team_id'=>$team_id,"dataType"=>"totalTeamInfo","reset"=>1],
+                    'intergratedTeam'=>[$tid,"dataType"=>"intergratedTeam","reset"=>1],
+                ]);
             }elseif($type==3){
                 //已整合的两个战队合并（team_list）
                 $postData = json_encode(['tid_1' => $tid,'tid_2' => $tid_2,'type' => 'merge2mergedTeam']);
+                $updataCache=json_encode([
+                    'intergratedTeam_1'=>[$tid,"dataType"=>"intergratedTeam","reset"=>1],
+                    'intergratedTeam_2'=>[$tid_2,"dataType"=>"intergratedTeam","reset"=>1],
+                ]);
 
             }elseif($type==4){
                 //两个未合并的战队合并
                 $postData = json_encode(['team_id_1' => $team_id,'team_id_2' => $team_id_2,'type' => 'merge2unmergedTeam']);
+                $updataCache=json_encode([
+                    'teamInfo_1'=>['team_id'=>$team_id,"dataType"=>"totalTeamInfo","reset"=>1],
+                    'teamInfo_2'=>['team_id'=>$team_id_2,"dataType"=>"totalTeamInfo","reset"=>1],
+                ]);
+
             }
 
             $api_host = config('app.api_host') . '/intergration';
@@ -285,6 +298,9 @@ class TeamInfo extends Admin
             $return=json_decode($return,true);
             $msg=join("\n",$return['log']);
             if ($return['result']) {
+                $update_cache_api = config('app.api_host') . '/get';
+                $return = curl_post($update_cache_api, $updataCache);
+                $return=json_decode($return,true);
                 return $this->response(200, $msg);
             } else {
                 return $this->response(201, $msg);
