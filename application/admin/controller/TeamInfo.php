@@ -301,7 +301,7 @@ class TeamInfo extends Admin
                 $update_cache_api = config('app.api_host') . '/get';
                 $return = curl_post($update_cache_api, $updataCache);
                 $return=json_decode($return,true);
-                return $this->response(200, $msg);
+                return $this->response(200, $msg,$return);
             } else {
                 return $this->response(201, $msg);
             }
