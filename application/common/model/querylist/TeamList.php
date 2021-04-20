@@ -19,7 +19,7 @@ class TeamList extends BaseQueryList
     public function getList($request){
         $query = [];
         if (isset($request['query']['q'])) {
-            $map[]=['team_name|site_id|team_id|cn_name|en_name|location','like','%'.$request['query']['q'].'%'];
+            $map[]=['team_name|site_id|team_id|cn_name|en_name|location|tid','like','%'.$request['query']['q'].'%'];
             $teamInfo=new TeamInfo();
             $tids=$teamInfo->getIds($map);
             if(count($tids)>0){
