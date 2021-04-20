@@ -296,7 +296,7 @@ class TeamInfo extends Admin
             $api_host = config('app.api_host') . '/intergration';
             $return = curl_post($api_host, $postData);
             $return=json_decode($return,true);
-            $msg=join("\n",$return['log']);
+            $msg=isset($return['log']) ? join("\n",$return['log']) :'';
             if ($return['result']) {
                 $update_cache_api = config('app.api_host') . '/get';
                 $return = curl_post($update_cache_api, $updataCache);
