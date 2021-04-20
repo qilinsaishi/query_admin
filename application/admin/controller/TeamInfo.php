@@ -225,7 +225,8 @@ class TeamInfo extends Admin
             $html = '<select class="filed_select" style="width:180px;height: 30px;line-height: 30px;margin: 0 auto;" name="tid"><option value="">请选择</option>';
             if (count($teamInfos) > 0) {
                 foreach ($teamInfos as $key => $val) {
-                    if($val['tid']!=$tid && $val['team_name'] != ''){
+                    $val['tid']=isset($val['tid']) ? $val['tid']:0;
+                    if($val['tid']>0 &&  $val['tid']!=$tid && $val['team_name'] != ''){
                         $html .= '<option value="' . $val['tid'] . '">' . $val['team_name'] . '  （'.count($val['intergrated_id_list']).'）</option>';
                     }
                 }
