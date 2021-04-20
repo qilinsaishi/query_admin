@@ -296,12 +296,12 @@ class TeamInfo extends Admin
             $api_host = config('app.api_host') . '/intergration';
             $return = curl_post($api_host, $postData);
             $return=json_decode($return,true);
-            $msg=isset($return['log']) ? join("\n",$return['log']) :'';
+            $msg=isset($return['log']) ? join("\n",$return['log']):'';
             if ($return['result']) {
                 $update_cache_api = config('app.api_host') . '/get';
-                $return = curl_post($update_cache_api, $updataCache);
-                $return=json_decode($return,true);
-                return $this->response(200, $msg,$return);
+                $updataCacheResult = curl_post($update_cache_api, $updataCache);
+                $updataCacheResult=json_decode($updataCacheResult,true);
+                return $this->response(200, $msg,$updataCacheResult);
             } else {
                 return $this->response(201, $msg);
             }
