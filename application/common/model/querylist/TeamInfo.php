@@ -60,9 +60,9 @@ class TeamInfo extends BaseQueryList
         $data=$this->where($map)->column('tid');
         return $data;
     }
-    public function getFieldList($map,$field){
+    public function getFieldList($map,$field,$orderBy='team_id'){
         $data=[];
-        $data=$this->where($map)->column($field,'team_id');
+        $data=$this->where($map)->order($orderBy,'desc')->column($field,'team_id');
         return $data;
     }
     public function updateField($id,$data){
