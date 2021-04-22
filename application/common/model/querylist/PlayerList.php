@@ -23,7 +23,6 @@ class PlayerList extends BaseQueryList
         $query = [];
 
         if (isset($request['query']['q'])) {
-           // $query[] = ['player_name|position|en_name','like','%'.$request['query']['q'].'%'];
             $map[]=['player_name|position|en_name','like','%'.$request['query']['q'].'%'];
             $playerInfo=new PlayerInfo();
             $tids=$playerInfo->getIds($map);
@@ -46,7 +45,7 @@ class PlayerList extends BaseQueryList
         }
         $data=$this->where($query)
             ->order('pid desc')
-            ->with(['playerMap.info'])
+            ->with(['playerInfo'])
             ->paginate(20, false, [
                 'type'     => 'bootstrap',
                 'var_page' => 'page',
@@ -60,7 +59,13 @@ class PlayerList extends BaseQueryList
                 $api_host=config('app.api_host').'/getIntergration';
                 $return=curl_post($api_host, $postData);
                 $return=json_decode($return,true);
-                $val['player_name']=$return['structure']['player_name'] ?? 0;
+                if(is_numeric($return['structure']['player_name'] ) && $return['structure']['player_name']>0){
+                    $playerInfo=$this->getPlayerInfo($return['structure']['player_name'],'player_name');
+                    $val['player_name']=$playerInfo['player_name'] ?? '';
+                }else{
+                    $val['player_name']=$return['data']['player_name'] ?? 0;
+                }
+
                 $val['player_id']=$return['structure']['player_id'] ?? 0;
                 $val['game']=$return['structure']['game'] ?? '';
                 $val['cn_name']=$return['structure']['cn_name'] ?? 0;
@@ -83,30 +88,30 @@ class PlayerList extends BaseQueryList
                 }else{
                     $val['aka']='-';
                 }
-                if(count($val['player_map'])>0) {
-                    foreach ($val['player_map'] as $k=>$v){
-                        $child[$k]['player_name']=$v['info']['player_name'] ?? '-';
-                        $child[$k]['player_id']=$v['info']['player_id'] ?? '-';
-                        $child[$k]['team_id']=$v['info']['team_id'] ?? '-';
-                        $child[$k]['en_name']=$v['info']['en_name'] ?? '-';
-                        $child[$k]['cn_name']=$v['info']['cn_name'] ?? '-';
-                        $child[$k]['position']=$v['info']['position'] ?? '-';
-                        $child[$k]['stat']=$v['info']['stat'] ?? '-';
-                        $child[$k]['logo']=$v['info']['logo'] ?? '';
-                        $child[$k]['country']=$v['info']['country'] ?? '-';
-                        $child[$k]['site_id']=$v['info']['site_id'] ?? '-';
-                        $child[$k]['game']=$v['info']['game'] ?? '-';
-                        $child[$k]['original_source']=$v['info']['original_source'] ?? '';
-                        $child[$k]['create_time']=$v['info']['create_time'] ?? '';
-                        $child[$k]['update_time']=$v['info']['update_time'] ?? '';
-                        $child[$k]['pid']=$v['info']['pid'] ?? '';
+                if(count($val['playerInfo'])>0) {
+                    foreach ($val['playerInfo'] as $k=>$v){
+                        $child[$k]['player_name']=$v['player_name'] ?? '-';
+                        $child[$k]['player_id']=$v['player_id'] ?? '-';
+                        $child[$k]['team_id']=$v['team_id'] ?? '-';
+                        $child[$k]['en_name']=$v['en_name'] ?? '-';
+                        $child[$k]['cn_name']=$v['cn_name'] ?? '-';
+                        $child[$k]['position']=$v['position'] ?? '-';
+                        $child[$k]['stat']=$v['stat'] ?? '-';
+                        $child[$k]['logo']=$v['logo'] ?? '';
+                        $child[$k]['country']=$v['country'] ?? '-';
+                        $child[$k]['site_id']=$v['site_id'] ?? '-';
+                        $child[$k]['game']=$v['game'] ?? '-';
+                        $child[$k]['original_source']=$v['original_source'] ?? '';
+                        $child[$k]['create_time']=$v['create_time'] ?? '';
+                        $child[$k]['update_time']=$v['update_time'] ?? '';
+                        $child[$k]['pid']=$v['pid'] ?? '';
 
                         unset($v['info']);
                     }
 
                 }
                 $val['child']=$child;
-                unset($val['player_map']);
+                unset($val['playerInfo']);
 
             }
 
@@ -118,12 +123,17 @@ class PlayerList extends BaseQueryList
         return $this->where('pid',$id)->update($data);
     }
 
+    public function getPlayerInfo($id,$field="*"){
+        return PlayerInfo::where('player_id',$id)->field($field)->find()->toArray();
 
-    public function playerMap(){
+    }
+
+
+    public function playerInfo(){
         //多对多
         //第一个参数是关联的模型，第二个参数是中间表(第三个表)的表名
         //第三个参数是关联模型的关联id，第4个参数当前模型的关联id
-        return $this->hasMany('PlayerMap','pid','pid');
+        return $this->hasMany('PlayerInfo','pid','pid');
     }
 
 

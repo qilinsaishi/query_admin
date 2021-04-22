@@ -50,6 +50,7 @@
               </div>
               <div class="form-group">
                 <input type="text" name="q" value="{$search.q}" class="form-control" placeholder="">
+				<input type="hidden" name="pid" value="{$search.pid}" class="form-control" placeholder="">
               </div>
               <button type="submit" class="btn btn-primary btn-flat"> <i class="fa fa-search"></i> {:lang('Search')}</button>
             </form>
@@ -64,7 +65,7 @@
                     <tr>
                         <th><input id="checkAll" type="checkbox"></th>
                         <th>#ID</th>
-						<th>PID</th>
+						<th width="240" >PID（<span ><a href="{:url('admin/PlayerInfo/index')}?pid=0&game={$search.game}&original_source={$search.original_source}&q={$search.q}"><button >未整合</button></a></span>&nbsp;&nbsp;&nbsp;&nbsp;<span ><a href="{:url('admin/PlayerInfo/index')}?pid=1&game={$search.game}&original_source={$search.original_source}&q={$search.q}"><button >已整合</button></a></span>&nbsp;&nbsp;&nbsp;&nbsp;<button><a href="{:url('admin/PlayerInfo/index')}?game={$search.game}&original_source={$search.original_source}&q={$search.q}">全部</a></button></span>）</th>
                         <th>选手名称</th>
 						<th>中文名称</th>
 						<th>英文名称</th>
@@ -80,7 +81,11 @@
                     <tr id = "tr_{$vo.player_id}">
                         <td><input name="ids[]" value="{$vo.player_id}" type="checkbox"></td>
                         <td>{$vo.player_id}</td>
-						<td>{$vo.pid}</td>
+						<td align='center'><span class="pidclass">{$vo.pid}</span> {eq name="vo.pid" value="0"}
+						<span><button  onclick="getMergedPlayerList4playerid('{$vo.player_id}','{$vo.player_name}','{$vo.team_id}');">并入</button></span>&nbsp;&nbsp;&nbsp;&nbsp;<span><button  onclick="getUnmergedPlayerList('{$vo.player_id}','{$vo.player_name}');">合并</button></span>
+						{else /}
+						（<span><button onclick="getMergedPlayerList4pid('{$vo.pid}','{$vo.player_name}','{$vo.team_id}');">合并</button></span>）
+						{/eq}</td>
                         <td>
                             {$vo.player_name}
                         </td>
@@ -135,6 +140,57 @@
         </div>
     </div>
   </div>
+  <!--弹出框-->
+  <div class="row col-sm-12" style="display:none;" id="getMergedPlayerList4pid">
+        <form class="form-horizontal m-t"  novalidate="novalidate" style="margin-top:30px;margin-left:40px;">
+              <div class="form-group">
+                  <!--<label class="col-sm-3 control-label">姓名：</label>-->
+                  <div class="col-sm-8" id="mergedPlayerList4pid">
+                      <!--<input id="cname" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">-->
+                  </div>
+              </div>
+              
+              <div class="form-group">
+                  <div class="col-sm-4 col-sm-offset-3">
+                      <a class="btn btn-primary confirmSubmit" style="margin-top:10px;" type="submit">提交</a>
+                  </div>
+              </div>
+          </form>
+    </div>
+	
+	  <div class="row col-sm-12" style="display:none;" id="getMergedPlayerList4playerid">
+        <form class="form-horizontal m-t"  novalidate="novalidate" style="margin-top:30px;margin-left:40px;">
+              <div class="form-group">
+                  <!--<label class="col-sm-3 control-label">姓名：</label>-->
+                  <div class="col-sm-8" id="mergedPlayerList4playerid">
+                      <!--<input id="cname" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">-->
+                  </div>
+              </div>
+              
+              <div class="form-group">
+                  <div class="col-sm-4 col-sm-offset-3">
+                      <a class="btn btn-primary confirmSubmit" style="margin-top:10px;" type="submit">提交</a>
+                  </div>
+              </div>
+          </form>
+    </div>
+	
+	  <div class="row col-sm-12" style="display:none;" id="getUnmergedPlayerList">
+        <form class="form-horizontal m-t"  novalidate="novalidate" style="margin-top:30px;margin-left:40px;">
+              <div class="form-group">
+                  <!--<label class="col-sm-3 control-label">姓名：</label>-->
+                  <div class="col-sm-8" id="unmergedPlayerList">
+                      <!--<input id="cname" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">-->
+                  </div>
+              </div>
+              
+              <div class="form-group">
+                  <div class="col-sm-4 col-sm-offset-3">
+                      <a class="btn btn-primary confirmSubmit" style="margin-top:10px;" type="submit">提交</a>
+                  </div>
+              </div>
+          </form>
+    </div>
 
 
 {/block}
@@ -185,6 +241,145 @@
             })
         }
     }
+	
+	function getMergedPlayerList4playerid(player_id,player_name,team_id){
+		var data={'player_id':player_id,'team_id':team_id,'type':'getMergedPlayerList4playerid'};
+		$.ajax({
+			url:"{:Url('admin/playerInfo/selectHmtl')}",
+			data:data,
+			type:'post',
+			dataType:'json',
+			success: function(xhr){
+				var content=xhr.data;
+				var title=player_name;
+				if(xhr.code == 200){
+					layui.use('layer', function(){
+					  var $ = layui.jquery;
+					  var layer = layui.layer;
+					  $("#mergedPlayerList4playerid").html(xhr.data);
+					var index = layer.open({
+						type: 1,  //可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+						title: [title, 'font-size:18px; color:orange;'],//数组第二项可以写任意css样式；如果你不想显示标题栏，你可以title: false
+						area: ['280px', '200px'],
+						shadeClose:true,
+						shade:0,
+						content: $('#getMergedPlayerList4playerid')
+						});
+					});
+				}else{
+					swal(xhr.msg, "", "error");
+				}
+			}
+		})
+	
+	}
+	function getUnmergedPlayerList(player_id,player_name,team_id){
+		var data={'player_id':player_id,'team_id':team_id,'type':'getUnmergedPlayerList'};
+		$.ajax({
+			url:"{:Url('admin/playerInfo/selectHmtl')}",
+			data:data,
+			type:'post',
+			dataType:'json',
+			success: function(xhr){
+				var content=xhr.data;
+				var title=player_name;
+				if(xhr.code == 200){
+					layui.use('layer', function(){
+					  var $ = layui.jquery;
+					  var layer = layui.layer;
+					  $("#unmergedPlayerList").html(xhr.data);
+					var index = layer.open({
+						type: 1,  //可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+						title: [title, 'font-size:18px; color:orange;'],//数组第二项可以写任意css样式；如果你不想显示标题栏，你可以title: false
+						area: ['280px', '200px'],
+						shadeClose:true,
+						shade:0,
+						content: $('#getUnmergedPlayerList')
+						});
+					});
+				}else{
+					swal(xhr.msg, "", "error");
+				}
+			}
+		})
+	
+	}
+	
+	function getMergedPlayerList4pid(pid,player_name,team_id){
+	
+		$.ajax({
+			url:"{:Url('admin/playerInfo/selectHmtl')}",
+			data:{'pid':pid,'type':'getMergedPlayerList4pid','team_id':team_id},
+			type:'post',
+			dataType:'json',
+			success: function(xhr){
+				var content=xhr.data;
+				var title=player_name;
+				if(xhr.code == 200){
+					layui.use('layer', function(){
+					  var $ = layui.jquery;
+					  var layer = layui.layer;
+					  $("#mergedPlayerList4pid").html(xhr.data);
+					var index = layer.open({
+						type: 1,  //可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+						title: [title, 'font-size:18px; color:orange;'],//数组第二项可以写任意css样式；如果你不想显示标题栏，你可以title: false
+						area: ['280px', '200px'],
+						shadeClose:true,
+						shade:0,
+						content: $('#getMergedPlayerList4pid')
+						});
+					});
+				}else{
+					swal(xhr.msg, "", "error");
+				}
+			}
+		})
+	
+	}
+	
+	
+	//保存
+	$(document).on('click','.confirmSubmit',function(){
+		$('.layui-layer-page').hide();
+	
+		var type = $('input[name="type"]').val();
+		var select_value=$(".filed_select").find("option:selected").val();
+		
+		if(type=='merge2mergedPlayer'){
+			var pid = $('input[name="newpid"]').val();
+			var data={'pid_1':pid,'pid_2':select_value,'type':'merge2mergedPlayer'};
+		}else if(type=='merge2unmergedPlayer'){
+			var player_id = $('input[name="player_id"]').val();
+			var data={'player_id_1':player_id,'player_id_2':select_value,'type':'merge2unmergedPlayer'};
+		}else if(type=='mergePlayer2mergedPlayer'){
+			var player_id = $('input[name="player_id"]').val();//
+			var data={'player_id':player_id,'pid':select_value,'type':'mergePlayer2mergedPlayer'};
+		}
+		
+		$.ajax({
+				url:"{:Url('admin/playerInfo/updataInfo')}",
+				data:data,
+				type:'post',
+				dataType:'json',
+				success: function(xhr){
+					if(xhr.code == 200){
+						swal(xhr.msg, "","success").then(function(value){
+							  //暂时屏蔽window.location.reload();
+						});
+					}else{
+						swal(xhr.msg, "","error").then(function(value){
+							  window.location.reload();
+						});
+						
+					}
+				}
+			})
+
+		
+		
+		
+	});
+	
 
     function remove(id){
         swal({

@@ -134,11 +134,11 @@ class PlayerList extends Admin
         $api_host=config('app.api_host').'/getIntergration';
         $return=curl_post($api_host, $postData);
         $return=json_decode($return,true);
-        $info = PlayerListModel::with(['playerMap.info'])->get($id);
+        $info = PlayerListModel::with(['playerInfo'])->get($id);
 
         $child=[];
-        if(count($info['playerMap'])>0) {
-            foreach ($info['playerMap'] as $k=>$v){
+        if(count($info['playerInfo'])>0) {
+            foreach ($info['playerInfo'] as $k=>$v){
                 $child[$k]['player_name']=$v['player_name'] ?? '-';
                 $child[$k]['player_id']=$v['player_id'] ?? '-';
                 $child[$k]['team_id']=$v['team_id'] ?? '-';

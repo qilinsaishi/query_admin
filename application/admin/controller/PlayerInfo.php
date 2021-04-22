@@ -3,7 +3,6 @@ namespace app\admin\controller;
 
 use app\common\model\Collect;
 use app\common\model\querylist\ChangeLogs;
-use app\common\model\querylist\CpseoTeamInfo as CpseoTeamInfoModel;
 use app\common\model\querylist\PlayerInfo as PlayerInfoModel;
 
 use app\common\model\querylist\TeamInfo;
@@ -24,7 +23,8 @@ class PlayerInfo extends Admin
         $request = Request::param();
         $query = [
             'q'       => isset($request['q']) ? $request['q'] : '',
-            'game'  => isset($request['game']) ? $request['game'] : '',
+            'game'  => isset($request['game']) ? $request['game'] : 'lol',
+            'pid' => isset($request['pid']) ? $request['pid'] : '',
             'original_source'  => isset($request['original_source']) ? $request['original_source'] : '',
         ];
         $args = [
@@ -108,13 +108,6 @@ class PlayerInfo extends Admin
         }else{
             $info['aka']='';
         }
-        /*if($info['team_history']=='[]'){
-            $info['team_history']='';
-        }
-        if($info['event_history']=='[]'){
-            $info['event_history']='';
-        }*/
-
 
         $info['event_history']=!empty($info['event_history']) ?$info['event_history']: '';
         $teamModel=new TeamInfo();
@@ -226,6 +219,7 @@ class PlayerInfo extends Admin
         return $this->fetch('create',['typeList'=>$typeList]);
     }
 
+    //根据选择游戏获取战队信息
     public function getTeamList(){
         $game = Request::param('game');
         $teamModel=new TeamInfo();
@@ -239,6 +233,155 @@ class PlayerInfo extends Admin
             }
         }
         return $this->response(200, Lang::get('Success'),$strHtml);
+    }
+
+    public function selectHmtl()
+    {
+        $player_id = Request::param('player_id',0);
+        $pid = Request::param('pid',0);
+        $team_id = Request::param('team_id',0);
+        //$type:1表示并入，2.表示已经合并，3表示两天tid>0的合并，4表示两个未合并的合并
+        $type = Request::param('type','');
+        if($type !=''){
+            switch($type)
+            {
+                case "getUnmergedPlayerList":
+                    $playerInfoModel=new PlayerInfoModel();
+                    $map['pid']=0;
+                    $playerInfos=$playerInfoModel->getFieldList($map,'player_name','player_name');//排序
+                    $playerInfos=$playerInfos ?? [];
+                    $html = '<select class="filed_select" style="width:180px;height: 30px;line-height: 30px;margin: 0 auto;" name="player_id"><option value="0">请选择</option>';
+                    if (count($playerInfos) > 0) {
+                        foreach ($playerInfos as $key => $val) {
+                            if($key!=$player_id && $val != ''){
+                                $html .= '<option value="' . $key. '">' . $val .'</option>';
+                            }
+                        }
+                    }else{
+                        $html.='<option value="0">战队数据为空</option>';
+                    }
+                    $html .= '</select>';
+                    $html .= '<input type="hidden" name="player_id" value="' . $player_id . '">';
+                    $html .= '<input type="hidden" name="type" value="merge2unmergedPlayer">';
+                    break;
+                case "getMergedPlayerList4pid":
+
+                    $postData = json_encode(['team_id'=>$team_id, 'type' => 'playerList_team_id','pageSize'=>1000]);
+
+                    $api_host = config('app.api_host') . '/getIntergration';
+                    $return = curl_post($api_host, $postData);
+                    $playerInfos = json_decode($return, true);
+                    $playerInfos=$playerInfos ?? [];
+                    $html = '<select class="filed_select" style="width:180px;height: 30px;line-height: 30px;margin: 0 auto;" name="pid">';
+                    if (count($playerInfos) > 0) {
+                        $html .='<option value="0">请选择</option>';
+                        array_multisort(array_column($playerInfos,"player_name"),SORT_DESC,$playerInfos);
+
+                        foreach ($playerInfos as $key => $val) {
+                            $val['pid']=isset($val['pid']) ? $val['pid']:0;
+                            if($val['pid']>0 &&  $val['pid']!=$pid && $val['player_name'] != ''){
+                                $html .= '<option value="' . $val['pid']. '">' . $val['player_name'] . '  （'.count($val['intergrated_id_list']).'）</option>';
+                            }
+                        }
+                    }else{
+                        $html.='<option value="0">战队数据为空</option>';
+                    }
+                    $html .= '</select>';
+                    $html .= '<input type="hidden" name="newpid"  value="' . $pid . '">';
+                    $html .= '<input type="hidden" name="type" value="merge2mergedPlayer">';
+
+                    break;
+                case "getMergedPlayerList4playerid":
+                    $postData = json_encode(['team_id'=>$team_id, 'type' => 'playerList_team_id','pageSize'=>1000]);
+                    $api_host = config('app.api_host') . '/getIntergration';
+                    $return = curl_post($api_host, $postData);
+                    $playerInfos = json_decode($return, true);
+                    $playerInfos=$playerInfos ?? [];
+                    $html = '<select class="filed_select" style="width:180px;height: 30px;line-height: 30px;margin: 0 auto;" name="pid">';
+                    if (count($playerInfos) > 0) {
+                        $html .='<option value="0">请选择</option>';
+                        array_multisort(array_column($playerInfos,"player_name"),SORT_DESC,$playerInfos);
+
+                        foreach ($playerInfos as $key => $val) {
+                            $val['pid']=isset($val['pid']) ? $val['pid']:0;
+                            if($val['pid']>0 &&  $val['pid']!=$pid && $val['player_name'] != ''){
+                                $html .= '<option value="' . $val['pid']. '">' . $val['player_name'] . '  （'.count($val['intergrated_id_list']).'）</option>';
+                            }
+                        }
+                    }else{
+                        $html.='<option value="0">战队数据为空</option>';
+                    }
+                    $html .= '<input type="hidden" name="player_id" value="' . $player_id . '">';
+                    $html .= '<input type="hidden" name="type" value="mergePlayer2mergedPlayer">';
+                    break;
+
+            }
+        }
+
+        return $this->response(200, Lang::get('Success'), $html);
+
+    }
+
+
+    //保存
+    public function updataInfo()
+    {
+        $request = Request::param();
+        $type=$request['type'] ?? '';
+        if($type !=''){
+            switch($type)
+            {
+                case "merge2mergedPlayer":
+                    $pid_1= $request['pid_1'] ?? 0;
+                    $pid_2= $request['pid_2'] ?? 0;
+                    $postData = json_encode(['pid_1' => $pid_1,'pid_2' => $pid_2,'type' => 'merge2mergedPlayer']);
+                    $updataCache=json_encode([
+                        'intergratedPlayer_1'=>[$pid_1,"dataType"=>"intergratedPlayer","reset"=>1],
+                        'intergratedPlayer_2'=>[$pid_2,"dataType"=>"intergratedPlayer","reset"=>1],
+                    ]);
+
+
+                    break;
+                case "merge2unmergedPlayer":
+                    $player_id_1= $request['player_id_1'] ?? 0;
+                    $player_id_2= $request['player_id_2'] ?? 0;
+                    $postData = json_encode(['player_id_1' => $player_id_1,'player_id_2' => $player_id_2,'type' => 'merge2unmergedPlayer']);
+                    $updataCache=json_encode([
+                        'playerInfo_1'=>[$player_id_1,"dataType"=>"totalPlayerInfo","reset"=>1],
+                        'playerInfo_2'=>[$player_id_2,"dataType"=>"totalPlayerInfo","reset"=>1],
+                    ]);
+
+                    break;
+                case "mergePlayer2mergedPlayer":
+                    $pid= $request['pid'] ?? 0;
+                    $player_id= $request['player_id'] ?? 0;
+                    //合并到已整合的战队
+                    $postData = json_encode(['pid' => $pid,'player_id' => $player_id,'type' => 'mergePlayer2mergedPlayer']);
+                    $updataCache=json_encode([
+                        'playerInfo'=>[$player_id,"dataType"=>"totalPlayerInfo","reset"=>1],
+                        'intergratedPlayer'=>[$pid,"dataType"=>"intergratedPlayer","reset"=>1],
+                    ]);
+
+                    break;
+
+            }
+
+            $api_host = config('app.api_host') . '/intergration';
+            $return = curl_post($api_host, $postData);
+            $return=json_decode($return,true);
+            $msg=isset($return['log']) ? join("\n",$return['log']):'';
+            if ($return['result']) {
+                $update_cache_api = config('app.api_host') . '/get';
+               // $updataCacheResult = curl_post($update_cache_api, $updataCache);
+                //$updataCacheResult=json_decode($updataCacheResult,true);
+                return $this->response(200, $msg);
+            } else {
+                return $this->response(201, $msg);
+            }
+        }else{
+            return $this->response(201, '参数错误');
+        }
+
     }
 
 
