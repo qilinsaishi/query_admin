@@ -34,7 +34,6 @@ class TeamInfo extends BaseQueryList
 
         }
 
-
         // 分页参数
         $params = [];
         if (!empty($request['params'])) {
@@ -50,14 +49,20 @@ class TeamInfo extends BaseQueryList
         return $data;
     }
 
+
     public function teamList($map,$filed="team_id,team_name,game"){
         $data=[];
         $data=$this->where($map)->field($filed)->select()->toArray();
         return $data;
     }
 
-    public function getIds($map){
-        $data=$this->where($map)->column('tid');
+    public function getTeamInfoByTeamId($team_id){
+        return $this->get($team_id)->toArray();
+    }
+
+    public function getIds($map,$field='tid'){
+
+        $data=$this->where($map)->column($field);
         return $data;
     }
     public function getFieldList($map,$field,$orderBy='team_id'){

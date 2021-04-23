@@ -246,31 +246,49 @@ class PlayerInfo extends Admin
             switch($type)
             {
                 case "getUnmergedPlayerList":
+                    //获取两个未整合的队员列表
                     $playerInfoModel=new PlayerInfoModel();
-                    $map['pid']=0;
-                    $playerInfos=$playerInfoModel->getFieldList($map,'player_name','player_name');//排序
-                    $playerInfos=$playerInfos ?? [];
-                    $html = '<select class="filed_select" style="width:180px;height: 30px;line-height: 30px;margin: 0 auto;" name="player_id"><option value="0">请选择</option>';
-                    if (count($playerInfos) > 0) {
-                        foreach ($playerInfos as $key => $val) {
-                            if($key!=$player_id && $val != ''){
-                                $html .= '<option value="' . $key. '">' . $val .'</option>';
+                    $game = Request::param('game',0);
+                    //==============获取存在的战队id==============
+                    $teamInfoModel=new TeamInfo();
+                    $teamInfo=$teamInfoModel->getTeamInfoByTeamId($team_id);
+                    if(isset($teamInfo['tid']) && $teamInfo['tid']>0){
+                        $teamWhere['tid']=$teamInfo['tid'] ?? 0;
+                        $teamIds=$teamInfoModel->getIds($teamWhere,$field='team_id');
+                        //==============获取存在的战队id==============
+                        //==============获取所有pid=0,team_id存在的所有队员==============
+                        $map['pid']=0;
+                        $map['game']=$game;
+                        $playerInfos=$playerInfoModel->getFieldList($map,'player_name,team_id','player_name',$teamIds);//排序
+
+                        $playerInfos=$playerInfos ?? [];
+                        //==============获取所有pid=0,team_id存在的所有队员==============
+                        $html = '<select class="filed_select" style="width:180px;height: 30px;line-height: 30px;margin: 0 auto;" name="player_id"><option value="0">请选择</option>';
+                        if (count($playerInfos) > 0) {
+                            foreach ($playerInfos as $key => $val) {
+                                if($key!=$player_id && $val != ''){
+                                    $html .= '<option value="' . $key. '">' . $val['player_name'].'/'. $val['team_id'] .'</option>';
+                                }
                             }
+                        }else{
+                            $html.='<option value="0">队员数据为空</option>';
                         }
+                        $html .= '</select>';
+                        $html .= '<input type="hidden" name="player_id" value="' . $player_id . '">';
+                        $html .= '<input type="hidden" name="type" value="merge2unmergedPlayer">';
+
                     }else{
-                        $html.='<option value="0">战队数据为空</option>';
+                        $html='未整合的队伍中的队员不做整合操作（team_id:'.$team_id.'）';
                     }
-                    $html .= '</select>';
-                    $html .= '<input type="hidden" name="player_id" value="' . $player_id . '">';
-                    $html .= '<input type="hidden" name="type" value="merge2unmergedPlayer">';
+
                     break;
                 case "getMergedPlayerList4pid":
-
+                    //==================获取所有整合过的队员列表======================
                     $postData = json_encode(['team_id'=>$team_id, 'type' => 'playerList_team_id','pageSize'=>1000]);
-
                     $api_host = config('app.api_host') . '/getIntergration';
                     $return = curl_post($api_host, $postData);
                     $playerInfos = json_decode($return, true);
+                    //==================获取所有整合过的队员列表======================
                     $playerInfos=$playerInfos ?? [];
                     $html = '<select class="filed_select" style="width:180px;height: 30px;line-height: 30px;margin: 0 auto;" name="pid">';
                     if (count($playerInfos) > 0) {
@@ -292,13 +310,15 @@ class PlayerInfo extends Admin
 
                     break;
                 case "getMergedPlayerList4playerid":
+                    //==================通过接口获取所有整合过的队员列表======================
                     $postData = json_encode(['team_id'=>$team_id, 'type' => 'playerList_team_id','pageSize'=>1000]);
                     $api_host = config('app.api_host') . '/getIntergration';
                     $return = curl_post($api_host, $postData);
                     $playerInfos = json_decode($return, true);
                     $playerInfos=$playerInfos ?? [];
-                    $html = '<select class="filed_select" style="width:180px;height: 30px;line-height: 30px;margin: 0 auto;" name="pid">';
+
                     if (count($playerInfos) > 0) {
+                        $html = '<select class="filed_select" style="width:180px;height: 30px;line-height: 30px;margin: 0 auto;" name="pid">';
                         $html .='<option value="0">请选择</option>';
                         array_multisort(array_column($playerInfos,"player_name"),SORT_DESC,$playerInfos);
 
@@ -308,11 +328,12 @@ class PlayerInfo extends Admin
                                 $html .= '<option value="' . $val['pid']. '">' . $val['player_name'] . '  （'.count($val['intergrated_id_list']).'）</option>';
                             }
                         }
+                        $html .= '<input type="hidden" name="player_id" value="' . $player_id . '">';
+                        $html .= '<input type="hidden" name="type" value="mergePlayer2mergedPlayer">';
                     }else{
-                        $html.='<option value="0">战队数据为空</option>';
+                        $html='队员列表数据为空（team_id:）'.$team_id;
                     }
-                    $html .= '<input type="hidden" name="player_id" value="' . $player_id . '">';
-                    $html .= '<input type="hidden" name="type" value="mergePlayer2mergedPlayer">';
+
                     break;
 
             }

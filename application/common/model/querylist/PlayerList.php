@@ -59,9 +59,11 @@ class PlayerList extends BaseQueryList
                 $api_host=config('app.api_host').'/getIntergration';
                 $return=curl_post($api_host, $postData);
                 $return=json_decode($return,true);
+                $playerInfo=$this->getPlayerInfoByPid($return['data']['pid'],'team_id');
+                $val['team_id']=$playerInfo['team_id'];
                 if(is_numeric($return['structure']['player_name'] ) && $return['structure']['player_name']>0){
-                    $playerInfo=$this->getPlayerInfo($return['structure']['player_name'],'player_name');
-                    $val['player_name']=$playerInfo['player_name'] ?? '';
+                    $playerInfoName=$this->getPlayerInfo($return['structure']['player_name'],'player_name');
+                    $val['player_name']=$playerInfoName['player_name'] ?? '';
                 }else{
                     $val['player_name']=$return['data']['player_name'] ?? 0;
                 }
@@ -71,7 +73,6 @@ class PlayerList extends BaseQueryList
                 $val['cn_name']=$return['structure']['cn_name'] ?? 0;
                 $val['en_name']=$return['structure']['en_name'] ?? 0;
                 $val['position']=$return['structure']['position'] ?? 0;
-                $val['team_id']=$return['structure']['team_id'] ?? 0;
                 $val['logo']=$return['structure']['logo'] ?? 0;
                 $val['description']=$return['structure']['description'] ?? 0;
                 $val['hot']=$return['structure']['hot'] ?? 0;
@@ -125,6 +126,10 @@ class PlayerList extends BaseQueryList
 
     public function getPlayerInfo($id,$field="*"){
         return PlayerInfo::where('player_id',$id)->field($field)->find()->toArray();
+
+    }
+    public function getPlayerInfoByPid($pid,$field="*"){
+        return PlayerInfo::where('pid',$pid)->field($field)->find()->toArray();
 
     }
 

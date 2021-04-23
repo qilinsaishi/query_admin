@@ -65,6 +65,8 @@
 			  
 			  <div class="dd-content" >
 				<li>
+					<span style="margin-left:50px;">整合</span>
+					<span style="margin-left:50px;">包含</span>
 					<span style="margin-left:30px;">PID</span>
 					<span style="margin-left:25px;">队员ID</span>
 					<span style="margin-left:50px;">选手名称</span>
@@ -83,17 +85,19 @@
 				<li class="dd-item dd-item-alt " >
 				  <div class="dd-handle"></div>
 				  <div class="dd-content">
-				  <span>{$vo.pid}</span>
+				  <span><button onclick="getMergedPlayerList4pid('{$vo.pid}','{$vo.player_name}','{$vo.team_id}');">整合</button></span>
+				  <span style="margin-left:50px;"><button  onclick="getUnmergedPlayerList('{$vo.pid}','{$vo.player_name}','{$vo.game}','{$vo.team_id}');">包含</button></span>
+				  <span style="margin-left:30px;" >{$vo.pid}</span>
 				  <span class="list_cn_name" style="margin-left:30px;" >{$vo.player_id}</span>
-				  <span class="list_team_name" onclick="editField({$vo.pid},'player_name');"  style="margin-left:80px;">{$vo.player_name}</span>
+				  <span class="list_team_name" onclick="editField({$vo.pid},'player_name');"  style="margin-left:90px;">{$vo.player_name}</span>
 				  
 				  <span class="list_cn_name" style="margin-left:100px;" onclick="editField({$vo.pid},'cn_name');">{$vo.cn_name}</span>
-				  <span class="list_en_name" style="margin-left:100px;" onclick="editField({$vo.pid},'en_name');">{$vo.en_name}</span>
-				  <span class="list_established_date" style="margin-left:60px;" onclick="editField({$vo.pid},'position');">{$vo.position}</span>
+				  <span class="list_en_name" style="margin-left:110px;" onclick="editField({$vo.pid},'en_name');">{$vo.en_name}</span>
+				  <span class="list_established_date" style="margin-left:100px;" onclick="editField({$vo.pid},'position');">{$vo.position}</span>
 				  <span style="margin-left:45px;" onclick="editField({$vo.pid},'country');">{$vo.country}</span>
-				  <span style="margin-left:70px;" onclick="editField({$vo.pid},'site_id');">{$vo.site_id}</span>
-				  <span style="margin-left:80px;" onclick="editField({$vo.pid},'game');">{$vo.game}</span>
-				  <span style="margin-left:100px;" onclick="editField({$vo.pid},'original_source');">{$vo.original_source}</span>
+				  <span style="margin-left:100px;" onclick="editField({$vo.pid},'site_id');">{$vo.site_id}</span>
+				  <span style="margin-left:90px;" onclick="editField({$vo.pid},'game');">{$vo.game}</span>
+				  <span style="margin-left:110px;" onclick="editField({$vo.pid},'original_source');">{$vo.original_source}</span>
 				  <span style="margin-left:60px;" onclick="editField({$vo.pid},'team_id');">{$vo.team_id}</span>
 				  <span style="margin-left:50px;">
 					<a href="{:url('admin/PlayerList/edit', ['id' => $vo['pid']])}"></i> {:lang('Edit')}</a>
@@ -196,6 +200,41 @@
               </div>
           </form>
     </div>
+	
+	  <!--弹出框-->
+  <div class="row col-sm-12" style="display:none;" id="getMergedPlayerList4pid">
+        <form class="form-horizontal m-t"  novalidate="novalidate" style="margin-top:30px;margin-left:40px;">
+              <div class="form-group">
+                  <!--<label class="col-sm-3 control-label">姓名：</label>-->
+                  <div class="col-sm-8" id="mergedPlayerList4pid">
+                      <!--<input id="cname" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">-->
+                  </div>
+              </div>
+              
+              <div class="form-group">
+                  <div class="col-sm-4 col-sm-offset-3">
+                      <a class="btn btn-primary mergedPlayerListSubmit" style="margin-top:10px;" type="submit">提交</a>
+                  </div>
+              </div>
+          </form>
+    </div>
+	
+	 <div class="row col-sm-12" style="display:none;" id="getUnmergedPlayerList">
+        <form class="form-horizontal m-t"  novalidate="novalidate" style="margin-top:30px;margin-left:40px;">
+              <div class="form-group">
+                  <!--<label class="col-sm-3 control-label">姓名：</label>-->
+                  <div class="col-sm-8" id="unmergedPlayerList">
+                      <!--<input id="cname" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">-->
+                  </div>
+              </div>
+              
+              <div class="form-group">
+                  <div class="col-sm-4 col-sm-offset-3">
+                      <a class="btn btn-primary mergedPlayerListSubmit" style="margin-top:10px;" type="submit">提交</a>
+                  </div>
+              </div>
+          </form>
+    </div>
 {/block}
 
 <!-- 自定义js -->
@@ -262,15 +301,114 @@
 	
 	}
 	
-	/**
+	function getUnmergedPlayerList(pid,player_name,game,team_id){
+		var data={'pid':pid,'type':'getUnmergedPlayerList','game':game,'team_id':team_id};
+		$.ajax({
+			url:"{:Url('admin/playerList/selectPlayerHmtl')}",
+			data:data,
+			type:'post',
+			dataType:'json',
+			success: function(xhr){
+				var content=xhr.data;
+				var title=player_name;
+				if(xhr.code == 200){
+					layui.use('layer', function(){
+					  var $ = layui.jquery;
+					  var layer = layui.layer;
+					  $("#unmergedPlayerList").html(xhr.data);
+					var index = layer.open({
+						type: 1,  //可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+						title: [title, 'font-size:18px; color:orange;'],//数组第二项可以写任意css样式；如果你不想显示标题栏，你可以title: false
+						area: ['280px', '200px'],
+						shadeClose:true,
+						shade:0,
+						content: $('#getUnmergedPlayerList')
+						});
+					});
+				}else{
+					swal(xhr.msg, "", "error");
+				}
+			}
+		})
+	
+	}
+	
+	
+	function getMergedPlayerList4pid(pid,player_name,team_id){
+	
+		$.ajax({
+			url:"{:Url('admin/playerList/selectPlayerHmtl')}",
+			data:{'pid':pid,'type':'getMergedPlayerList4pid','team_id':team_id},
+			type:'post',
+			dataType:'json',
+			success: function(xhr){
+				var content=xhr.data;
+				var title=player_name;
+				if(xhr.code == 200){
+					layui.use('layer', function(){
+					  var $ = layui.jquery;
+					  var layer = layui.layer;
+					  $("#mergedPlayerList4pid").html(xhr.data);
+					var index = layer.open({
+						type: 1,  //可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+						title: [title, 'font-size:18px; color:orange;'],//数组第二项可以写任意css样式；如果你不想显示标题栏，你可以title: false
+						area: ['280px', '200px'],
+						shadeClose:true,
+						shade:0,
+						content: $('#getMergedPlayerList4pid')
+						});
+					});
+				}else{
+					swal(xhr.msg, "", "error");
+				}
+			}
+		})
+	
+	}
+	//整合
+	$(document).on('click','.mergedPlayerListSubmit',function(){
+		$('.layui-layer-page').hide();
+	
+		var type = $('input[name="type"]').val();
+		var select_value=$(".filed_select").find("option:selected").val();
+		if(select_value==undefined || select_value==0){
+			window.location.reload();
+			return false;
+		};
+		if(type=='merge2mergedPlayer'){
+			var pid = $('input[name="newpid"]').val();
+			var data={'pid_1':pid,'pid_2':select_value,'type':'merge2mergedPlayer'};
+		}else if(type=='mergePlayer2mergedPlayer'){
+			var pid = $('input[name="newpid"]').val();
+			var data={'player_id':select_value,'pid':pid,'type':'mergePlayer2mergedPlayer'};
+		}
+		
+		$.ajax({
+			url:"{:Url('admin/playerList/updateMerge2mergedPlayer')}",
+			data:data,
+			type:'post',
+			dataType:'json',
+			success: function(xhr){
+				if(xhr.code == 200){
+					swal(xhr.msg, "","success").then(function(value){
+						  window.location.reload();
+					});
+				}else{
+					swal(xhr.msg, "","error").then(function(value){
+						  window.location.reload();
+					});
+					
+				}
+			}
+		})
 
-	$(document).on('click','.layui-layer-close1',function(){
-		window.location.reload();
-	});*/
+		
+	});
+	
+	//快捷编辑字段
 	$(document).on('click','.confirmSubmit',function(){
 		$('.layui-layer-page').hide();
-		//var index = layer.open();
-		//layer.close(index); 
+		
 		var pid = $('input[name="pid"]').val();
 		var values=$(".filed_select").find("option:selected").val(); 
 		var fields = $('input[name="field"]').val();

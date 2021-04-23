@@ -82,7 +82,7 @@
                         <td><input name="ids[]" value="{$vo.player_id}" type="checkbox"></td>
                         <td>{$vo.player_id}</td>
 						<td align='center'><span class="pidclass">{$vo.pid}</span> {eq name="vo.pid" value="0"}
-						<span><button  onclick="getMergedPlayerList4playerid('{$vo.player_id}','{$vo.player_name}','{$vo.team_id}');">并入</button></span>&nbsp;&nbsp;&nbsp;&nbsp;<span><button  onclick="getUnmergedPlayerList('{$vo.player_id}','{$vo.player_name}');">合并</button></span>
+						<span><button  onclick="getMergedPlayerList4playerid('{$vo.player_id}','{$vo.player_name}','{$vo.team_id}');">并入</button></span>&nbsp;&nbsp;&nbsp;&nbsp;<span><button  onclick="getUnmergedPlayerList('{$vo.player_id}','{$vo.player_name}','{$vo.game}','{$vo.team_id}');">合并</button></span>
 						{else /}
 						（<span><button onclick="getMergedPlayerList4pid('{$vo.pid}','{$vo.player_name}','{$vo.team_id}');">合并</button></span>）
 						{/eq}</td>
@@ -273,8 +273,8 @@
 		})
 	
 	}
-	function getUnmergedPlayerList(player_id,player_name,team_id){
-		var data={'player_id':player_id,'team_id':team_id,'type':'getUnmergedPlayerList'};
+	function getUnmergedPlayerList(player_id,player_name,game,team_id){
+		var data={'player_id':player_id,'type':'getUnmergedPlayerList','game':game,'team_id':team_id};
 		$.ajax({
 			url:"{:Url('admin/playerInfo/selectHmtl')}",
 			data:data,
@@ -344,7 +344,10 @@
 	
 		var type = $('input[name="type"]').val();
 		var select_value=$(".filed_select").find("option:selected").val();
-		
+		if(select_value==undefined || select_value==0){
+			window.location.reload();
+			return false;
+		};
 		if(type=='merge2mergedPlayer'){
 			var pid = $('input[name="newpid"]').val();
 			var data={'pid_1':pid,'pid_2':select_value,'type':'merge2mergedPlayer'};
@@ -357,26 +360,24 @@
 		}
 		
 		$.ajax({
-				url:"{:Url('admin/playerInfo/updataInfo')}",
-				data:data,
-				type:'post',
-				dataType:'json',
-				success: function(xhr){
-					if(xhr.code == 200){
-						swal(xhr.msg, "","success").then(function(value){
-							  //暂时屏蔽window.location.reload();
-						});
-					}else{
-						swal(xhr.msg, "","error").then(function(value){
-							  window.location.reload();
-						});
-						
-					}
+			url:"{:Url('admin/playerInfo/updataInfo')}",
+			data:data,
+			type:'post',
+			dataType:'json',
+			success: function(xhr){
+				if(xhr.code == 200){
+					swal(xhr.msg, "","success").then(function(value){
+						  window.location.reload();
+					});
+				}else{
+					swal(xhr.msg, "","error").then(function(value){
+						  window.location.reload();
+					});
+					
 				}
-			})
+			}
+		})
 
-		
-		
 		
 	});
 	

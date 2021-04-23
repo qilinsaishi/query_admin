@@ -47,8 +47,11 @@ class PlayerInfo extends BaseQueryList
         if (!empty($request['params'])) {
             $params = $request['params'];
         }
+        $teamInfoModel=new TeamInfo();
+        //$builder->whereIn('team_id',$teamInfoModel->getIds([],"team_id"));
         $data=$this->where($query)
             ->order('player_id desc')
+            ->whereIn('team_id',$teamInfoModel->getIds([],"team_id"))
             ->with(['teamInfo'=>function($teamInfo) {//这里需要加上use（where需要的条件）
                 $teamInfo->where('tid','>','0' );
         }])
@@ -64,20 +67,19 @@ class PlayerInfo extends BaseQueryList
         $data=$this->where($map)->column('pid');
         return $data;
     }
-    public function getInfoList($map){
-        $data=[];
-        $data=$this->where($map)->select();
-        return $data;
-    }
 
     public function teamInfo(){
         return $this->hasOne(TeamInfo::class,'team_id','team_id');
     }
 
+    //public function getFieldList($map,$field,$orderBy='team_id',$teamIds=[]){
 
-    public function getFieldList($map,$field,$orderBy='team_id'){
+    public function getFieldList($map,$field,$orderBy='team_id',$teamIds){
         $data=[];
-        $data=$this->where($map)->order($orderBy,'desc')->column($field,'player_id');
+        $builder=$this->where($map)->order($orderBy,'desc');
+        $builder->whereIn('team_id',$teamIds);
+        $data=$builder->column($field,'player_id');
+
         return $data;
     }
 
