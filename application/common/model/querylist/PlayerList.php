@@ -23,12 +23,19 @@ class PlayerList extends BaseQueryList
         $query = [];
 
         if (isset($request['query']['q'])) {
-            $map[]=['player_name|position|en_name','like','%'.$request['query']['q'].'%'];
-            $playerInfo=new PlayerInfo();
-            $tids=$playerInfo->getIds($map);
-            if(count($tids)>0){
-                $query[] = ['pid','in',$tids];
+
+
+            if(is_numeric($request['query']['q'])){
+                $query[] = ['pid','eq',$request['query']['q']];
+            }else{
+                $map[]=['player_name|position|en_name','like','%'.$request['query']['q'].'%'];
+                $playerInfo=new PlayerInfo();
+                $pids=$playerInfo->getIds($map);
+                if(count($pids)>0){
+                    $query[] = ['pid','in',$pids];
+                }
             }
+
         }
 
         if (!empty($request['query']['game'])) {
@@ -51,7 +58,6 @@ class PlayerList extends BaseQueryList
                 'var_page' => 'page',
                 'query'    => $params,
             ]);
-
         if(count($data)>0) {
             foreach ($data as &$val){
                 $child=[];
@@ -60,12 +66,18 @@ class PlayerList extends BaseQueryList
                 $return=curl_post($api_host, $postData);
                 $return=json_decode($return,true);
                 $playerInfo=$this->getPlayerInfoByPid($return['data']['pid'],'team_id');
-                $val['team_id']=$playerInfo['team_id'];
+                $val['team_id']=$playerInfo['team_id'] ?? 0;
                 if(is_numeric($return['structure']['player_name'] ) && $return['structure']['player_name']>0){
                     $playerInfoName=$this->getPlayerInfo($return['structure']['player_name'],'player_name');
                     $val['player_name']=$playerInfoName['player_name'] ?? '';
                 }else{
                     $val['player_name']=$return['data']['player_name'] ?? 0;
+                }
+                if(strpos($val['redirect'],'pid')!==false){
+                    $val['redirect']=json_decode($val['redirect'],true);
+                    $val['redirect']="跳转到pid=".$val['redirect']['pid'].'队员中';
+                }else{
+                    $val['redirect']='';
                 }
 
                 $val['player_id']=$return['structure']['player_id'] ?? 0;
@@ -129,7 +141,14 @@ class PlayerList extends BaseQueryList
 
     }
     public function getPlayerInfoByPid($pid,$field="*"){
-        return PlayerInfo::where('pid',$pid)->field($field)->find()->toArray();
+
+        $data=PlayerInfo::where('pid',$pid)->field($field)->find();
+        if(is_object($data) || is_array($data)){
+            $data=$data->toArray();
+        }else{
+            $data=[];
+        }
+        return $data;
 
     }
 

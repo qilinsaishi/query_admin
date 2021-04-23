@@ -81,13 +81,17 @@
 					<span style="margin-left:50px;">操作</span>
 				</li>
 				</div>
+				
 				{volist name="list" id="vo"}
+				
 				<li class="dd-item dd-item-alt " >
 				  <div class="dd-handle"></div>
 				  <div class="dd-content">
-				  <span><button onclick="getMergedPlayerList4pid('{$vo.pid}','{$vo.player_name}','{$vo.team_id}');">整合</button></span>
+				   {empty name="vo.redirect"}
+				  <span ><button onclick="getMergedPlayerList4pid('{$vo.pid}','{$vo.player_name}','{$vo.team_id}');">整合</button></span>
 				  <span style="margin-left:50px;"><button  onclick="getUnmergedPlayerList('{$vo.pid}','{$vo.player_name}','{$vo.game}','{$vo.team_id}');">包含</button></span>
 				  <span style="margin-left:30px;" >{$vo.pid}</span>
+				 
 				  <span class="list_cn_name" style="margin-left:30px;" >{$vo.player_id}</span>
 				  <span class="list_team_name" onclick="editField({$vo.pid},'player_name');"  style="margin-left:90px;">{$vo.player_name}</span>
 				  
@@ -102,6 +106,10 @@
 				  <span style="margin-left:50px;">
 					<a href="{:url('admin/PlayerList/edit', ['id' => $vo['pid']])}"></i> {:lang('Edit')}</a>
 				  </span>
+				  {else /}
+				  <span style="margin-left:160px;" >{$vo.pid}</span>
+				   <span style="text-align:center;margin-left:200px;">{$vo.redirect}</span>
+				  {/empty}
 				  </div>
 				  {notempty name="vo.child"}
 				  <ol class="dd-list" >

@@ -74,10 +74,13 @@ class PlayerInfo extends BaseQueryList
 
     //public function getFieldList($map,$field,$orderBy='team_id',$teamIds=[]){
 
-    public function getFieldList($map,$field,$orderBy='team_id',$teamIds){
+    public function getFieldList($map,$field,$orderBy='team_id',$teamIds=[]){
         $data=[];
         $builder=$this->where($map)->order($orderBy,'desc');
-        $builder->whereIn('team_id',$teamIds);
+        if(count($teamIds) >0){
+            $builder=$builder->whereIn('team_id',$teamIds);
+        }
+
         $data=$builder->column($field,'player_id');
 
         return $data;
