@@ -324,14 +324,14 @@ class PlayerInfo extends Admin
 
                         foreach ($playerInfos as $key => $val) {
                             $val['pid']=isset($val['pid']) ? $val['pid']:0;
-                            if($val['pid']>0 &&  $val['pid']!=$pid && $val['player_name'] != ''){
+                            if($val['pid']>0 &&  $val['pid']!=$pid ){
                                 $html .= '<option value="' . $val['pid']. '">' . $val['player_name'] . '  （'.count($val['intergrated_id_list']).'）</option>';
                             }
                         }
                         $html .= '<input type="hidden" name="player_id" value="' . $player_id . '">';
                         $html .= '<input type="hidden" name="type" value="mergePlayer2mergedPlayer">';
                     }else{
-                        $html='队员列表数据为空（team_id:）'.$team_id;
+                        $html='战队数据为空（team_id:）'.$team_id;
                     }
 
                     break;

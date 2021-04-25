@@ -241,6 +241,7 @@ class TeamInfo extends Admin
         }else{
             $teamInfoModel=new TeamInfoModel();
             $map['tid']=0;
+            $map['game']=$game;
             $teamInfos=$teamInfoModel->getFieldList($map,'team_name','team_name');//排序
             $teamInfos=$teamInfos ?? [];
             $html = '<select class="filed_select" style="width:180px;height: 30px;line-height: 30px;margin: 0 auto;" name="team_id"><option value="">请选择</option>';
