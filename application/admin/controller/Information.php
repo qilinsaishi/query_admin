@@ -156,11 +156,17 @@ class Information extends Admin
     public function remove()
     {
         $id = Request::param('id');
+        $informationInfo=InformationModel::get($id);
+        $siteModel=new \app\common\model\Site();
 
         $return = InformationModel::destroy($id);
-
         if ($return !== false) {
-            return $this->response(200, Lang::get('Success'));
+            //刷新资讯列表第一页
+            $postData=['params'=>json_encode([$id]),'dataType' => 'information'];
+            $api_host=config('app.api_host').'/refresh';
+            $return=curl_post($api_host, $postData);
+
+            return $this->response(200, Lang::get('Success'),$return);
         } else {
             return $this->response(201, Lang::get('Fail'));
         }
@@ -232,6 +238,9 @@ class Information extends Admin
             $informationInfoObj->allowField(true)->save($request);
 
             if (is_numeric($informationInfoObj->id)) {
+                $postData=['params'=>json_encode([$informationInfoObj->id]),'dataType' => 'information'];
+                $api_host=config('app.api_host').'/refresh';
+                $return=curl_post($api_host, $postData);
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
