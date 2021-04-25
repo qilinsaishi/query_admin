@@ -159,6 +159,7 @@ class TeamList extends Admin
                 $child[$k]['team_history']=htmlspecialchars_decode(strip_tags($v['team_history'])) ?? '-';
                 $child[$k]['race_stat']=$v['race_stat'] ?? '-';
                 $caka=json_decode($v['aka'],true);
+                $caka=$caka ?? [];
                 if(count($caka)>0){
                     $child[$k]['aka']=join(',',$caka);
                 }else{

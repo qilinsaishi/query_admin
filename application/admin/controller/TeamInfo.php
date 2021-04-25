@@ -75,6 +75,9 @@ class TeamInfo extends Admin
                 if ($changeLog) {
                     $rt = $teamInfoObj->isUpdate(true)->allowField(true)->save($request);
                     if (is_numeric($teamInfoObj->team_id)) {
+                        $postData=['params'=>json_encode([$teamInfoObj->team_id]),'dataType' => 'totalTeamInfo'];
+                        $api_host=config('app.api_host').'/refresh';
+                        $return=curl_post($api_host, $postData);
                         // 提交事务
                         Db::commit();
                         return $this->response(200, Lang::get('Success'));
