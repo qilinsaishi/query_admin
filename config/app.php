@@ -145,6 +145,6 @@ return [
     'exception_handle'       => '',
 	'config_type'=>['text'=>'文本','images'=>'图片','file'=>'文件'],
 	'game_type'=>['lol','kpl','dota2'],
-	'original_source'=>['wanplus','cpseo','scoregg','gamedota2'],
+	'original_source'=>['cpseo','scoregg','gamedota2'],
 
 ];

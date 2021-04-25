@@ -81,11 +81,13 @@
                     <tr id = "tr_{$vo.player_id}">
                         <td><input name="ids[]" value="{$vo.player_id}" type="checkbox"></td>
                         <td>{$vo.player_id}</td>
-						<td align='center'><span class="pidclass">{$vo.pid}</span> {eq name="vo.pid" value="0"}
+						<td align='center'><span class="pidclass">{$vo.pid}</span>
+						{neq name="vo.original_source" value="wanplus"}
+						{eq name="vo.pid" value="0"}
 						<span><button  onclick="getMergedPlayerList4playerid('{$vo.player_id}','{$vo.player_name}','{$vo.team_id}');">并入</button></span>&nbsp;&nbsp;&nbsp;&nbsp;<span><button  onclick="getUnmergedPlayerList('{$vo.player_id}','{$vo.player_name}','{$vo.game}','{$vo.team_id}');">合并</button></span>
 						{else /}
 						（<span><button onclick="getMergedPlayerList4pid('{$vo.pid}','{$vo.player_name}','{$vo.team_id}');">合并</button></span>）
-						{/eq}</td>
+						{/eq}{/neq}</td>
                         <td>
                             {$vo.player_name}
                         </td>

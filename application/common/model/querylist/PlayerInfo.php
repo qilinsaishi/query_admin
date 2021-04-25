@@ -41,20 +41,16 @@ class PlayerInfo extends BaseQueryList
 
         }
 
-
         // 分页参数
         $params = [];
         if (!empty($request['params'])) {
             $params = $request['params'];
         }
         $teamInfoModel=new TeamInfo();
-        //$builder->whereIn('team_id',$teamInfoModel->getIds([],"team_id"));
         $data=$this->where($query)
             ->order('player_id desc')
             ->whereIn('team_id',$teamInfoModel->getIds([],"team_id"))
-            ->with(['teamInfo'=>function($teamInfo) {//这里需要加上use（where需要的条件）
-                $teamInfo->where('tid','>','0' );
-        }])
+            //->whereIn('original_source',config('app.original_source'))
             ->paginate(20, false, [
                 'type'     => 'bootstrap',
                 'var_page' => 'page',

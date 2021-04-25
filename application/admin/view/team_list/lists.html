@@ -87,7 +87,7 @@
 						<li class="dd-item dd-item-alt " >
 						  <div class="dd-handle"></div>
 						  <div class="dd-content">
-						  <span><button onclick="ntegratid('{$vo.tid}','{$vo.team_name}','{$vo.game}',3);">整合</button></span>
+						  <span>{neq name="vo.original_source" value="wanplus"}<button onclick="ntegratid('{$vo.tid}','{$vo.team_name}','{$vo.game}',3);">整合</button>{else /}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{/neq}</span>
 						  <span style="margin-left:30px;">{$vo.tid}</span>
 						  <span class="list_team_name" onclick="editField({$vo.tid},'team_name');"  style="margin-left:60px;">{$vo.team_name}</span>
 						  <span class="list_cn_name" style="margin-left:70px;" onclick="editField({$vo.tid},'cn_name');">{$vo.cn_name}</span>
