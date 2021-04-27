@@ -23,8 +23,18 @@ class PlayerInfo extends BaseQueryList
         $query = [];
         $query[] = ['team_id', 'gt','0'];
         if (isset($request['query']['q'])) {
-            $query[] = ['player_name|position|en_name|player_id|pid','like','%'.$request['query']['q'].'%'];
+            if(is_numeric($request['query']['q'])){
+                $query[] = ['player_id|pid','eq',$request['query']['q']];
+                $request['query']['game']='';
+                $request['query']['original_source']='';
+                $request['params']['game']='';
+                $request['params']['original_source']='';
+            }else{
+                $query[] = ['player_name|position|en_name','like','%'.$request['query']['q'].'%'];
+            }
+
         }
+
 
         if (!empty($request['query']['game'])) {
             $query[] = ['game', 'eq', $request['query']['game']];
