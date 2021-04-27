@@ -67,6 +67,22 @@ class TeamInfo extends Admin
                 $request['aka'] = explode(',', $request['aka']);
                 $request['aka'] = json_encode($request['aka']);
             }
+            $race_stat=[];
+            if(isset($request['race_stat'])){
+                $request['race_stat']=str_replace(array(',',"，"),',',$request['race_stat']);
+                $race_stat_temp=explode(',',$request['race_stat']);
+                $race_stat_temp=$race_stat_temp ?? [];
+                if(count($race_stat_temp) > 0){
+                    $race_stat=[
+                        'win'=>isset($race_stat_temp[0]) ? intval(str_replace('win:','',$race_stat_temp[0])) :0,
+                        'draw'=>isset($race_stat_temp[1]) ? intval(str_replace('draw:','',$race_stat_temp[1])) :0,
+                        'lose'=>isset($race_stat_temp[2]) ? intval(str_replace('lose:','',$race_stat_temp[2])) :0,
+                    ];
+                }
+
+            }
+
+            $request['race_stat'] = json_encode($race_stat);
             //需要加事务
             Db::startTrans();
             try {
@@ -104,12 +120,24 @@ class TeamInfo extends Admin
         $info = teamInfoModel::get($id);
         $typeList = config('app.game_type');
         $info['aka'] = json_decode($info['aka'], true);
-        $info['race_stat'] = json_decode($info['race_stat'], true);
+
+        if(substr($info['race_stat'],0,1)=='"' && substr($info['race_stat'],-1)=='"'){
+            $info['race_stat'] = json_decode($info['race_stat'], true);
+        }
+        $info['race_stat']=json_decode($info['race_stat'],true);
+        $race_stat='';
+        if(is_array($info['race_stat']) && count($info['race_stat'])>0){
+            $race_stat='win:'.$info['race_stat']['win'].',draw:'.$info['race_stat']['draw'].',lose:'.$info['race_stat']['lose'];
+        }
+        $info['race_stat']=$race_stat;
+
+
         if (!empty($info['aka'])) {
             $info['aka'] = implode(',', $info['aka']);
         } else {
             $info['aka'] = '';
         }
+
 
         $data = [
             'info' => $info,

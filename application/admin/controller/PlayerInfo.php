@@ -69,7 +69,6 @@ class PlayerInfo extends Admin
             }
             $request['team_history']=$request['team_history'];
             $request['event_history']=$request['event_history'];
-
             //需要加事务
             Db::startTrans();
             try {
@@ -78,6 +77,10 @@ class PlayerInfo extends Admin
                 if ($changeLog) {
                     $playerInfoObj->isUpdate(true)->allowField(true)->save($request);
                     if (is_numeric($playerInfoObj->player_id)) {
+                        $postData=['params'=>json_encode([$playerInfoObj->player_id]),'dataType' => 'totalPlayerInfo'];
+
+                        $api_host=config('app.api_host').'/refresh';
+                        $return=curl_post($api_host, $postData);
                         // 提交事务
                         Db::commit();
                         return $this->response(200, Lang::get('Success'));

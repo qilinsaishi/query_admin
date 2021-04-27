@@ -17,7 +17,7 @@ class Information extends BaseQueryList
     public function getList($request){
         $query = [];
         if (isset($request['query']['q'])) {
-            $query[] = ['title|author','like','%'.$request['query']['q'].'%'];
+            $query[] = ['title|author|id','like','%'.$request['query']['q'].'%'];
         }
 
         if (!empty($request['query']['type'])) {
