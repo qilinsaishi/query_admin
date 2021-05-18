@@ -134,6 +134,23 @@
 			  </div>
 			</div>
 			<div class="form-group">
+			  <label class="layui-form-label">状态</label>
+			  <div class="row">
+			  <div class="col-md-6">
+				<div class="radio">
+					<label class="radio-inline">
+						<input type="radio" {eq name="info.status" value="1"}checked{/eq} name="status" value="1">正常
+					</label>
+					<label class="radio-inline">
+						<input type="radio" {eq name="info.status" value="2"}checked{/eq} name="status" value="2">隐藏
+					</label>
+					
+				</div>
+			  </div>
+			  </div>
+			</div>
+			
+			<div class="form-group">
 			  <label class="layui-form-label">游戏战绩</label>
 			  <div class="row">
 			  <div class="col-md-6">

@@ -19,7 +19,7 @@
       <div class="tab-pane active">
         <form role="form" id="operate">
             <div class="form-group">
-              <label>选手名称 </label>
+              <label class="layui-form-label">选手名称 </label>
               <div class="row">
               <div class="col-md-6">
               <input type="hidden" name="player_id" value="{$info.player_id}">
@@ -30,7 +30,7 @@
               </div>
             </div>
 			<div class="form-group">
-              <label>中文名 </label>
+              <label class="layui-form-label">中文名 </label>
               <div class="row">
               <div class="col-md-6">
               <input type="text" name="cn_name" value="{$info.cn_name}"  class="form-control input-sm" placeholder="">
@@ -38,7 +38,7 @@
               </div>
             </div>
 			<div class="form-group">
-              <label>英文名</label>
+              <label class="layui-form-label">英文名</label>
               <div class="row">
               <div class="col-md-6">
               <input type="text" name="en_name" value="{$info.en_name}"  class="form-control input-sm" placeholder="">
@@ -46,7 +46,7 @@
               </div>
             </div>
 			<div class="form-group">
-              <label>别名</label>
+              <label class="layui-form-label">别名</label>
               <div class="row">
               <div class="col-md-6">
               <input type="text" name="aka" value="{$info.aka}"  class="form-control input-sm" placeholder=""><span style="color:red">多个别名用逗号隔开</span>
@@ -54,7 +54,7 @@
               </div>
             </div>
 			<div class="form-group">
-              <label>国家 </label>
+              <label class="layui-form-label">国家 </label>
               <div class="row">
               <div class="col-md-6">
               <input type="text" name="country" value="{$info.country}"  class="form-control input-sm" placeholder="">
@@ -62,7 +62,7 @@
               </div>
             </div>
 			<div class="form-group">
-              <label>位置 <span class="text-red">*</span></label>
+              <label class="layui-form-label">位置 <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-6">
               <input type="text" name="position" value="{$info.position}"  class="form-control input-sm" placeholder="">
@@ -70,9 +70,9 @@
               </div>
             </div>
 			<div class="form-group">
-              <label>游戏类型 <span class="text-red">*</span></label>
+              <label class="layui-form-label">游戏类型 <span class="text-red">*</span></label>
               <div class="row">
-              <div class="col-md-4">
+              <div class="col-md-6">
               <select name="game" class="form-control">
                 <option>请选择</option>
                 {volist name="typeList" id="vo"}
@@ -84,11 +84,27 @@
               </div>
               </div>
             </div>
+			<div class="form-group">
+			  <label class="layui-form-label">状态</label>
+			  <div class="row">
+			  <div class="col-md-6">
+				<div class="radio">
+					<label class="radio-inline">
+						<input type="radio" {eq name="info.status" value="1"}checked{/eq} name="status" value="1">正常
+					</label>
+					<label class="radio-inline">
+						<input type="radio" {eq name="info.status" value="2"}checked{/eq} name="status" value="2">隐藏
+					</label>
+					
+				</div>
+			  </div>
+			  </div>
+			</div>
             
 			<div class="form-group">
-              <label>Logo</label>
+              <label class="layui-form-label">Logo</label>
               <div class="row">
-              <div class="col-md-12">
+              <div class="col-md-6">
                 <div class="layui-upload-drag" id="logo">
                   <input type="hidden" name="logo" value="{$info.logo}">
                   <div class="layui-upload-list" id="preview">
@@ -103,10 +119,10 @@
               </div>
             </div>
 			<div class="form-group">
-			  <label>所属战队</label>
+			  <label class="layui-form-label">所属战队</label>
 			  <div class="row">
-				<div class="col-md-12">
-				  <select class="form-control select2" name="team_id" style="width:40%">
+				<div class="col-md-6">
+				  <select class="form-control select2" name="team_id" style="width:100%">
 					{volist name="teamList" id="vo"}
 					<option value="{$vo.team_id}"   {eq name="info.team_id" value="$vo.team_id"}selected{/eq} >{$vo.team_name}</option>
 					{/volist}
@@ -115,9 +131,9 @@
 			  </div>
 			</div>
 			<div class="form-group">
-			  <label>是否热门战队</label>
+			  <label class="layui-form-label">是否热门战队</label>
 			  <div class="row">
-			  <div class="col-md-12">
+			  <div class="col-md-6">
 				<div class="radio">
 					<label class="radio-inline">
 						<input type="radio" {eq name="info.hot" value="0"}checked{/eq} name="hot" value="0">否
@@ -130,7 +146,7 @@
 			  </div>
 			</div>
 			<div class="form-group">
-			  <label>{:lang('Description')}</label>
+			  <label class="layui-form-label">{:lang('Description')}</label>
 			  <div class="row">
 			  <div class="col-md-6">
 			  <textarea class="form-control input-sm" name="description" rows="3" placeholder="">{$info.description}</textarea>
@@ -138,17 +154,17 @@
 			  </div>
 			</div>
 			<div class="form-group">
-			  <label>战队历史<span style="color:red">（不要改）</span></label>
+			  <label class="layui-form-label">战队历史<span style="color:red">（不要改）</span></label>
 			  <div class="row">
-			  <div class="col-md-12">
+			  <div class="col-md-10">
 			  <textarea id="editor" name="team_history">{$info.team_history}</textarea>
 			  </div>
 			  </div>
 			</div>
 			<div class="form-group">
-			  <label>战绩历史<span style="color:red">（不要改）</span></label>
+			  <label class="layui-form-label">战绩历史<span style="color:red">（不要改）</span></label>
 			  <div class="row">
-			  <div class="col-md-12">
+			  <div class="col-md-10">
 			  <textarea id="editor1" name="event_history">{$info.event_history}</textarea>
 			  </div>
 			  </div>

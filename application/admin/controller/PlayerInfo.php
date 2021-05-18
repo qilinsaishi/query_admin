@@ -65,6 +65,7 @@ class PlayerInfo extends Admin
                     $request['aka']=str_replace('，',',',$request['aka']);
                 }
                 $request['aka']=explode(',',$request['aka']);
+
                 $request['aka']=json_encode($request['aka']);
             }
             $request['team_history']=$request['team_history'];
@@ -106,11 +107,16 @@ class PlayerInfo extends Admin
         $id = Request::param('id');
         $info = PlayerInfoModel::get($id);
         $info['aka']=json_decode($info['aka'],true);
-        if(!empty($info['aka'])){
-            $info['aka']=implode(',',$info['aka']);
+        if(is_array($info['aka'])){
+            if(!empty($info['aka'])){
+                $info['aka']=implode(',',$info['aka']);
+            }else{
+                $info['aka']='';
+            }
         }else{
             $info['aka']='';
         }
+
 
         $info['event_history']=!empty($info['event_history']) ?$info['event_history']: '';
         $teamModel=new TeamInfo();
