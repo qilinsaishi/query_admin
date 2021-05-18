@@ -73,7 +73,7 @@ class PlayerList extends BaseQueryList
                 }else{
                     $val['player_name']=$return['data']['player_name'] ?? 0;
                 }
-                if(strpos($val['redirect'],'pid')!==false){
+                if(isset($val['redirect']) && strpos($val['redirect'],'pid')!==false){
                     $val['redirect']=json_decode($val['redirect'],true);
                     $val['redirect']="跳转到pid=".$val['redirect']['pid'].'队员中';
                 }else{
