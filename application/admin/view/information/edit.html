@@ -49,7 +49,7 @@
               <div class="row">
               <div class="col-md-6">
               <select name="game" class="form-control" id="gameId" >
-                <option>请选择</option>
+               
                 {volist name="gameList" id="vo"}
                 <option  {eq name="$vo" value="$info.game"}selected{/eq} value="{$vo}">
                     {$vo}
@@ -63,11 +63,11 @@
               <label  class="layui-form-label">所属站点</label>
               <div class="row">
               <div class="col-md-6">
-              <select name="site_id" id="siteId" class="form-control">
-                <option  value="">请选择-</option>
+              <select name="site" id="siteId" class="form-control">
+                <option value="0">不指定</option>
                 {volist name="siteList" id="vo"}
-                <option value="{$vo.id}" {eq name="$vo.id" value="$info.site_id"}selected{/eq}>
-                    {$vo.domain}
+                <option value="{$vo.id}" data-url="{$vo.domain}" {eq name="$vo.id" value="$info.site_id"}selected{/eq}>
+                     {$vo.domain}{$vo.name}(id:{$vo.id})
                 </option>
                 {/volist}
               </select>
@@ -80,7 +80,7 @@
               <div class="row">
               <div class="col-md-6">
               <select name="type" class="form-control">
-                <option>请选择</option>
+                
                 {volist name="typeList" id="vo"}
                 <option  {eq name="key" value="$info.type"}selected{/eq} value="{$key}" >
                     {$vo}
@@ -229,14 +229,17 @@ var ue = UE.getEditor('editor', {
 	
 	//预览
 	function preview(){
-		//typeId
+		var site_id=$("#siteId").find("option:selected").val();
+		if(site_id==5){
+			return alert("暂不提供预览");
+		}
 		var title=$("#titleId").val();
 		var author=$("#authorId").val();
 		var source=$("#sourceId").val();
 		var game=$("#gameId").val();
 		var logo=$("#logoId").val();
 		var content = $('textarea[name="content"]').val();
-		var site_url=$("#siteId").find("option:selected").text();
+		var site_url=$("#siteId").find("option:selected").attr('data-url');
 		var type=$("#typeId").find("option:selected").val();
 		var post_url=trim(site_url)+"/preview/";
 		var status = $("input[name='status']:checked").val();

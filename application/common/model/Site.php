@@ -31,6 +31,6 @@ class Site extends Model
 
     public function getSiteList()
     {
-        return Site::all();
+        return Site::order('id','desc')->all();
     }
 }

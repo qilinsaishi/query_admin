@@ -38,7 +38,7 @@
               <div class="row">
               <div class="col-md-4">
               <select name="site_id"  class="form-control" >
-                <option  value="">请选择-</option>
+                <option  value="0">不指定站点-</option>
                 {volist name="siteList" id="vo"}
                 <option {eq name="info.site_id" value="$vo.id"}selected{/eq} value="{$vo.id}">
                     {$vo.name}

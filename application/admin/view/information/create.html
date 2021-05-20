@@ -50,7 +50,6 @@
               <div class="row">
               <div class="col-md-6">
               <select name="game" class="form-control"  id="gameId">
-                <option>请选择</option>
                 {volist name="gameList" id="vo"}
                 <option value="{$vo}">
                     {$vo}
@@ -64,11 +63,11 @@
               <label  class="layui-form-label">所属站点</label>
               <div class="row">
               <div class="col-md-6">
-              <select name="site_id" id="siteId" class="form-control">
-                <option  value="">请选择-</option>
+              <select name="site" id="siteId" class="form-control">
+                <option value="0">不指定</option>
                 {volist name="siteList" id="vo"}
-                <option value="{$vo.id}">
-                    {$vo.domain}
+                <option value="{$vo.id}" data-url="{$vo.domain}">
+                    {$vo.domain}{$vo.name}(id:{$vo.id})
                 </option>
                 {/volist}
               </select>
@@ -81,7 +80,7 @@
               <div class="row">
               <div class="col-md-6">
               <select name="type" class="form-control"  id="typeId">
-                <option>请选择</option>
+                
                 {volist name="typeList" id="vo"}
                 <option  value="{$key}" >
                     {$vo}
@@ -95,7 +94,7 @@
               <label class="layui-form-label">发布时间</label>
               <div class="row">
               <div class="col-md-6">
-              <input type="text"  name="time_to_publish" id="time_to_publish" lay-verify="time_to_publish" placeholder="yyyy-MM-dd HH:ii:ss" class="layui-input" >
+              <input type="text"  name="time_to_publish" id="time_to_publish" lay-verify="time_to_publish" placeholder="yyyy-MM-dd HH:ii:ss" value="{$curTime}" class="layui-input" >
               </div>
               </div>
             </div>
@@ -245,14 +244,17 @@ var ue = UE.getEditor('editor', {
 	
 	//预览
 	function preview(){
-		//typeId
+		var site_id=$("#siteId").find("option:selected").val();
+		if(site_id==5 || site_id==4 ){
+			return alert("暂不提供预览");
+		}
 		var title=$("#titleId").val();
 		var author=$("#authorId").val();
 		var source=$("#sourceId").val();
 		var game=$("#gameId").val();
 		var logo=$("#logoId").val();
 		var content = $('textarea[name="content"]').val();
-		var site_url=$("#siteId").find("option:selected").text();
+		var site_url=$("#siteId").find("option:selected").attr('data-url');
 		var type=$("#typeId").find("option:selected").val();
 		var post_url=trim(site_url)+"/preview/";
 		var status = $("input[name='status']:checked").val();

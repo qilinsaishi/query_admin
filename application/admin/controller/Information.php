@@ -233,7 +233,7 @@ class Information extends Admin
             $request['create_time']=date("Y-m-d H:i:s",time()-8*60*60);
             $request['update_time']=date("Y-m-d H:i:s",time()-8*60*60);
             $request['baidu_word_list']=json_encode([]);
-
+print_r($request);exit;
             $informationInfoObj = new InformationModel();
             $informationInfoObj->allowField(true)->save($request);
 
@@ -252,11 +252,13 @@ class Information extends Admin
         if($siteList){
             $siteList=$siteList->toArray();
         }
+        $curTime=date("Y-m-d H:i:s");
         $gameList=config('app.game_type');
         $data = [
             'typeList'=>$this->type,
             'gameList'=>$gameList,
-            'siteList'=>$siteList
+            'siteList'=>$siteList,
+            'curTime'=>$curTime
         ];
 
         return $this->fetch('create',$data);
