@@ -233,7 +233,6 @@ class Information extends Admin
             $request['create_time']=date("Y-m-d H:i:s",time()-8*60*60);
             $request['update_time']=date("Y-m-d H:i:s",time()-8*60*60);
             $request['baidu_word_list']=json_encode([]);
-print_r($request);exit;
             $informationInfoObj = new InformationModel();
             $informationInfoObj->allowField(true)->save($request);
 
