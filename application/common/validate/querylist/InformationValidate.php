@@ -11,8 +11,8 @@ class InformationValidate extends Validate
     ];
 
     protected $message = [
-        'title.require' => '请输入装备名称',
-        'logo.require'  => '请上传logo',
+        'title.require' => '请输入标题',
+        'logo.require'  => '请上传缩略图',
     ];
 
     protected $scene = [

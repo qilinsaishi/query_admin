@@ -71,6 +71,12 @@ class Information extends Admin
                 $informationInfoObj= new InformationModel();
                 $changeLog = ChangeLogs::checkInsertData('app\common\model\querylist\Information', $request, $request['id'], 'information', $this->username, 'id');
                 if ($changeLog) {
+                    if($request['site']==5){
+                        $request['site']=5;
+                    }else{
+                        $request['site']=0;
+                    }
+
                     $request['update_time']=date("Y-m-d H:i:s",time()-8*60*60);
                     $informationInfoObj->isUpdate(true)->allowField(true)->save($request);
                     if (is_numeric($informationInfoObj->id)) {
@@ -229,6 +235,11 @@ class Information extends Admin
                 return $this->response(201, $validate->getError());
             }
             $request['time_to_publish']=date("Y-m-d H:i:s",strtotime($request['time_to_publish'])-8*60*60);
+            if($request['site']==5){
+                $request['site']=5;
+            }else{
+                $request['site']=0;
+            }
 
             $request['create_time']=date("Y-m-d H:i:s",time()-8*60*60);
             $request['update_time']=date("Y-m-d H:i:s",time()-8*60*60);
