@@ -62,6 +62,9 @@ class TournamentInfo extends Admin
 			$scoreggTournamentInfoObj = new ScoreggTournamentInfoModel();
 			$rt = $scoreggTournamentInfoObj->isUpdate(true)->allowField(true)->save($request);
 			if (is_numeric($scoreggTournamentInfoObj->tournament_id)) {
+				$postData=['params'=>json_encode([$scoreggTournamentInfoObj->tournament_id]),'dataType' => 'tournament'];
+				$api_host=config('app.api_host').'/refresh';
+				$return=curl_post($api_host, $postData);
 				return $this->response(200, Lang::get('Success'));
 			} else {
 				return $this->response(201, Lang::get('Fail'));
