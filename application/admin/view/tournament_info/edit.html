@@ -33,7 +33,7 @@
               <label class="layui-form-label">开始时间</label>
               <div class="row">
               <div class="col-md-4">
-              <input type="text" name="start_time"  value="{$info.start_time|format_time='Y-m-d H:i:s'}"  class="form-control input-sm" placeholder="">
+              <input type="text" name="start_time" id="start_time" lay-verify="start_time" placeholder="yyyy-MM-dd HH:ii:ss"  value="{$info.start_time|format_time='Y-m-d H:i:s'}"  class="form-control input-sm" >
               </div>
               </div>
             </div>
@@ -41,7 +41,7 @@
               <label class="layui-form-label">结束时间</label>
               <div class="row">
               <div class="col-md-4">
-              <input type="text" name="end_time"  value="{$info.end_time|format_time='Y-m-d H:i:s'}"  class="form-control input-sm" placeholder="">
+              <input type="text" name="end_time" id="end_time" lay-verify="end_time" placeholder="yyyy-MM-dd HH:ii:ss"   value="{$info.end_time|format_time='Y-m-d H:i:s'}"  class="form-control input-sm" >
               </div>
               </div>
             </div>
@@ -91,9 +91,19 @@
 <!-- 自定义js -->
 {block name="js"}
 <script>
-layui.use('upload', function(){
+layui.use(['upload','laydate'], function(){
   var $ = layui.jquery
-  ,upload = layui.upload;
+  ,upload = layui.upload ,
+  laydate = layui.laydate;
+  laydate.render({
+    elem: '#start_time'
+    ,type: 'datetime'
+  });
+  laydate.render({
+    elem: '#end_time'
+    ,type: 'datetime'
+  });
+  
   //拖拽上传
   upload.render({
     elem: "#logo"
