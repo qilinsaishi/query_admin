@@ -241,7 +241,7 @@ var ue = UE.getEditor('editor', {
 	//预览
 	function preview(){
 		var site_id=$("#siteId").find("option:selected").val();
-		if(site_id==5 || site_id==4 ){
+		if(site_id==5 || site_id==4 || site_id==0){
 			return alert("暂不提供预览");
 		}
 		var title=$("#titleId").val();
