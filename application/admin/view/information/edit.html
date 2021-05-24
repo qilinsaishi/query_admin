@@ -66,7 +66,7 @@
               <select name="site" id="siteId" class="form-control">
                 <option value="0">不指定</option>
                 {volist name="siteList" id="vo"}
-                <option value="{$vo.id}" data-url="{$vo.domain}" {eq name="$vo.id" value="$info.site_id"}selected{/eq}>
+                <option value="{$vo.id}" data-url="{$vo.domain}" {eq name="$vo.id" value="$info.site"}selected{/eq}>
                      {$vo.domain}{$vo.name}(id:{$vo.id})
                 </option>
                 {/volist}
