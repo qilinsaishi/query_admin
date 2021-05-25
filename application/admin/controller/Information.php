@@ -231,6 +231,7 @@ class Information extends Admin
             }
             $request['time_to_publish']=date("Y-m-d H:i:s",strtotime($request['time_to_publish'])-8*60*60);
             $request['site']=$request['site'] ?? 0;
+            $request['5118_rewrite']=0;
             $request['create_time']=date("Y-m-d H:i:s",time()-8*60*60);
             $request['update_time']=date("Y-m-d H:i:s",time()-8*60*60);
             $request['baidu_word_list']=json_encode([]);
