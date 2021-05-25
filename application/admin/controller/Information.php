@@ -72,7 +72,7 @@ class Information extends Admin
                 $changeLog = ChangeLogs::checkInsertData('app\common\model\querylist\Information', $request, $request['id'], 'information', $this->username, 'id');
                 if ($changeLog) {
                     $request['site']=$request['site'] ?? 0;
-                    $request['update_time']=date("Y-m-d H:i:s",time()-8*60*60);
+                    $request['update_time']=date("Y-m-d H:i:s",time());
                     $informationInfoObj->isUpdate(true)->allowField(true)->save($request);
                     if (is_numeric($informationInfoObj->id)) {
                         $postData=['params'=>json_encode([$informationInfoObj->id]),'dataType' => 'information'];
@@ -229,11 +229,11 @@ class Information extends Admin
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
-            $request['time_to_publish']=date("Y-m-d H:i:s",strtotime($request['time_to_publish'])-8*60*60);
+            $request['time_to_publish']=date("Y-m-d H:i:s",strtotime($request['time_to_publish']));
             $request['site']=$request['site'] ?? 0;
             $request['5118_rewrite']=0;
-            $request['create_time']=date("Y-m-d H:i:s",time()-8*60*60);
-            $request['update_time']=date("Y-m-d H:i:s",time()-8*60*60);
+            $request['create_time']=date("Y-m-d H:i:s",time());
+            $request['update_time']=date("Y-m-d H:i:s",time());
             $request['baidu_word_list']=json_encode([]);
             $informationInfoObj = new InformationModel();
             $informationInfoObj->allowField(true)->save($request);
