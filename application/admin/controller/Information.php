@@ -236,10 +236,12 @@ class Information extends Admin
             $request['update_time']=date("Y-m-d H:i:s",time());
             $request['baidu_word_list']=json_encode([]);
             $informationInfoObj = new InformationModel();
+
             $informationInfoObj->allowField(true)->save($request);
 
             if (is_numeric($informationInfoObj->id)) {
-                $postData=['params'=>json_encode([$informationInfoObj->id]),'dataType' => 'information'];
+
+                $postData=['params'=>json_encode(["game"=>[$request['game']]]),'dataType' => 'informationList'];
                 $api_host=config('app.api_host').'/refresh';
                 $return=curl_post($api_host, $postData);
                 return $this->response(200, Lang::get('Success'));
