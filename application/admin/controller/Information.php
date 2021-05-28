@@ -72,12 +72,43 @@ class Information extends Admin
                 $changeLog = ChangeLogs::checkInsertData('app\common\model\querylist\Information', $request, $request['id'], 'information', $this->username, 'id');
                 if ($changeLog) {
                     $request['site']=$request['site'] ?? 0;
+                    $old_request_game=$request['game'];//echo "oldgame:".$old_request_game."\n";
                     $request['update_time']=date("Y-m-d H:i:s",time());
+                    if(isset($request['redirect']) && $request['redirect']>0){
+                        $redirectInfo = $informationInfoObj->get($request['redirect']);//跳转的数据详情
+                        if($request['game']!=$redirectInfo['game']){
+
+                            $request['game']=$redirectInfo['game'];
+                        }
+                        if($request['source']!=$redirectInfo['source']){
+                            $request['source']=$redirectInfo['source'];
+                        }
+                        if($request['site']!=$redirectInfo['site']){
+                            $request['site']=$redirectInfo['site'];
+                        }
+
+                    }
+
                     $informationInfoObj->isUpdate(true)->allowField(true)->save($request);
+
                     if (is_numeric($informationInfoObj->id)) {
                         $postData=['params'=>json_encode([$informationInfoObj->id]),'dataType' => 'information'];
                         $api_host=config('app.api_host').'/refresh';
                         $return=curl_post($api_host, $postData);
+                        //判断如果更新后和提交过来的数据不一致,则更新列表缓存
+                        if($old_request_game !=$informationInfoObj->game){
+                           // echo "oldgame:".$old_request_game."\n";
+                            //原有的游戏资讯清除缓存
+                            $oldPostData=['params'=>json_encode(["game"=>[$old_request_game]]),'dataType' => 'informationList'];
+                            $oldReturn= $this->updateInformationCache($oldPostData);
+
+                          //  echo "game:".$informationInfoObj->game."\n";
+                            //现有的游戏的游戏资讯清除缓存
+                            $postData=['params'=>json_encode(["game"=>[$informationInfoObj->game]]),'dataType' => 'informationList'];
+                            $return=$this->updateInformationCache($postData);
+
+                        }
+
                         // 提交事务
                         Db::commit();
                         return $this->response(200, Lang::get('Success'));
@@ -117,6 +148,11 @@ class Information extends Admin
         ];
 
         return $this->fetch('edit', $data);
+    }
+    public function updateInformationCache($postData){
+        $api_host=config('app.api_host').'/refresh';
+        $return=curl_post($api_host, $postData);
+        return $return;
     }
     public function view()
     {
