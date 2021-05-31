@@ -331,7 +331,7 @@ class TeamInfo extends Admin
                 $updataCache=json_encode([
                     'teamInfo'=>[$team_id,"dataType"=>"totalTeamInfo","reset"=>1],
                 ]);
-                
+
 
             }
 

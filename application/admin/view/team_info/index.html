@@ -85,13 +85,13 @@
                         <td><input name="ids[]" value="{$vo.team_id}" type="checkbox"></td>
                         <td>{$vo.team_id}</td>
 						<td align='center'><span class="tidclass">{$vo.tid}</span> 
-						{neq name="vo.original_source" value="wanplus"}
+						
 						{eq name="vo.tid" value="0"}
 						<span><button  onclick="ntegratid('{$vo.team_id}','{$vo.team_name}','{$vo.game}',1);">并入</button></span>&nbsp;&nbsp;&nbsp;&nbsp;<span><button  onclick="ntegratid('{$vo.team_id}','{$vo.team_name}','{$vo.game}',4);">合并</button></span>
 						&nbsp;&nbsp;&nbsp;&nbsp;<span><button  onclick="mergeSelf('{$vo.team_id}',5);">自整合</button></span>
 						{else /}
 						（<span><button onclick="ntegratid('{$vo.team_id}','{$vo.team_name}','{$vo.game}',2);">已整合</button></span>）
-						{/eq}{/neq}</td>
+						{/eq}</td>
                         <td>
                             {$vo.team_name}
                         </td>
