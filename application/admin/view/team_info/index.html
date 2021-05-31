@@ -88,7 +88,7 @@
 						{neq name="vo.original_source" value="wanplus"}
 						{eq name="vo.tid" value="0"}
 						<span><button  onclick="ntegratid('{$vo.team_id}','{$vo.team_name}','{$vo.game}',1);">并入</button></span>&nbsp;&nbsp;&nbsp;&nbsp;<span><button  onclick="ntegratid('{$vo.team_id}','{$vo.team_name}','{$vo.game}',4);">合并</button></span>
-						&nbsp;&nbsp;&nbsp;&nbsp;<span><button  onclick="mergeSelf('{$vo.team_id}',5);">自我整合</button></span>
+						&nbsp;&nbsp;&nbsp;&nbsp;<span><button  onclick="mergeSelf('{$vo.team_id}',5);">自整合</button></span>
 						{else /}
 						（<span><button onclick="ntegratid('{$vo.team_id}','{$vo.team_name}','{$vo.game}',2);">已整合</button></span>）
 						{/eq}{/neq}</td>
@@ -249,28 +249,40 @@
 		
 	}
 	
-	//自我整合
+	//自整合
 	function mergeSelf(team_id,type){
-		var data={'team_id':team_id,'type':type};
-		$.ajax({
-			url:"{:Url('admin/TeamInfo/updataInfo')}",
-			data:data,
-			type:'post',
-			dataType:'json',
-			success: function(xhr){
-				if(xhr.code == 200){
-					swal(xhr.msg, "","success").then(function(value){
-						  window.location.reload();
-					});
-				}else{
-					swal(xhr.msg, "","error").then(function(value){
-						  window.location.reload();
-					});
-					
+		 swal({
+          title: "{:lang('Are you sure')}",
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: "{:lang('Yes')}",
+          cancelButtonText: "{:lang('No')}",
+        }).then(function(result){
+          if (result.value) {
+            var data={'team_id':team_id,'type':type};
+			$.ajax({
+				url:"{:Url('admin/TeamInfo/updataInfo')}",
+				data:data,
+				type:'post',
+				dataType:'json',
+				success: function(xhr){
+					if(xhr.code == 200){
+						swal(xhr.msg, "","success").then(function(value){
+							  window.location.reload();
+						});
+					}else{
+						swal(xhr.msg, "","error").then(function(value){
+							  window.location.reload();
+						});
+						
+					}
 				}
-			}
-		})
-	
+			})
+          }
+        })
+
 	}
 	
 	//保存
