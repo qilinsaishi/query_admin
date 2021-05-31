@@ -301,7 +301,7 @@ class TeamInfo extends Admin
         $team_id_2=$request['team_id_2'] ?? 0; //下拉选择战队team_id
         $type=$request['type'] ?? 1;  //$type:1表示并入，2.表示已经合并，3表示两天tid>0的合并，4表示两个未合并的合并
 
-        if ($tid > 0 || $team_id_2 || $tid_2 ) {
+        if ($tid > 0 || $team_id_2 || $tid_2 || $team_id) {
             if($type==1){
                 //合并到已整合的战队
                 $postData = json_encode(['tid' => $tid,'team_id' => $team_id,'type' => 'mergeTeam2mergedTeam']);
@@ -325,7 +325,16 @@ class TeamInfo extends Admin
                     'teamInfo_2'=>[$team_id_2,"dataType"=>"totalTeamInfo","reset"=>1],
                 ]);
 
+            }elseif($type==5){
+                //自我整合
+                $postData = json_encode(['team_id' => $team_id,'type' => 'merge1unmergedTeam']);
+                $updataCache=json_encode([
+                    'teamInfo'=>[$team_id,"dataType"=>"totalTeamInfo","reset"=>1],
+                ]);
+                
+
             }
+
 
             $api_host = config('app.api_host') . '/intergration';
             $return = curl_post($api_host, $postData);
