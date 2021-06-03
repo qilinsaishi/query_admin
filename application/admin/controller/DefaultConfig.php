@@ -22,7 +22,7 @@ class DefaultConfig extends Admin
         $map    = [];
 
         if (isset($request['q'])) {
-            $q           = ['name','like','%'.$request['q'].'%'];
+            $q           = ['name|key','like','%'.trim($request['q']).'%'];
             $params['q'] = $request['q'];
             $search['q'] = $request['q'];
             array_push($map, $q );

@@ -47,6 +47,10 @@ class Information extends BaseQueryList
         return $data;
     }
 
+    public function getInformationInfo($map,$field="*"){
+        return $this->where($map)->field($field)->find();
+
+    }
   
 
 

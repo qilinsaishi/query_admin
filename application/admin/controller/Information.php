@@ -255,6 +255,7 @@ class Information extends Admin
 
     public function create()
     {
+        $informationInfoObj = new InformationModel();
         // 处理AJAX提交数据
         if (Request::isAjax()) {
             $request = Request::param();
@@ -265,13 +266,21 @@ class Information extends Admin
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
+
+            $map['game']=$request['game'];
+            $map['title']=trim($request['title']);
+            $checkName=$informationInfoObj->getInformationInfo($map,'id');
+            if(isset($checkName['id']) && $checkName['id']>0){
+                return $this->response(201, "数据库已经存在");
+            }
+
             $request['time_to_publish']=date("Y-m-d H:i:s",strtotime($request['time_to_publish']));
             $request['site']=$request['site'] ?? 0;
             $request['5118_rewrite']=0;
             $request['create_time']=date("Y-m-d H:i:s",time());
             $request['update_time']=date("Y-m-d H:i:s",time());
             $request['baidu_word_list']=json_encode([]);
-            $informationInfoObj = new InformationModel();
+
 
             $informationInfoObj->allowField(true)->save($request);
 

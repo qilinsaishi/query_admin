@@ -17,6 +17,6 @@ class InformationValidate extends Validate
 
     protected $scene = [
         'create'         => ['title','logo'],
-        'edit'           => ['cn_name','logo'],
+        'edit'           => ['title','logo'],
     ];
 }
