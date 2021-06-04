@@ -11,8 +11,7 @@
 {block name="content"}
   <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
-      <li class=""><a href="{:url('admin/defaultConfig/index')}">通用配置</a></li>
-      <li class=""><a href="{:url('admin/defaultConfig/create')}">{:lang('Create')}</a></li>
+      <li class=""><a href="{$redirect_url}"> {if condition="strpos($redirect_url,'center')!==false"}官网配置中心{else /}通用配置{/if}</a></li>
       <li class="pull-right"><a href="javascript:history.back(-1);" class="text-muted"><i class="fa fa-chevron-circle-left"></i></a></li>
     </ul>
     <div class="tab-content">
@@ -37,7 +36,7 @@
               <label>归属站点 <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-4">
-              <select name="site_id"  class="form-control" >
+              <select name="site_id"  class="form-control"  {if condition="strpos($redirect_url,'center')!==false"} disabled="disabled"{/if}>
                 <option  value="0">不指定站点-</option>
                 {volist name="siteList" id="vo"}
                 <option {eq name="info.site_id" value="$vo.id"}selected{/eq} value="{$vo.id}">

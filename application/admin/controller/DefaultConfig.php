@@ -73,12 +73,75 @@ class DefaultConfig extends Admin
 
         return $this->fetch('index');
     }
+    //官网配置中心
+    public function center()
+    {
+        $request = Request::param();
+        $request['site_id']=2;
+
+        $params = [];
+        $search = [];
+        $map    = [];
+
+        if (isset($request['q'])) {
+            $q           = ['name|key','like','%'.trim($request['q']).'%'];
+            $params['q'] = $request['q'];
+            $search['q'] = $request['q'];
+            array_push($map, $q );
+        }else {
+            $q = '';
+            $search['q'] = '';
+        }
+        if (isset($request['site_id']) && is_numeric($request['site_id'])) {
+            $site_id           = ['site_id','=',$request['site_id']];
+            $params['site_id'] = $request['site_id'];
+            $search['site_id'] = $request['site_id'];
+            array_push($map, $site_id);
+        }else {
+            $site_id = [];
+            $search['site_id'] = '';
+        }
+
+        $defaultObj = new DefaultConfigModel();
+        $list = $defaultObj
+            ->field('*')
+            ->where($map)
+            ->order('id desc')
+            ->paginate(20, false, [
+                'type'     => 'bootstrap',
+                'var_page' => 'page',
+                'query'    => $params,
+            ]);
+
+        $new_list = [];
+        $siteModel=new \app\common\model\Site();
+        if (isset($list)) {
+            foreach ($list as $v) {
+                $siteObj=$siteModel->getSiteNameById($v['site_id']);
+                $v['site_name']=$siteObj['name'] ?? '';
+                array_push($new_list, $v);
+            }
+        }
+
+        $siteList=[];
+        $siteList=$siteModel->getSiteList();
+        if($siteList){
+            $siteList=$siteList->toArray();
+        }
+        $this->assign('search', $search);
+        $this->assign('list', $new_list);
+        $this->assign('siteList', $siteList);
+        $this->assign('page', $list->render());
+
+        return $this->fetch('center');
+    }
 
     public function edit()
     {
         // 处理AJAX提交数据
         if (Request::isAjax()) {
             $request = Request::param();
+            $request['site_id']=$request['site_id'] ??2;
             if($request['type']=='text'){
                 $request['value']=$request['textvalue'];
             }elseif($request['type']=='images'){
@@ -98,6 +161,7 @@ class DefaultConfig extends Admin
 
             $defaultConfigObj= new DefaultConfigModel();
             $defaultConfigObj->isUpdate(true)->allowField(true)->save($request);
+
 
             if (is_numeric($defaultConfigObj->id)) {
                 $postData=['key_name'=>$request['key'],'dataType' => 'defaultConfig'];
@@ -119,11 +183,11 @@ class DefaultConfig extends Admin
         if($siteList){
             $siteList=$siteList->toArray();
         }
-
         $data = [
             'info'  => $info,
             'siteList'=>$siteList,
-            'typeList'=>$typeList
+            'typeList'=>$typeList,
+            'redirect_url'=>$_SERVER['HTTP_REFERER'],
 
         ];
 
@@ -235,7 +299,7 @@ class DefaultConfig extends Admin
 
         $typeList=config('app.config_type');
 
-        return $this->fetch('create',['typeList'=>$typeList,'siteList'=>$siteList]);
+        return $this->fetch('create',['typeList'=>$typeList,'siteList'=>$siteList,'redirect_url'=>$_SERVER['HTTP_REFERER']]);
     }
 
 
