@@ -1,0 +1,289 @@
+<!-- 模板继承 -->
+{extend name="public:base" /}
+
+<!-- 页面标题 -->
+{block name="title"}Administrator{/block}
+
+<!-- 自定义css -->
+{block name="css"}{/block}
+
+<!-- 内容区域 -->
+{block name="content"}
+  <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#">资讯信息</a></li>
+      <li class=""><a href="{:url('admin/Information/create')}">{:lang('Create')}</a></li>
+    </ul>
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+          <h3 class="box-title">{:lang('Filter')}</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <form action="#" method="get" class="form-inline">
+             <div class="form-group">
+                  <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon1">文章类型</span>
+                  <select name="type" class="form-control">
+                    <option value="">--请选择--</option>
+                    {foreach $typeList as $k=>$v } 
+                    <option {eq name="k" value="$search.type"}selected{/eq} value="{$k}">
+                        {$v}
+                    </option>
+                    {/foreach}
+                  </select>
+                  </div>
+              </div>
+			   <div class="form-group">
+                  <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon1">对应游戏</span>
+                  <select name="game" class="form-control">
+                    <option value="">--请选择--</option>
+                    {foreach $gameList as $k=>$v } 
+                    <option {eq name="$v" value="$search.game"}selected{/eq} value="{$v}">
+                        {$v}
+                    </option>
+                    {/foreach}
+                  </select>
+                  </div>
+              </div>
+              <div class="form-group">
+                <input type="text" name="q" value="{$search.q}" class="form-control" placeholder="">
+              </div>
+              <button type="submit" class="btn btn-primary btn-flat"> <i class="fa fa-search"></i> {:lang('Search')}</button>
+            </form>
+        </div>
+        <!-- /.box-body -->
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active table-responsive no-padding">
+            <table class="table table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th><input id="checkAll" type="checkbox"></th>
+                        <th>#ID</th>
+                        <th>标题</th>
+						<th>作者</th>
+						<th>游戏类型</th>
+                        <th>对应来源</th>
+						<th>文章类型</th>
+                        <th>Logo</th>
+						<th>原站点创建时间</th>
+						<th>创建时间</th>
+						<th>更新时间</th>
+                        <th>{:lang('Action')}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {volist name="list" id="vo"}
+                    <tr id = "tr_{$vo.id}">
+                        <td><input name="ids[]" value="{$vo.id}" type="checkbox"></td>
+                        <td>{$vo.id}</td>
+                        <td>
+                            {$vo.title}
+                        </td>
+						<td>
+                            {$vo.author}
+                        </td>
+						<td>
+                            {$vo.game}
+                        </td>
+                        <td>{$vo.source}</td>
+						<td>
+						{eq name="vo.type" value="1"}
+						   综合
+						{/eq}
+						{eq name="vo.type" value="2"}
+						   公告
+						{/eq}
+						{eq name="vo.type" value="3"}
+						   赛事
+						{/eq}
+						{eq name="vo.type" value="4"}
+						   攻略
+						{/eq}
+						{eq name="vo.type" value="5"}
+						   社区
+						{/eq}
+                        </td>
+                        <td>
+                            {notempty name="vo.logo"} <img src="{$vo.logo}?x-oss-process=image/resize,m_lfit,h_60,w_60" width="60" height="60">{/notempty}
+                        </td>
+						<td>
+                            {$vo.site_time}
+                        </td>
+						<td>
+                            {$vo.create_time}
+                        </td>
+						<td>
+                            {$vo.update_time}
+                        </td>
+                        <td>
+                            <a href="{:url('admin/Information/edit', ['id' => $vo['id']])}"></i> {:lang('Edit')}</a>
+							<a href="{:url('admin/Information/view', ['id' => $vo['id']])}"></i> 分词列表</a>
+                            <a onclick="remove('{$vo.id}')" href="#"> {:lang('Delete')}</a>
+                        </td>
+                    </tr>
+                    {/volist}
+                    {empty name="list"}
+                    <tr>
+                        <td colspan="7" class="text-center">{:lang("No record")}</td>
+                    </tr>
+                    {/empty}
+                </tbody>
+            </table>
+        </div>
+        <!-- /.tab-pane -->
+    </div>
+    <!-- /.tab-content -->
+    <div class="box-footer">
+        <div class="row">
+          <div class="col-md-6">
+            <form method="post" class="form-inline">
+                <div class="input-group">
+                    <div><select id="type" class="form-control">
+                        <option value="delete">{:lang('Delete')}</option>
+                    </select>
+                    </div>
+                    <span class="input-group-btn"> 
+                        <button type="button" onclick="handle()" class="btn btn-primary btn-flat"> {:lang('Save')} </button> 
+                    </span>
+                </div>
+            </form>
+          </div>
+          <div class="col-md-6">
+            <div class="text-right"> {$page} </div>
+          </div>
+        </div>
+    </div>
+  </div>
+
+
+{/block}
+
+<!-- 自定义js -->
+{block name="js"}
+
+<script>
+$(".scws_list").click(function(){
+	var scws_list=$(this).attr('data_scws_list');
+	alert(scws_list);
+});
+function scws_list(data){
+	layui.use('layer', function(){ //独立版的layer无需执行这一句
+	var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+	var html='<div style="padding: 20px 10px;"><table border="1"><th>word</th><th>times</th><th>weight</th><th>en</th><th>keyword_id</th>';
+	
+	   var json =data;  //自定义一个json数组
+            $.each(json, function (index, obj) {
+				html +='<tr><td width="60">'+ obj.word +'</td><td width="20">'+ obj.times +'</td><td width="120">'+ obj.weight +'</td><td width="40">'+ obj.attr +'</td><td width="60">'+ obj.keyword_id +'</td></tr>';
+            });
+
+
+	html += '</table></div>';
+	  
+	layer.open({
+			type: 1
+			,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+			,area: ['360px', '240px']
+			,id: 'layerDemo' //防止重复弹出
+			,content: html
+			,btn: '关闭全部'
+			,btnAlign: 'c' //按钮居中
+			,shade: 0 //不显示遮罩
+			,yes: function(){
+			  layer.closeAll();
+			}
+	});
+});
+}
+function participle(){
+	alert(2221);
+}
+function modal(){
+
+}
+
+
+</script>
+<script type="text/javascript">
+
+
+
+    //批量操作
+    function handle(){
+        var chk_value =[]; 
+        $('input[name="ids[]"]:checked').each(function(){ 
+            chk_value.push($(this).val()); 
+        }); 
+        var type = $('#type option:selected').val() ;
+        if(chk_value.length < 1){
+            swal({
+                title: "{:lang('No record selected')}",
+                text: "",
+                type: "warning"
+            });
+        }else{
+            swal({
+              title: "{:lang('Are you sure')}",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: "{:lang('Yes')}",
+              cancelButtonText: "{:lang('No')}",
+            }).then(function(result){
+              if (result.value) {
+                $.ajax({
+                    url:"{:Url('admin/Information/handle')}",
+                    data:{'ids':chk_value, 'type':type},
+                    type:'post',
+                    dataType:'json',
+                    success: function(xhr){
+                        if(xhr.code == 200){
+                            swal(xhr.msg, "","success").then(function(value){
+                              window.location.reload();
+                            });
+                        }else{
+                            swal(xhr.msg, "", "error");
+                        }
+                    }
+                })
+              }
+            })
+        }
+    }
+
+    function remove(id){
+        swal({
+          title: "{:lang('Are you sure')}",
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: "{:lang('Yes')}",
+          cancelButtonText: "{:lang('No')}",
+        }).then(function(result){
+          if (result.value) {
+            $.ajax({
+                url:"{:Url('admin/Information/remove')}",
+                data:{'id':id},
+                type:'post',
+                dataType:'json',
+                success: function(xhr){
+                    if(xhr.code == 200){
+                        swal(xhr.msg, "","success").then(function(value){
+                            $("#tr_" + id).remove();
+                        });
+                    }else{
+                        swal(xhr.msg, "", "error");
+                    }
+                }
+            })
+          }
+        })
+    }
+</script>
+{/block}

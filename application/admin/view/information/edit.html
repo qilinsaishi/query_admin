@@ -1,0 +1,285 @@
+<!-- 模板继承 -->
+{extend name="public:base" /}
+
+<!-- 页面标题 -->
+{block name="title"}Administrator{/block}
+
+<!-- 自定义css -->
+{block name="css"}{/block}
+
+<!-- 内容区域 -->
+{block name="content"}
+  <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+      <li class=""><a href="{:url('admin/Information/index')}">资讯管理</a></li>
+      <li class=""><a href="{:url('admin/Information/create')}">{:lang('Create')}</a></li>
+      <li class="pull-right"><a href="javascript:history.back(-1);" class="text-muted"><i class="fa fa-chevron-circle-left"></i></a></li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane active">
+        <form role="form" id="operate">
+            <div class="form-group">
+              <label class="layui-form-label">标题 </label>
+              <div class="row">
+              <div class="col-md-6">
+				<input type="hidden" name="id" value="{$info.id}">
+			    <input type="text" name="title" value="{$info.title}" id="titleId" class="form-control input-sm" placeholder="">
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+              <label class="layui-form-label">作者 </label>
+              <div class="row">
+              <div class="col-md-6">
+              <input type="text" name="author" value="{$info.author}" id="authorId" class="form-control input-sm" placeholder="">
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+              <label class="layui-form-label">对应来源</label>
+              <div class="row">
+              <div class="col-md-6">
+              <input type="text" name="source" value="{$info.source}"  id="sourceId" class="form-control input-sm" placeholder="">
+              </div>
+              </div>
+            </div>
+			
+			<div class="form-group">
+              <label class="layui-form-label">对应游戏 <span class="text-red">*</span></label>
+              <div class="row">
+              <div class="col-md-6">
+              <select name="game" class="form-control" id="gameId" >
+               
+                {volist name="gameList" id="vo"}
+                <option  {eq name="$vo" value="$info.game"}selected{/eq} value="{$vo}">
+                    {$vo}
+                </option>
+                {/volist}
+              </select>
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+              <label  class="layui-form-label">所属站点</label>
+              <div class="row">
+              <div class="col-md-6">
+              <select name="site" id="siteId" class="form-control">
+                <option value="0">不指定</option>
+                {volist name="siteList" id="vo"}
+                <option value="{$vo.id}" data-url="{$vo.domain}" {eq name="$vo.id" value="$info.site"}selected{/eq}>
+                     {$vo.domain}{$vo.name}(id:{$vo.id})
+                </option>
+                {/volist}
+              </select>
+              </div>
+              </div>
+            </div>
+			
+			<div class="form-group">
+              <label class="layui-form-label">文章类型 <span class="text-red">*</span></label>
+              <div class="row">
+              <div class="col-md-6">
+              <select name="type" class="form-control">
+                
+                {volist name="typeList" id="vo"}
+                <option  {eq name="key" value="$info.type"}selected{/eq} value="{$key}" >
+                    {$vo}
+                </option>
+                {/volist}
+              </select>
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+			  <label class="layui-form-label">状态</label>
+			  <div class="row">
+			  <div class="col-md-6">
+				<div class="radio">
+					<label class="radio-inline">
+						<input type="radio" {eq name="info.status" value="1"}checked{/eq} name="status" value="1">正常
+					</label>
+					<label class="radio-inline">
+						<input type="radio" {eq name="info.status" value="2"}checked{/eq} name="status" value="2">隐藏
+					</label>
+					<label class="radio-inline">
+						<input type="radio"  name="status" {eq name="info.status" value="3"}checked{/eq} value="3">预约发布
+					</label>
+				</div>
+			  </div>
+			  </div>
+			</div>
+            
+			<div class="form-group">
+              <label class="layui-form-label">缩略图<span class="text-red">*</span></label>
+              <div class="row">
+              <div class="col-md-6">
+                <div class="layui-upload-drag" id="logo">
+                  <input type="hidden" name="logo" value="{$info.logo}">
+                  <div class="layui-upload-list" id="preview">
+                      {empty name="info.logo"}
+                      <p>{:lang('Upload')}</p>
+                      {else /}
+                      <img class="layui-upload-img img-responsive" src="{$info.logo}" />
+                      {/empty}
+                  </div>
+                </div>
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+              <label class="layui-form-label">重定向</label>
+              <div class="row">
+              <div class="col-md-6">
+              <input type="text" name="redirect" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"  value="{$info.redirect}" id="redirect" class="form-control input-sm" placeholder="">
+			
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+			  <label>内容</label>
+			  <div class="row">
+			  <div class="col-md-12">
+			  <textarea id="editor" name="content" >{$info.content}</textarea>
+			  </div>
+			  </div>
+			</div>
+            
+        </form>
+      </div>
+      <!-- /.tab-pane -->
+    </div>
+    <!-- /.tab-content -->
+    <div class="box-footer">
+        <div class="btn-group">
+            <button class="btn btn-primary btn-flat" onclick="operate();" type="button"> {:lang('Save')}</button>
+			<button class="btn btn-default btn-flat" onclick="preview();" style="margin-left:20px;" type="button"> 预览</button>
+        </div>
+    </div>
+  </div>
+{/block}
+
+<!-- 自定义js -->
+{block name="js"}
+<script>
+layui.use('upload', function(){
+  var $ = layui.jquery
+  ,upload = layui.upload;
+  //拖拽上传
+  upload.render({
+    elem: "#logo"
+    ,accept: 'image'
+    ,multiple: false
+    ,number: 1
+    ,url: "{:url('admin/upload/uploadFile')}"
+    ,done: function(res){
+      if (res.code == 200) {
+        $("[name='logo']").val(res.data.url);
+        $("#preview").html("<img class=\'layui-upload-img img-responsive\' src=\'"+res.data.url+"\'>");
+      } else {
+        swal({
+          position: 'center',
+          type: 'error',
+          title: res.msg,
+          showConfirmButton: false,
+          toast:false,
+          timer: 2000
+        });
+      }
+    }
+  });
+  
+});
+</script>
+<script src="__STATIC__/ueditor/ueditor.config.js"></script>
+<script src="__STATIC__/ueditor/ueditor.all.min.js?v=1"></script>
+<script type="text/javascript">
+var ue = UE.getEditor('editor', {
+    toolbars: [
+        ['fullscreen', 'source', 'undo', 'redo', 'selectall', '|', 'removeformat', 'formatmatch', 'autotypeset', 'cleardoc', '|', 'template', 'indent', 'horizontal','justifyleft', 'justifyright', 'justifycenter', 'justifyjustify', 'insertcode'],
+        ['fontfamily', 'fontsize', '|', 'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'link', 'unlink', 'inserttable', 'deletetable', 'simpleupload', 'insertimage']
+    ],
+    initialFrameWidth: '100%',
+    initialFrameHeight:700,
+
+    scaleEnabled:true,
+    serverUrl: '{:url("admin/ueditor/index")}',
+});
+</script>
+<script type="text/javascript">
+    function operate(){
+        $.ajax({
+            url:"{:url('admin/Information/edit')}",
+            data:$("#operate").serialize(),
+            type:'post',
+            dataType:'json',
+            success:function(xhr){
+                if(xhr.code == 200){
+                    swal({
+                      position: 'center',
+                      type: 'success',
+                      title: xhr.msg,
+                      showConfirmButton: false,
+                      toast:false,
+                      timer: 2000
+                    });
+                } else{
+                    swal({
+                      position: 'center',
+                      type: 'error',
+                      title: xhr.msg,
+                      showConfirmButton: false,
+                      toast:false,
+                      timer: 2000
+                    });
+                }
+            }
+        });
+    }
+	
+	//预览
+	function preview(){
+		var site_id=$("#siteId").find("option:selected").val();
+		if(site_id==5 || site_id==4 || site_id==0){
+			return alert("暂不提供预览");
+		}
+		var title=$("#titleId").val();
+		var author=$("#authorId").val();
+		var source=$("#sourceId").val();
+		var game=$("#gameId").val();
+		var logo=$("#logoId").val();
+		var content = $('textarea[name="content"]').val();
+		var site_url=$("#siteId").find("option:selected").attr('data-url');
+		var type=$("#typeId").find("option:selected").val();
+		var post_url=trim(site_url)+"/preview/";
+		var status = $("input[name='status']:checked").val();
+		var create_time = $("input[name='published_time']").val();
+        postcall( post_url, {title:title,author:author,source:source,type:type,status:status,create_time:create_time,game:game,logo:logo,content:content}, '_blank');
+    }
+	function trim(str)
+	{ 
+	  return str.replace(/(^\s*)|(\s*$)/g, ""); 
+	}
+	function postcall( url, params, target){
+		var tempform = document.createElement("form");
+		tempform.action = url;
+		tempform.method = "post";
+		tempform.style.display="none"
+		if(target) {
+		tempform.target = target;
+		}
+		for (var x in params) {
+		var opt = document.createElement("input");
+		opt.name = x;
+		opt.value = params[x];
+		tempform.appendChild(opt);
+		}
+		var opt = document.createElement("input");
+		opt.type = "submit";
+		tempform.appendChild(opt);
+		document.body.appendChild(tempform);
+		tempform.submit();
+		document.body.removeChild(tempform);
+	}
+
+</script>
+{/block}
