@@ -16,6 +16,7 @@
 return [
     // 应用名称
     'app_name'               => '',
+    'admin_name'               => Env::get('admin_name'),
     // 应用地址
     'app_host'               => '',
 	'api_host'               => Env::get('api_host'),
