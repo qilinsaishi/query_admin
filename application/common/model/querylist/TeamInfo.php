@@ -38,11 +38,14 @@ class TeamInfo extends BaseQueryList
             $query[] = ['original_source', 'eq', $request['query']['original_source']];
         }
         if (isset($request['query']['tid'])) {
-            if($request['query']['tid']=='0'){
+            if($request['query']['tid']=='0' || $request['query']['tid']==0){
                 $query[] = ['tid', 'eq', $request['query']['tid']];
+            }elseif($request['query']['tid']=='1' || $request['query']['tid']==1){
+                $query[] = ['tid', 'gt', $request['query']['tid']];
             }
 
         }
+
 
         // 分页参数
         $params = [];

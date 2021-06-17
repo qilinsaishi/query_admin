@@ -24,6 +24,7 @@
               <div class="row">
               <div class="col-md-4">
 				<input type="hidden" name="team_id" value="{$info.team_id}">
+				<input type="hidden" name="tid" value="{$info.tid}">
 			    <input type="text" name="team_name" value="{$info.team_name}" id="titleId" class="form-control input-sm" placeholder="">
 				 <span class="text-red">（不要改）</span>
               </div>
@@ -286,14 +287,9 @@ var ue2 = UE.getEditor('description', {
             dataType:'json',
             success:function(xhr){
                 if(xhr.code == 200){
-                    swal({
-                      position: 'center',
-                      type: 'success',
-                      title: xhr.msg,
-                      showConfirmButton: false,
-                      toast:false,
-                      timer: 2000
-                    });
+                    swal(xhr.msg, "","success").then(function(value){
+						  window.location.href = "{:url('admin/TeamInfo/index')}";
+					});
                 } else{
                     swal({
                       position: 'center',

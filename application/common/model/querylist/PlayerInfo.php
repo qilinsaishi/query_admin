@@ -43,9 +43,9 @@ class PlayerInfo extends BaseQueryList
             $query[] = ['original_source', 'eq', $request['query']['original_source']];
         }
         if (isset($request['query']['pid'])) {
-            if($request['query']['pid']=='0'){
+            if($request['query']['pid']=='0' || $request['query']['pid']==0){
                 $query[] = ['pid', 'eq', $request['query']['pid']];
-            }elseif($request['query']['pid']=='1'){
+            }elseif($request['query']['pid']=='1' || $request['query']['pid']==1){
                 $query[] = ['pid', 'gt', 0];
             }
 

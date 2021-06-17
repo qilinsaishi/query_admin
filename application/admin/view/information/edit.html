@@ -214,14 +214,9 @@ var ue = UE.getEditor('editor', {
             dataType:'json',
             success:function(xhr){
                 if(xhr.code == 200){
-                    swal({
-                      position: 'center',
-                      type: 'success',
-                      title: xhr.msg,
-                      showConfirmButton: false,
-                      toast:false,
-                      timer: 2000
-                    });
+                    swal(xhr.msg, "","success").then(function(value){
+						  window.location.href = "{:url('admin/Information/index')}";
+					});
                 } else{
                     swal({
                       position: 'center',

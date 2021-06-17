@@ -89,11 +89,21 @@ class TeamInfo extends Admin
                 $teamInfoObj = new teamInfoModel();
                 $changeLog = ChangeLogs::checkInsertData('app\common\model\querylist\teamInfo', $request, $request['team_id'], 'team', $this->username, 'team_id');
                 if ($changeLog) {
+                    $request['update_time']=date("Y-m-d H:i:s");
+                    //反编译元字符
+                    $request['team_history'] = strip_tags(htmlspecialchars_decode($request['team_history']));
+                    $request['honor_list'] = strip_tags(htmlspecialchars_decode($request['honor_list']));
+                    $request['description'] = htmlspecialchars_decode($request['description']);
+
                     $rt = $teamInfoObj->isUpdate(true)->allowField(true)->save($request);
                     if (is_numeric($teamInfoObj->team_id)) {
-                        $postData=['params'=>json_encode([$teamInfoObj->team_id]),'dataType' => 'totalTeamInfo'];
+                        $postData=['params'=>json_encode([$teamInfoObj->team_id]),'dataType' =>'totalTeamInfo'];
                         $api_host=config('app.api_host').'/refresh';
                         $return=curl_post($api_host, $postData);
+                        if($teamInfoObj->tid >0)  {//当tid>0时更新缓存
+                            $intergratedPostData=['params'=>json_encode([$teamInfoObj->tid]),'dataType' =>'intergratedTeam'];
+                            $intergratedReturn=curl_post($api_host, $intergratedPostData);
+                        }
                         // 提交事务
                         Db::commit();
                         return $this->response(200, Lang::get('Success'));
@@ -223,6 +233,8 @@ class TeamInfo extends Admin
                 $request['aka'] = explode(',', $request['aka']);
                 $request['aka'] = json_encode($request['aka']);
             }
+            $request['create_time']=date("Y-m-d H:i:s");
+            $request['update_time']=date("Y-m-d H:i:s");
 
             $teamInfoObj = new teamInfoModel();
             $teamInfoObj->allowField(true)->save($request);
