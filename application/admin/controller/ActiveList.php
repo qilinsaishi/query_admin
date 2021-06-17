@@ -8,8 +8,7 @@ use app\common\model\ActiveList as ActiveListModel;
 use app\common\model\ImageCategory as ImageCategoryModel;
 use app\common\model\SiteConfig;
 use app\admin\controller\Admin;
-use app\common\validate\ImageCategoryValidate;
-use app\common\validate\ImageListValidate;
+use app\common\validate\ActiveListValidate;
 
 class ActiveList extends Admin
 {
@@ -18,6 +17,13 @@ class ActiveList extends Admin
     public function index()
     {
         $request = Request::param();
+        $siteModel=new \app\common\model\Site();
+        // 获取分类列表
+        $siteList=[];
+        $siteList=$siteModel->getSiteList();
+        if($siteList){
+            $siteList=$siteList->toArray();
+        }
 
         $obj = new ActiveListModel;
 
@@ -54,7 +60,7 @@ class ActiveList extends Admin
                 'var_page' => 'page',
                 'query'    => $params,
             ]);
-        $siteModel=new \app\common\model\Site();
+
         if (!empty($list)) {
             foreach ($list as &$v) {
 
@@ -64,12 +70,7 @@ class ActiveList extends Admin
             }
         }
 
-        // 获取分类列表
-        $siteList=[];
-        $siteList=$siteModel->getSiteList();
-        if($siteList){
-            $siteList=$siteList->toArray();
-        }
+
 
         $data = [
             'search'   => $search,
@@ -89,30 +90,34 @@ class ActiveList extends Admin
             $request = Request::param();
 
             // 验证数据
-            $validate = new ImageListValidate();
+            $validate = new ActiveListValidate();
             $validateResult = $validate->scene('create')->check($request);
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
+            if ($request['start_time'] >$request['end_time']) {
+                return $this->response(201, Lang::get('活动开始时间不能大于活动结束时间'));
+            }
+            $request['start_time']=strtotime($request['start_time']);
+            $request['end_time']=strtotime($request['end_time']);
+            $request['create_at']=time();
+            $request['update_time']=time();
 
-            $obj = new ActiveListModel;
-            $exist = $obj->where('name', $request['name'])->value('id');
+
+            $activeListObj = new ActiveListModel;
+            $exist = $activeListObj->where('title', $request['title'])->value('id');
             if (is_numeric($exist)) {
                 return $this->response(201, Lang::get('This record already exists'));
             }
 
-            // 写入content内容
-            $contentData = [
-                'uid'     => $this->uid,
-            ];
-            $contentData = array_merge($request, $contentData);
-            $obj->allowField(true)->save($contentData);
 
-            if (is_numeric($obj->id)) {
-                $postData=['key_name'=>$request['flag'],'dataType' => 'imageList'];
-                $api_host=config('app.api_host').'/refresh';
-                $return=curl_post($api_host, $postData);
+           // $contentData = array_merge($request, $contentData);
+            $activeListObj->allowField(true)->save($request);
 
+            if (is_numeric($activeListObj->id)) {
+               // $postData=['key_name'=>$request['flag'],'dataType' => 'imageList'];
+               // $api_host=config('app.api_host').'/refresh';
+               // $return=curl_post($api_host, $postData);
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
@@ -134,6 +139,8 @@ class ActiveList extends Admin
             'category' => $category,
             'gameList' => $gameList,
             'siteList' => $siteList,
+            'start_time'=>date("Y-m-d H:i:s"),
+            'end_time'=>date("Y-m-d H:i:s",strtotime("+1 day")),
         ];
 
         return $this->fetch('create', $data);
@@ -146,20 +153,25 @@ class ActiveList extends Admin
             $request = Request::param();
 
             // 验证数据
-            $validate = new ImageListValidate();
+            $validate = new ActiveListValidate();
             $validateResult = $validate->scene('edit')->check($request);
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
-
+            if ($request['start_time'] >$request['end_time']) {
+                return $this->response(201, Lang::get('活动开始时间不能大于活动结束时间'));
+            }
+            $request['update_time']=time();
+            $request['start_time']=strtotime($request['start_time']);
+            $request['end_time']=strtotime($request['end_time']);
             // 写入
-            $obj = new ActiveListModel;
-            $obj->isUpdate(true)->allowField(true)->save($request);
+            $activeListObj = new ActiveListModel;
+            $activeListObj->isUpdate(true)->allowField(true)->save($request);
 
-            if (is_numeric($obj->id)) {
-                $postData=['key_name'=>$request['flag'],'dataType' => 'imageList'];
-                $api_host=config('app.api_host').'/refresh';
-                $return=curl_post($api_host, $postData);
+            if (is_numeric($activeListObj->id)) {
+                //$postData=['key_name'=>$request['flag'],'dataType' => 'imageList'];
+               // $api_host=config('app.api_host').'/refresh';
+                //$return=curl_post($api_host, $postData);
 
                 return $this->response(200, Lang::get('Success'));
             } else {
@@ -237,13 +249,13 @@ class ActiveList extends Admin
     public function remove()
     {
         $id = Request::param('id');
-        $flag = Request::param('flag');
+
         // 删除
         $return = ActiveListModel::destroy($id);
         if ($return !== false) {
-            $postData=['key_name'=>$flag,'dataType' => 'imageList'];
-            $api_host=config('app.api_host').'/refresh';
-            $return=curl_post($api_host, $postData);
+            //$postData=['key_name'=>$flag,'dataType' => 'imageList'];
+           // $api_host=config('app.api_host').'/refresh';
+          //  $return=curl_post($api_host, $postData);
             return $this->response(200, Lang::get('Success'));
         } else {
             return $this->response(201, Lang::get('Fail'));

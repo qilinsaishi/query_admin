@@ -60,7 +60,7 @@ class TeamInfo extends BaseQueryList
     }
 
 
-    public function teamList($map,$filed="team_id,team_name,game"){
+    public function teamList($map,$filed="team_id,team_name,game,tid"){
         $data=[];
         $data=$this->where($map)->field($filed)->select()->toArray();
         return $data;

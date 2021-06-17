@@ -124,7 +124,7 @@
 				<div class="col-md-6">
 				  <select class="form-control select2" name="team_id" style="width:100%">
 					{volist name="teamList" id="vo"}
-					<option value="{$vo.team_id}"   {eq name="info.team_id" value="$vo.team_id"}selected{/eq} >{$vo.team_name}</option>
+					<option value="{$vo.team_id}"   {eq name="info.team_id" value="$vo.team_id"}selected{/eq} >{$vo.team_name}(tid:{$vo.tid}-{if condition="$vo['tid'] gt 0"}已整合{else /} 未整合{/if} ))</option>
 					{/volist}
 				  </select>
 				</div>

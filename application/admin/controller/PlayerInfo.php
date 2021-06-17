@@ -214,6 +214,7 @@ class PlayerInfo extends Admin
             $request['team_history']=addslashes($request['team_history']);
             $request['event_history']=addslashes($request['event_history']);
             $playerInfoObj = new PlayerInfoModel();
+            
             $playerInfoObj->allowField(true)->save($request);
 
             if (is_numeric($playerInfoObj->player_id)) {
@@ -238,7 +239,8 @@ class PlayerInfo extends Admin
 
         if(count($teamList)>0){
             foreach ($teamList as $key=>$val){
-                $strHtml.='<option value="'.$val['team_id'].'">'.$val['team_name'].'</option>';
+                $tip=(isset($val['tid']) && $val['tid']>0) ?"已整合":"未整合";
+                $strHtml.='<option value="'.$val['team_id'].'">'.$val['team_name'].'(tid:'.$val['tid'].'-'.$tip.')</option>';
             }
         }
         return $this->response(200, Lang::get('Success'),$strHtml);

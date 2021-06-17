@@ -11,18 +11,18 @@
 {block name="content"}
   <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
-      <li class=""><a href="{:url('admin/ImageList/index')}">图片管理</a></li>
+      <li class=""><a href="{:url('admin/ActiveList/index')}">图片管理</a></li>
       <li class="active"><a href="">{:lang('Create')}</a></li>
-      <li class=""><a href="{:url('admin/ImageList/category')}">{:lang('Category')}</a></li>
+   
       <li class="pull-right"><a href="javascript:history.back(-1);" class="text-muted"><i class="fa fa-chevron-circle-left"></i></a></li>
     </ul>
     <div class="tab-content">
       <div class="tab-pane active">
         <form role="form" id="operate">
             <div class="form-group">
-              <label>{:lang('Image')} <span class="text-red">*</span></label>
+              <label class="layui-form-label">{:lang('Image')} <span class="text-red">*</span></label>
               <div class="row">
-              <div class="col-md-12">
+              <div class="col-md-4">
                 <div class="layui-upload-drag" id="image">
                   <input type="hidden" name="logo">
                   <div class="layui-upload-list" id="preview">
@@ -33,23 +33,31 @@
               </div>
             </div>
             <div class="form-group">
-              <label>{:lang('Name')} <span class="text-red">*</span></label>
+              <label class="layui-form-label">{:lang('Name')} <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-4">
-              <input type="text" name="name" class="form-control input-sm" placeholder="">
+              <input type="text" name="title" class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
 			<div class="form-group">
-              <label>标记 <span class="text-red">*</span></label>
+              <label class="layui-form-label">活动开始时间</label>
               <div class="row">
               <div class="col-md-4">
-              <input type="text" name="flag" class="form-control input-sm" placeholder="">
+              <input type="text"  name="start_time" id="start_time" lay-verify="start_time" placeholder="yyyy-MM-dd HH:ii:ss" value="{$start_time}" class="layui-input" >
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+              <label class="layui-form-label">活动结束时间</label>
+              <div class="row">
+              <div class="col-md-4">
+              <input type="text"  name="end_time" id="end_time" lay-verify="end_time" placeholder="yyyy-MM-dd HH:ii:ss" value="{$end_time}" class="layui-input" >
               </div>
               </div>
             </div>
             <div class="form-group">
-              <label>{:lang('Url')} <span class="text-red">*</span></label>
+              <label class="layui-form-label">{:lang('Url')} </label>
               <div class="row">
               <div class="col-md-4">
               <input type="text" name="url" class="form-control input-sm" placeholder="">
@@ -57,24 +65,10 @@
               </div>
             </div>
             
-            <div class="form-group">
-              <label>{:lang('Category')} <span class="text-red">*</span></label>
-              <div class="row">
-              <div class="col-md-4">
-              <select name="cid" class="form-control">
-                <option>--{:lang('Select')}--</option>
-                {volist name="category" id="vo"}
-                <option value="{$vo.id}">
-                    {$vo.name}
-                </option>
-                {/volist}
-              </select>
-              </div>
-              </div>
-            </div>
+            
 			
 			<div class="form-group">
-              <label>游戏类型 <span class="text-red">*</span></label>
+              <label class="layui-form-label">游戏类型 <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-4">
               <select name="game" class="form-control">
@@ -90,11 +84,11 @@
             </div>
 			
 			<div class="form-group">
-              <label>所属站点 <span class="text-red">*</span></label>
+              <label class="layui-form-label">所属站点 <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-4">
               <select name="site_id" class="form-control">
-                <option>--请选择--</option>
+                <option value="">--请选择--</option>
                 {volist name="siteList" id="vo"}
                 <option value="{$vo.id}">
                     {$vo.name}
@@ -105,17 +99,8 @@
               </div>
             </div>
 			
-			<div class="form-group">
-              <label>停留时间</label>
-              <div class="row">
-              <div class="col-md-4">
-              <input type="text" name="station_time" class="form-control input-sm" placeholder="" value="2" onkeyup="value=value.replace(/[^\d]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))" >
-              </div>
-              </div>
-            </div>
-			
             <div class="form-group">
-              <label>{:lang('Sort')}</label>
+              <label class="layui-form-label">{:lang('Sort')}</label>
               <div class="row">
               <div class="col-md-4">
               <input type="text" name="sort" class="form-control input-sm" placeholder="" value="1"  onkeyup="value=value.replace(/[^\d]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))" >
@@ -123,9 +108,9 @@
               </div>
             </div>
             <div class="form-group">
-                <label>{:lang('Status')}</label>
+                <label class="layui-form-label">{:lang('Status')}</label>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-4">
                         <div class="radio">
                             <label class="radio-inline">
                                 <input type="radio" checked="checked" name="status" value="1"> {:lang('Visible')}
@@ -138,10 +123,10 @@
                 </div>
             </div>
 			<div class="form-group">
-			  <label>描述</label>
+			  <label class="layui-form-label">描述</label>
 			  <div class="row">
-			  <div class="col-md-6">
-			  <textarea id="description" name="content"></textarea>
+			  <div class="col-md-4">
+			  <textarea id="description" name="description"></textarea>
 			  </div>
 			  </div>
 			</div>
@@ -161,9 +146,19 @@
 <!-- 自定义js -->
 {block name="js"}
 <script>
-layui.use('upload', function(){
+layui.use(['upload','laydate'], function(){
   var $ = layui.jquery
-  ,upload = layui.upload;
+  ,upload = layui.upload,laydate = layui.laydate;
+  laydate.render({
+    elem: '#start_time'
+    ,type: 'datetime'
+  });
+  laydate.render({
+    elem: '#end_time'
+    ,type: 'datetime'
+  });
+  
+  
   //拖拽上传
   upload.render({
     elem: "#image"
@@ -208,20 +203,15 @@ var ue = UE.getEditor('description', {
 <script type="text/javascript">
     function operate(){
         $.ajax({
-            url:"{:url('admin/ImageList/create')}",
+            url:"{:url('admin/ActiveList/create')}",
             data:$("#operate").serialize(),
             type:'post',
             dataType:'json',
             success:function(xhr){
                 if(xhr.code == 200){
-                    swal({
-                      position: 'center',
-                      type: 'success',
-                      title: xhr.msg,
-                      showConfirmButton: false,
-                      toast:false,
-                      timer: 2000
-                    });
+                    swal(xhr.msg, "","success").then(function(value){
+						  window.location.href = "{:url('admin/ActiveList/index')}";
+					});
                 } else{
                     swal({
                       position: 'center',
