@@ -39,11 +39,16 @@ class DefaultConfig extends Admin
             $site_id = [];
             $search['site_id'] = '';
         }
+        //查询所有可以站点下面的通用方法
+        $siteModel=new \app\common\model\Site();
+        $siteList=$siteModel->getSiteList();
+        $siteIds=array_column($siteList->toArray(),'id');
 
         $defaultObj = new DefaultConfigModel();
         $list = $defaultObj
             ->field('*')
             ->where($map)
+            ->whereIn('site_id',$siteIds)
             ->order('id desc')
             ->paginate(20, false, [
                 'type'     => 'bootstrap',

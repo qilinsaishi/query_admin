@@ -35,11 +35,15 @@ class Link extends Admin
             $cid = [];
             $search['cid'] = '';
         }
+        //查询所有可以站点下面的通用方法
+        $siteModel=new \app\common\model\Site();
+        $siteList=$siteModel->getSiteList();
+        $siteIds=array_column($siteList->toArray(),'id');
 
         // 分页列表
         $list = $linktObj
             ->where($map)
-            //->where('site_id', 'eq', $this->site_id)
+            ->whereIn('site_id', $siteIds)
             ->order('id desc')
             ->paginate(20, false, [
                 'type'     => 'bootstrap',

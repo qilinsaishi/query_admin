@@ -17,7 +17,7 @@ class Information extends BaseQueryList
     public function getList($request){
         $query = [];
         if (isset($request['query']['q'])) {
-            $query[] = ['title|author|id|site_id','like','%'.$request['query']['q'].'%'];
+            $query[] = ['title|author|id|site','like','%'.$request['query']['q'].'%'];
         }
 
         if (!empty($request['query']['type'])) {
@@ -37,8 +37,13 @@ class Information extends BaseQueryList
         if (!empty($request['params'])) {
             $params = $request['params'];
         }
+        //查询所有可以站点下面的通用方法
+        $siteModel=new \app\common\model\Site();
+        $siteList=$siteModel->getSiteList();
+        $siteIds=array_column($siteList->toArray(),'id');
         $data=$this->where($query)
             ->order('id desc')
+            ->whereIn('site',$siteIds)
             ->paginate(20, false, [
                 'type'     => 'bootstrap',
                 'var_page' => 'page',
