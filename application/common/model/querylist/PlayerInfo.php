@@ -39,9 +39,7 @@ class PlayerInfo extends BaseQueryList
             if(is_numeric($request['query']['q'])){
                 $query[] = ['player_id|pid','eq',$request['query']['q']];
                 $request['query']['game']='';
-                $request['query']['original_source']='';
                 $request['params']['game']='';
-                $request['params']['original_source']='';
             }else{
                 $query[] = ['player_name|position|en_name','like','%'.$request['query']['q'].'%'];
             }

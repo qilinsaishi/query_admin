@@ -25,9 +25,7 @@ class TeamInfo extends BaseQueryList
             $query[] = ['tid', 'eq', 0];
             $request['params'][]= ['tid', 'eq', 0];
             $request['query']['game']='';
-            $request['query']['original_source']='';
             $request['params']['game']='';
-            $request['params']['original_source']='';
         }elseif($is_intergrated==2){//已整合
             $query[] = ['tid', 'gt', 0];
             $request['params'][]=['tid', 'gt', 0];
@@ -38,9 +36,7 @@ class TeamInfo extends BaseQueryList
         if (isset($request['query']['q'])) {
             if(is_numeric($request['query']['q'])){
                 $request['query']['game']='';
-                $request['query']['original_source']='';
                 $request['params']['game']='';
-                $request['params']['original_source']='';
                 $query[] = ['site_id|team_id|tid', 'eq', $request['query']['q']];
             }else{
                 $query[] = ['team_name|cn_name|en_name|location','like','%'.$request['query']['q'].'%'];
@@ -54,7 +50,6 @@ class TeamInfo extends BaseQueryList
         if (!empty($request['query']['original_source'])) {
             $query[] = ['original_source', 'eq', $request['query']['original_source']];
         }
-
 
         // 分页参数
         $params = [];
