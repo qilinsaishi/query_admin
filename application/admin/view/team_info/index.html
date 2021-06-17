@@ -50,7 +50,7 @@
               </div>
               <div class="form-group">
                 <input type="text" name="q" value="{$search.q}" class="form-control" placeholder="">
-				<input type="hidden" name="tid" value="{$search.tid}" class="form-control" placeholder="">
+				<input type="hidden" name="is_intergrated" value="{$search.is_intergrated}" class="form-control" placeholder="">
               </div>
               <button type="submit" class="btn btn-primary btn-flat"> <i class="fa fa-search"></i> {:lang('Search')}</button>
             </form>
@@ -65,7 +65,7 @@
                     <tr>
                         <th><input id="checkAll" type="checkbox"></th>
                         <th>#ID</th>
-						<th width="240" >TID（<span><a href="{:url('admin/TeamInfo/index')}?tid=0&game={$search.game}&original_source={$search.original_source}&q={$search.q}"><button >未整合</button></a></span>&nbsp;&nbsp;&nbsp;&nbsp;<span><a href="{:url('admin/TeamInfo/index')}?tid=1&game={$search.game}&original_source={$search.original_source}&q={$search.q}"><button >已整合</button></a></span>&nbsp;&nbsp;&nbsp;&nbsp;<button><a href="{:url('admin/TeamInfo/index')}?game={$search.game}&original_source={$search.original_source}&q={$search.q}">全部</a></button></span>）</th>
+						<th width="240" >TID（<span><a href="{:url('admin/TeamInfo/index')}?is_intergrated=1&game={$search.game}&original_source={$search.original_source}&q={$search.q}"><button >未整合</button></a></span>&nbsp;&nbsp;&nbsp;&nbsp;<span><a href="{:url('admin/TeamInfo/index')}?is_intergrated=2&game={$search.game}&original_source={$search.original_source}&q={$search.q}"><button >已整合</button></a></span>&nbsp;&nbsp;&nbsp;&nbsp;<button><a href="{:url('admin/TeamInfo/index')}?is_intergrated=0&game={$search.game}&original_source={$search.original_source}&q={$search.q}">全部</a></button></span>）</th>
                         <th>战队名称</th>
 						<th>战队全称</th>
 						<th>中文名称</th>

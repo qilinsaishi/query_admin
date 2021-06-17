@@ -21,11 +21,21 @@ class TeamInfo extends Admin
     public function index()
     {
         $request = Request::param();
+
+        $game= isset($request['game']) ? $request['game'] : 'lol';
+        //根据游戏不同获取默认来源
+        if($game=='lol' || $game=='kpl'){
+            $default_original_source="scoregg";
+        }elseif($game=='dota2'){
+            $default_original_source="shangniu";
+        }
+
+
         $query = [
-            'q' => isset($request['q']) ? $request['q'] : '',
-            'tid' => isset($request['tid']) ? $request['tid'] : '',
-            'game' => isset($request['game']) ? $request['game'] : 'lol',
-            'original_source' => isset($request['original_source']) ? $request['original_source'] : '',
+            'q' => isset($request['q']) ? trim($request['q']) : '',
+            'is_intergrated' => isset($request['is_intergrated']) ? $request['is_intergrated'] : 0,
+            'game' => $game,
+            'original_source' => isset($request['original_source']) ? $request['original_source'] : $default_original_source,
         ];
         $args = [
             'query' => $query,

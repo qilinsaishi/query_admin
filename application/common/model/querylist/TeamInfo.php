@@ -16,9 +16,26 @@ class TeamInfo extends BaseQueryList
 
 
     public function getList($request){
-        $query = [];
-        if (isset($request['query']['q'])) {
 
+
+        $query = [];
+
+        $is_intergrated=$request['query']['is_intergrated'] ??0;
+        if($is_intergrated==1){//未整合
+            $query[] = ['tid', 'eq', 0];
+            $request['params'][]= ['tid', 'eq', 0];
+            $request['query']['game']='';
+            $request['query']['original_source']='';
+            $request['params']['game']='';
+            $request['params']['original_source']='';
+        }elseif($is_intergrated==2){//已整合
+            $query[] = ['tid', 'gt', 0];
+            $request['params'][]=['tid', 'gt', 0];
+        }
+
+        unset($request['query']['is_intergrated']);
+        unset($request['query']['params']);
+        if (isset($request['query']['q'])) {
             if(is_numeric($request['query']['q'])){
                 $request['query']['game']='';
                 $request['query']['original_source']='';
@@ -36,14 +53,6 @@ class TeamInfo extends BaseQueryList
         }
         if (!empty($request['query']['original_source'])) {
             $query[] = ['original_source', 'eq', $request['query']['original_source']];
-        }
-        if (isset($request['query']['tid'])) {
-            if($request['query']['tid']=='0' || $request['query']['tid']==0){
-                $query[] = ['tid', 'eq', $request['query']['tid']];
-            }elseif($request['query']['tid']=='1' || $request['query']['tid']==1){
-                $query[] = ['tid', 'gt', $request['query']['tid']];
-            }
-
         }
 
 
