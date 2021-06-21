@@ -23,6 +23,7 @@
               <div class="row">
               <div class="col-md-6">
               <input type="hidden" name="player_id" value="{$info.player_id}">
+			  <input type="hidden" name="pid" value="{$info.pid}">
 			  <input type="text" name="player_name" value="{$info.player_name}"  class="form-control input-sm" placeholder="">
 				 <span class="text-red">（尽量不要改）</span>
         
@@ -124,7 +125,7 @@
 				<div class="col-md-6">
 				  <select class="form-control select2" name="team_id" style="width:100%">
 					{volist name="teamList" id="vo"}
-					<option value="{$vo.team_id}"   {eq name="info.team_id" value="$vo.team_id"}selected{/eq} >{$vo.team_name}</option>
+					<option value="{$vo.team_id}"   {eq name="info.team_id" value="$vo.team_id"}selected{/eq} >{$vo.team_name}(tid:{$vo.tid}-{if condition="$vo['tid'] gt 0"}已整合{else /} 未整合{/if} ))</option>
 					{/volist}
 				  </select>
 				</div>
@@ -253,14 +254,9 @@ $(document).ready(function() {
             dataType:'json',
             success:function(xhr){
                 if(xhr.code == 200){
-                    swal({
-                      position: 'center',
-                      type: 'success',
-                      title: xhr.msg,
-                      showConfirmButton: false,
-                      toast:false,
-                      timer: 2000
-                    });
+                    swal(xhr.msg, "","success").then(function(value){
+						  window.location.href = "{:url('admin/PlayerInfo/index')}";
+					});
                 } else{
                     swal({
                       position: 'center',

@@ -11,8 +11,9 @@
 {block name="content"}
   <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
-      <li class="active"><a href="#">赛事信息</a></li>
-     
+      <li    {if condition="$source_from eq 'scoregg'"}class="active"{/if} ><a href="{:url('admin/TournamentInfo/index', ['source_from' =>'scoregg'])}">scoregg赛事信息</a></li>
+	  <li  {if condition="$source_from eq 'shangniu'"}class="active"{/if}><a href="{:url('admin/TournamentInfo/index', ['source_from' =>'shangniu'])}">shangniu赛事信息</a></li>
+     <li  {if condition="$source_from eq 'wca'"}class="active"{/if}><a href="{:url('admin/TournamentInfo/index', ['source_from' =>'wca'])}">wca赛事信息</a></li>
     </ul>
 
     <div class="box box-solid">
@@ -38,7 +39,7 @@
 			  
               <div class="form-group">
                 <input type="text" name="q" value="{$search.q}" class="form-control" placeholder="">
-				
+				<input type="hidden" name="source_from" value="{$source_from}" class="form-control" placeholder="">
               </div>
               <button type="submit" class="btn btn-primary btn-flat"> <i class="fa fa-search"></i> {:lang('Search')}</button>
             </form>
@@ -81,7 +82,7 @@
                          <td>{$vo.create_time}</td>
 						 <td>{$vo.update_time}</td>
                         <td>
-                            <a href="{:url('admin/TournamentInfo/edit', ['id' => $vo['tournament_id']])}"></i> {:lang('Edit')}</a>
+                            <a href="{:url('admin/TournamentInfo/edit', ['id' => $vo['tournament_id'],'source_from' =>$source_from])}"></i> {:lang('Edit')}</a>
                             <!--<a onclick="remove('{$vo.tournament_id}')" href="#"> {:lang('Delete')}</a>-->
                         </td>
                     </tr>
@@ -167,6 +168,15 @@
             })
         }
     }
+	
+	function changeTournamentSource(source_from){
+		if(source_from=='wca'){
+			$(this).prev('li').remove('active');
+			$(this).('li').addClass('active');
+		}
+	
+	
+	}
 	
 
     function remove(id){

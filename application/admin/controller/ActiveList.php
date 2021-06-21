@@ -4,46 +4,56 @@ namespace app\admin\controller;
 use think\facade\Request;
 use think\facade\Lang;
 use think\facade\Hook;
-use app\common\model\Link as LinkModel;
+use app\common\model\ActiveList as ActiveListModel;
+use app\common\model\ImageCategory as ImageCategoryModel;
 use app\common\model\SiteConfig;
 use app\admin\controller\Admin;
-use app\common\validate\LinkValidate;
+use app\common\validate\ActiveListValidate;
 
-class Link extends Admin
+class ActiveList extends Admin
 {
-    // 分类配置标识
-    protected $category = 'link_category';
+    
 
     public function index()
     {
         $request = Request::param();
+        $siteModel=new \app\common\model\Site();
+        // 获取分类列表
+        $siteList=[];
+        $siteList=$siteModel->getSiteList();
+        if($siteList){
+            $siteList=$siteList->toArray();
+        }
 
-        $linktObj = new LinkModel;
+        $obj = new ActiveListModel;
 
         // 查询条件
         $map    = [];
         $params = [];
         $search = [];
 
-        // 类别
-        if (isset($request['cid']) && is_numeric($request['cid'])) {
-            $cid           = ['cid','=',$request['cid']];
-            $params['cid'] = $request['cid'];
-            $search['cid'] = $request['cid'];
-            array_push($map, $cid);
+        if (isset($request['site_id']) && is_numeric($request['site_id'])) {
+            $site_id           = ['site_id','=',$request['site_id']];
+            $params['site_id'] = $request['site_id'];
+            $search['site_id'] = $request['site_id'];
+            array_push($map, $site_id);
         }else {
-            $cid = [];
-            $search['cid'] = '';
+            $site_id = [];
+            $search['site_id'] = '';
         }
-        //查询所有可以站点下面的通用方法
-        $siteModel=new \app\common\model\Site();
-        $siteList=$siteModel->getSiteList();
-        $siteIds=array_column($siteList->toArray(),'id');
+        if (isset($request['q']) && $request['q']) {
+            $q           = ['name','like','%'.$request['q'].'%'];
+            $params['q'] = $request['q'];
+            $search['q'] = $request['q'];
+            array_push($map, $q );
+        }else {
+            $q = '';
+            $search['q'] = '';
+        }
 
         // 分页列表
-        $list = $linktObj
+        $list = $obj
             ->where($map)
-            ->whereIn('site_id', $siteIds)
             ->order('id desc')
             ->paginate(20, false, [
                 'type'     => 'bootstrap',
@@ -52,21 +62,20 @@ class Link extends Admin
             ]);
 
         if (!empty($list)) {
-            foreach ($list as $v) {
-                $siteModel=new \app\common\model\Site();
+            foreach ($list as &$v) {
+
                 $siteObj=$siteModel->getSiteNameById($v['site_id']);
                 $v->site_name=$siteObj['name'] ?? '';
-                $v->catename = SiteConfig::getCategoryConfigName($this->site_id, $this->category, $v->cid);
+               
             }
         }
 
-        // 获取分类列表
-        $category = SiteConfig::getCategoryConfig($this->site_id, $this->category);
+
 
         $data = [
             'search'   => $search,
-            'category' => $category,
             'list'     => $list,
+            'siteList'     => $siteList,
             'page'     => $list->render(),
         
         ];
@@ -81,32 +90,34 @@ class Link extends Admin
             $request = Request::param();
 
             // 验证数据
-            $validate = new LinkValidate();
+            $validate = new ActiveListValidate();
             $validateResult = $validate->scene('create')->check($request);
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
+            if ($request['start_time'] >$request['end_time']) {
+                return $this->response(201, Lang::get('活动开始时间不能大于活动结束时间'));
+            }
+            $request['start_time']=strtotime($request['start_time']);
+            $request['end_time']=strtotime($request['end_time']);
+            $request['create_at']=time();
+            $request['update_time']=time();
 
-            $obj = new LinkModel;
-            $exist = $obj->where('name', $request['name'])->value('id');
+
+            $activeListObj = new ActiveListModel;
+            $exist = $activeListObj->where('title', $request['title'])->value('id');
             if (is_numeric($exist)) {
                 return $this->response(201, Lang::get('This record already exists'));
             }
-            $game=SiteConfig::getCategoryConfigName($this->site_id, $this->category,$request['cid']);
 
-            // 写入content内容
-            $contentData = [
-                'uid'     => $this->uid,
-            ];
-            $contentData = array_merge($request, $contentData);
-            $contentData['game']=$game ?? '';
 
-            $obj->allowField(true)->save($contentData);
+           // $contentData = array_merge($request, $contentData);
+            $activeListObj->allowField(true)->save($request);
 
-            if (is_numeric($obj->id)) {
-                $postData=['key_name'=>$request['site_id'],'dataType' => 'links'];
-                $api_host=config('app.api_host').'/refresh';
-                $return=curl_post($api_host, $postData);
+            if (is_numeric($activeListObj->id)) {
+               // $postData=['key_name'=>$request['flag'],'dataType' => 'imageList'];
+               // $api_host=config('app.api_host').'/refresh';
+               // $return=curl_post($api_host, $postData);
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
@@ -114,7 +125,9 @@ class Link extends Admin
         }
 
         // 获取分类列表
-        $category = SiteConfig::getCategoryConfig($this->site_id, $this->category);
+
+        $category = ImageCategoryModel::getCategoryList($this->site_id,'lol');
+        $gameList=config('app.game_type');
         $siteList=[];
         $siteModel=new \app\common\model\Site();
         $siteList=$siteModel->getSiteList();
@@ -124,7 +137,10 @@ class Link extends Admin
 
         $data = [
             'category' => $category,
+            'gameList' => $gameList,
             'siteList' => $siteList,
+            'start_time'=>date("Y-m-d H:i:s"),
+            'end_time'=>date("Y-m-d H:i:s",strtotime("+1 day")),
         ];
 
         return $this->fetch('create', $data);
@@ -137,23 +153,26 @@ class Link extends Admin
             $request = Request::param();
 
             // 验证数据
-            $validate = new LinkValidate();
+            $validate = new ActiveListValidate();
             $validateResult = $validate->scene('edit')->check($request);
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
-            $game=SiteConfig::getCategoryConfigName($this->site_id, $this->category,$request['cid']);
-            $request['game']=$game ?? '';
-
+            if ($request['start_time'] >$request['end_time']) {
+                return $this->response(201, Lang::get('活动开始时间不能大于活动结束时间'));
+            }
+            $request['update_time']=time();
+            $request['start_time']=strtotime($request['start_time']);
+            $request['end_time']=strtotime($request['end_time']);
             // 写入
+            $activeListObj = new ActiveListModel;
+            $activeListObj->isUpdate(true)->allowField(true)->save($request);
 
-            $obj = new LinkModel;
-            $obj->isUpdate(true)->allowField(true)->save($request);
+            if (is_numeric($activeListObj->id)) {
+                //$postData=['key_name'=>$request['flag'],'dataType' => 'imageList'];
+               // $api_host=config('app.api_host').'/refresh';
+                //$return=curl_post($api_host, $postData);
 
-            if (is_numeric($obj->id)) {
-                $postData=['key_name'=>$request['site_id'],'dataType' => 'links'];
-                $api_host=config('app.api_host').'/refresh';
-                $return=curl_post($api_host, $postData);
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
@@ -163,10 +182,11 @@ class Link extends Admin
         $request = Request::param();
 
         // 获取分类列表
-        $category = SiteConfig::getCategoryConfig($this->site_id, $this->category);
+        $category = ImageCategoryModel::getCategoryList($this->site_id,'lol');
 
-        $obj = new LinkModel;
+        $obj = new ActiveListModel;
         $info = $obj->where('id', $request['id'])->find();
+        $gameList=config('app.game_type');
         $siteList=[];
         $siteModel=new \app\common\model\Site();
         $siteList=$siteModel->getSiteList();
@@ -176,7 +196,8 @@ class Link extends Admin
 
         $data = [
             'category' => $category,
-            'siteList'=>$siteList,
+            'gameList' => $gameList,
+            'siteList' => $siteList,
             'info'  => $info,
         ];
 
@@ -187,11 +208,11 @@ class Link extends Admin
     {
         $request = Request::instance()->param();
 
-        $linkObj = new LinkModel;
+        $obj = new ActiveListModel;
         switch ($request['type']) {
             case 'delete':
                 foreach ($request['ids'] as $v) {
-                    $result = $linkObj::destroy($v);
+                    $result = $obj::destroy($v);
                 }
 
                 if ($result !== false) {
@@ -200,7 +221,7 @@ class Link extends Admin
                 break;
             case 'active':
                 foreach ($request['ids'] as $v) {
-                    $result = $linkObj
+                    $result = $obj
                         ->where('id', $v)
                         ->setField('status', 1);
                 }
@@ -211,7 +232,7 @@ class Link extends Admin
                 break;
             case 'freeze':
                 foreach ($request['ids'] as $v) {
-                    $result = $linkObj
+                    $result = $obj
                         ->where('id', $v)
                         ->setField('status', 0);
                 }
@@ -228,24 +249,24 @@ class Link extends Admin
     public function remove()
     {
         $id = Request::param('id');
-        $site_id = Request::param('site_id');
-        // 删除
-        $des = LinkModel::destroy($id);
 
-        if ($des !== false) {
-            $postData=['key_name'=>$site_id,'dataType' => 'links'];
-            $api_host=config('app.api_host').'/refresh';
-            $return=curl_post($api_host, $postData);
+        // 删除
+        $return = ActiveListModel::destroy($id);
+        if ($return !== false) {
+            //$postData=['key_name'=>$flag,'dataType' => 'imageList'];
+           // $api_host=config('app.api_host').'/refresh';
+          //  $return=curl_post($api_host, $postData);
             return $this->response(200, Lang::get('Success'));
         } else {
             return $this->response(201, Lang::get('Fail'));
         }
+
     }
 
     public function removeCategory()
     {
         $id = Request::param('id');
-        $del = SiteConfig::deleteCategoryConfig($this->site_id, $this->category, $id);
+        $del = ImageCategoryModel::destroy($id);
 
         if ($del !== false) {
             return $this->response(200, Lang::get('Success'));
@@ -257,7 +278,8 @@ class Link extends Admin
     public function handleCategory()
     {
         $data = Request::instance()->param();
-
+        $imageCategoryModel=new ImageCategoryModel();
+        $obj = new ActiveListModel;
         switch ($data['type']) {
             case 'save':
                 if (!empty($data['id'])) {
@@ -265,9 +287,11 @@ class Link extends Admin
                         $updateData = [
                             'id'       => $data['id'][$k],
                             'name'     => $data['name'][$k],
+                            'game'     => $data['game'][$k],
                             'sort' => $data['sort'][$k],
                         ];
-                        $result = SiteConfig::updateCategoryConfig($this->site_id, $this->category, $updateData);
+
+                        $result = $imageCategoryModel->isUpdate(true)->allowField(true)->save($updateData);;
                     }
                 }
 
@@ -275,9 +299,12 @@ class Link extends Admin
                     foreach ($data['temp_name'] as $k => $v) {
                         $insertData = [
                             'name'     => $v,
+                            'site_id'     => $this->site_id,
+                            'game' => $data['temp_game'][$k],
                             'sort' => $data['temp_sort'][$k],
                         ];
-                        $result = SiteConfig::insertCategoryConfig($this->site_id, $this->category, $insertData);
+                        $result =$imageCategoryModel->allowField(true)->insert($insertData);
+                        //$result = SiteConfig::insertCategoryConfig($this->site_id, $this->category, $insertData);
                     }
                 }
 
@@ -293,9 +320,11 @@ class Link extends Admin
     public function category()
     {
         // 获取分类列表
-        $category = SiteConfig::getCategoryConfig($this->site_id, $this->category);
+        $category = ImageCategoryModel::getCategoryList($this->site_id,'lol');
+        $gameList=config('game_type');
         $data = [
             'category' => $category,
+            'gameList'=>$gameList
         ];
 
         return $this->fetch('category', $data);

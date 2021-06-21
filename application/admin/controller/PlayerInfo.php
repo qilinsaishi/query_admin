@@ -21,11 +21,19 @@ class PlayerInfo extends Admin
     public function index()
     {
         $request = Request::param();
+        $game= isset($request['game']) ? $request['game'] : 'lol';
+        //根据游戏不同获取默认来源
+        if($game=='lol' || $game=='kpl'){
+            $default_original_source="scoregg";
+        }elseif($game=='dota2'){
+            $default_original_source="shangniu";
+        }
+
         $query = [
-            'q'       => isset($request['q']) ? $request['q'] : '',
-            'game'  => isset($request['game']) ? $request['game'] : 'lol',
-            'pid' => isset($request['pid']) ? $request['pid'] : '',
-            'original_source'  => isset($request['original_source']) ? $request['original_source'] : '',
+            'q'       => isset($request['q']) ? trim($request['q']) : '',
+            'is_intergrated' => isset($request['is_intergrated']) ? $request['is_intergrated'] : 0,
+            'game' => $game,
+            'original_source' => isset($request['original_source']) ? $request['original_source'] : $default_original_source,
         ];
         $args = [
             'query'  => $query,
@@ -68,20 +76,29 @@ class PlayerInfo extends Admin
 
                 $request['aka']=json_encode($request['aka']);
             }
-            $request['team_history']=$request['team_history'];
-            $request['event_history']=$request['event_history'];
+            //反编译元字符
+            $request['team_history'] = strip_tags(htmlspecialchars_decode($request['team_history']));
+            $request['event_history'] = strip_tags(htmlspecialchars_decode($request['event_history']));
+            $request['event_history'] = strip_tags(htmlspecialchars_decode($request['event_history']));
+
+
             //需要加事务
             Db::startTrans();
             try {
                 $playerInfoObj= new PlayerInfoModel();
                 $changeLog = ChangeLogs::checkInsertData('app\common\model\querylist\PlayerInfo', $request, $request['player_id'], 'player', $this->username, 'player_id');
                 if ($changeLog) {
+                    $request['update_time']=date("Y-m-d H:i:s");
                     $playerInfoObj->isUpdate(true)->allowField(true)->save($request);
-                    if (is_numeric($playerInfoObj->player_id)) {
-                        $postData=['params'=>json_encode([$playerInfoObj->player_id]),'dataType' => 'totalPlayerInfo'];
 
+                    if (is_numeric($playerInfoObj->player_id)) {
+                        $postData=['params'=>json_encode([$playerInfoObj->player_id]),'dataType' =>'totalPlayerInfo'];
                         $api_host=config('app.api_host').'/refresh';
                         $return=curl_post($api_host, $postData);
+                        if($playerInfoObj->pid >0)  {//当tid>0时更新缓存
+                            $intergratedPostData=['params'=>json_encode([$playerInfoObj->pid]),'dataType' =>'intergratedPlayer'];
+                            $intergratedReturn=curl_post($api_host, $intergratedPostData);
+                        }
                         // 提交事务
                         Db::commit();
                         return $this->response(200, Lang::get('Success'));
@@ -211,9 +228,13 @@ class PlayerInfo extends Admin
                 $request['aka']=explode(',',$request['aka']);
                 $request['aka']=json_encode($request['aka']);
             }
+            $request['create_time']=date("Y-m-d H:i:s");
+            $request['update_time']=date("Y-m-d H:i:s");
             $request['team_history']=addslashes($request['team_history']);
             $request['event_history']=addslashes($request['event_history']);
+
             $playerInfoObj = new PlayerInfoModel();
+            
             $playerInfoObj->allowField(true)->save($request);
 
             if (is_numeric($playerInfoObj->player_id)) {
@@ -238,7 +259,8 @@ class PlayerInfo extends Admin
 
         if(count($teamList)>0){
             foreach ($teamList as $key=>$val){
-                $strHtml.='<option value="'.$val['team_id'].'">'.$val['team_name'].'</option>';
+                $tip=(isset($val['tid']) && $val['tid']>0) ?"已整合":"未整合";
+                $strHtml.='<option value="'.$val['team_id'].'">'.$val['team_name'].'(tid:'.$val['tid'].'-'.$tip.')</option>';
             }
         }
         return $this->response(200, Lang::get('Success'),$strHtml);

@@ -11,7 +11,7 @@
 {block name="content"}
   <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
-      <li class=""><a href="{:url('admin/TournamentInfo/index')}">cpSeo战队</a></li>
+      <li class="">  {if condition="$source_from eq 'scoregg'"} <a href="{:url('admin/TournamentInfo/index', ['source_from' =>$source_from])}">scoregg赛事信息</a>{elseif condition="$source_from eq 'shangniu'" /}<a href="{:url('admin/TournamentInfo/index', ['source_from' =>$source_from])}">shangniu赛事信息</a>{else /}<a href="{:url('admin/TournamentInfo/index', ['source_from' =>$source_from])}">wca赛事信息</a>{/if}</li>
       <li class="pull-right"><a href="javascript:history.back(-1);" class="text-muted"><i class="fa fa-chevron-circle-left"></i></a></li>
     </ul>
     <div class="tab-content">
@@ -23,7 +23,8 @@
               <div class="row">
               <div class="col-md-4">
 				<input type="hidden" name="tournament_id" value="{$info.tournament_id}">
-			    <input type="text" name="tournament_name" value="{$info.tournament_name}" id="titleId" class="form-control input-sm" placeholder="">
+				<input type="hidden" name="source_from" value="{$source_from}">
+			    <input type="text" name="tournament_name" disabled="disabled" value="{$info.tournament_name}" id="titleId" class="form-control input-sm" placeholder="">
 				 <span class="text-red">（不要改）</span>
               </div>
               </div>

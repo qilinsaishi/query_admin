@@ -21,14 +21,25 @@ class PlayerInfo extends BaseQueryList
 
     public function getList($request){
         $query = [];
+        $is_intergrated=$request['query']['is_intergrated'] ??0;
+        if($is_intergrated==1){//未整合
+            $query[] = ['pid', 'eq', 0];
+            $request['params'][]= ['pid', 'eq', 0];
+            $request['query']['game']='';
+            $request['query']['original_source']='';
+            $request['params']['game']='';
+            $request['params']['original_source']='';
+        }elseif($is_intergrated==2){//已整合
+            $query[] = ['pid', 'gt', 0];
+            $request['params'][]=['pid', 'gt', 0];
+        }
+
         $query[] = ['team_id', 'gt','0'];
         if (isset($request['query']['q'])) {
             if(is_numeric($request['query']['q'])){
                 $query[] = ['player_id|pid','eq',$request['query']['q']];
                 $request['query']['game']='';
-                $request['query']['original_source']='';
                 $request['params']['game']='';
-                $request['params']['original_source']='';
             }else{
                 $query[] = ['player_name|position|en_name','like','%'.$request['query']['q'].'%'];
             }
@@ -41,14 +52,6 @@ class PlayerInfo extends BaseQueryList
         }
         if (!empty($request['query']['original_source'])) {
             $query[] = ['original_source', 'eq', $request['query']['original_source']];
-        }
-        if (isset($request['query']['pid'])) {
-            if($request['query']['pid']=='0'){
-                $query[] = ['pid', 'eq', $request['query']['pid']];
-            }elseif($request['query']['pid']=='1'){
-                $query[] = ['pid', 'gt', 0];
-            }
-
         }
 
         // 分页参数

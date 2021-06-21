@@ -37,7 +37,6 @@ class Admin extends Common
         $this->uid      = $session['uid'];
         $this->username = $session['username'];
         $this->site_id  = !empty(Session::get('site_id', 'admin')) ? Session::get('site_id', 'admin') : 0;
-
         // 查询站点信息
         $siteObj = new Site;
         $site = $siteObj->where('id', $this->site_id)->find();
@@ -54,6 +53,7 @@ class Admin extends Common
         $end = end($breadcrumb);
         View::share('breadcrumb', $breadcrumb);
         View::share('current', $end['name']);
+        View::share('admin_name', config('app.admin_name'));
 
         // 站点赋值
         View::share('site_list', Auth::getSite($session['uid']));

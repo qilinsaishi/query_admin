@@ -50,7 +50,7 @@
               </div>
               <div class="form-group">
                 <input type="text" name="q" value="{$search.q}" class="form-control" placeholder="">
-				<input type="hidden" name="tid" value="{$search.tid}" class="form-control" placeholder="">
+				<input type="hidden" name="is_intergrated" value="{$search.is_intergrated}" class="form-control" placeholder="">
               </div>
               <button type="submit" class="btn btn-primary btn-flat"> <i class="fa fa-search"></i> {:lang('Search')}</button>
             </form>
@@ -65,7 +65,7 @@
                     <tr>
                         <th><input id="checkAll" type="checkbox"></th>
                         <th>#ID</th>
-						<th width="180" >TID（<span ><a href="{:url('admin/TeamInfo/index')}?tid=0&game={$search.game}&original_source={$search.original_source}&q={$search.q}"><button >未整合</button></a></span>&nbsp;&nbsp;&nbsp;&nbsp;<button><a href="{:url('admin/TeamInfo/index')}?game={$search.game}&original_source={$search.original_source}&q={$search.q}">全部</a></button></span>）</th>
+						<th width="240" >TID（<span><a href="{:url('admin/TeamInfo/index')}?is_intergrated=1&game={$search.game}&original_source={$search.original_source}&q={$search.q}"><button >未整合</button></a></span>&nbsp;&nbsp;&nbsp;&nbsp;<span><a href="{:url('admin/TeamInfo/index')}?is_intergrated=2&game={$search.game}&original_source={$search.original_source}&q={$search.q}"><button >已整合</button></a></span>&nbsp;&nbsp;&nbsp;&nbsp;<button><a href="{:url('admin/TeamInfo/index')}?is_intergrated=0&game={$search.game}&original_source={$search.original_source}&q={$search.q}">全部</a></button></span>）</th>
                         <th>战队名称</th>
 						<th>战队全称</th>
 						<th>中文名称</th>
@@ -85,12 +85,13 @@
                         <td><input name="ids[]" value="{$vo.team_id}" type="checkbox"></td>
                         <td>{$vo.team_id}</td>
 						<td align='center'><span class="tidclass">{$vo.tid}</span> 
-						{neq name="vo.original_source" value="wanplus"}
+						
 						{eq name="vo.tid" value="0"}
 						<span><button  onclick="ntegratid('{$vo.team_id}','{$vo.team_name}','{$vo.game}',1);">并入</button></span>&nbsp;&nbsp;&nbsp;&nbsp;<span><button  onclick="ntegratid('{$vo.team_id}','{$vo.team_name}','{$vo.game}',4);">合并</button></span>
+						&nbsp;&nbsp;&nbsp;&nbsp;<span><button  onclick="mergeSelf('{$vo.team_id}',5);">自整合</button></span>
 						{else /}
 						（<span><button onclick="ntegratid('{$vo.team_id}','{$vo.team_name}','{$vo.game}',2);">已整合</button></span>）
-						{/eq}{/neq}</td>
+						{/eq}</td>
                         <td>
                             {$vo.team_name}
                         </td>
@@ -246,6 +247,42 @@
 			})
 		}
 		
+	}
+	
+	//自整合
+	function mergeSelf(team_id,type){
+		 swal({
+          title: "{:lang('Are you sure')}",
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: "{:lang('Yes')}",
+          cancelButtonText: "{:lang('No')}",
+        }).then(function(result){
+          if (result.value) {
+            var data={'team_id':team_id,'type':type};
+			$.ajax({
+				url:"{:Url('admin/TeamInfo/updataInfo')}",
+				data:data,
+				type:'post',
+				dataType:'json',
+				success: function(xhr){
+					if(xhr.code == 200){
+						swal(xhr.msg, "","success").then(function(value){
+							  window.location.reload();
+						});
+					}else{
+						swal(xhr.msg, "","error").then(function(value){
+							  window.location.reload();
+						});
+						
+					}
+				}
+			})
+          }
+        })
+
 	}
 	
 	//保存

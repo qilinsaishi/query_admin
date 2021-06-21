@@ -38,10 +38,12 @@ class AliOss
         return new OssClient($accessKeyId, $accessKeySecret, $endpoint);
     }
 
-    public function upload($file)
+    public function upload($file,$fileType='upload')
     {
         $info = $file->getInfo();
-        $object = $file->hash() . '.' . ltrim($this->getFileExt($info['name']));
+
+        $object = $fileType.'/'.$file->hash() . '.' . ltrim($this->getFileExt($info['name']));
+
 
         try {
             $result = $this->handler->uploadFile($this->config['alioss_bucket'], $object, $info['tmp_name']);

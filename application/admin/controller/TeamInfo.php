@@ -21,11 +21,21 @@ class TeamInfo extends Admin
     public function index()
     {
         $request = Request::param();
+
+        $game= isset($request['game']) ? $request['game'] : 'lol';
+        //根据游戏不同获取默认来源
+        if($game=='lol' || $game=='kpl'){
+            $default_original_source="scoregg";
+        }elseif($game=='dota2'){
+            $default_original_source="shangniu";
+        }
+
+
         $query = [
-            'q' => isset($request['q']) ? $request['q'] : '',
-            'tid' => isset($request['tid']) ? $request['tid'] : '',
-            'game' => isset($request['game']) ? $request['game'] : 'lol',
-            'original_source' => isset($request['original_source']) ? $request['original_source'] : '',
+            'q' => isset($request['q']) ? trim($request['q']) : '',
+            'is_intergrated' => isset($request['is_intergrated']) ? $request['is_intergrated'] : 0,
+            'game' => $game,
+            'original_source' => isset($request['original_source']) ? $request['original_source'] : $default_original_source,
         ];
         $args = [
             'query' => $query,
@@ -89,11 +99,21 @@ class TeamInfo extends Admin
                 $teamInfoObj = new teamInfoModel();
                 $changeLog = ChangeLogs::checkInsertData('app\common\model\querylist\teamInfo', $request, $request['team_id'], 'team', $this->username, 'team_id');
                 if ($changeLog) {
+                    $request['update_time']=date("Y-m-d H:i:s");
+                    //反编译元字符
+                    $request['team_history'] = strip_tags(htmlspecialchars_decode($request['team_history']));
+                    $request['honor_list'] = strip_tags(htmlspecialchars_decode($request['honor_list']));
+                    $request['description'] = htmlspecialchars_decode($request['description']);
+
                     $rt = $teamInfoObj->isUpdate(true)->allowField(true)->save($request);
                     if (is_numeric($teamInfoObj->team_id)) {
-                        $postData=['params'=>json_encode([$teamInfoObj->team_id]),'dataType' => 'totalTeamInfo'];
+                        $postData=['params'=>json_encode([$teamInfoObj->team_id]),'dataType' =>'totalTeamInfo'];
                         $api_host=config('app.api_host').'/refresh';
                         $return=curl_post($api_host, $postData);
+                        if($teamInfoObj->tid >0)  {//当tid>0时更新缓存
+                            $intergratedPostData=['params'=>json_encode([$teamInfoObj->tid]),'dataType' =>'intergratedTeam'];
+                            $intergratedReturn=curl_post($api_host, $intergratedPostData);
+                        }
                         // 提交事务
                         Db::commit();
                         return $this->response(200, Lang::get('Success'));
@@ -223,6 +243,8 @@ class TeamInfo extends Admin
                 $request['aka'] = explode(',', $request['aka']);
                 $request['aka'] = json_encode($request['aka']);
             }
+            $request['create_time']=date("Y-m-d H:i:s");
+            $request['update_time']=date("Y-m-d H:i:s");
 
             $teamInfoObj = new teamInfoModel();
             $teamInfoObj->allowField(true)->save($request);
@@ -301,7 +323,7 @@ class TeamInfo extends Admin
         $team_id_2=$request['team_id_2'] ?? 0; //下拉选择战队team_id
         $type=$request['type'] ?? 1;  //$type:1表示并入，2.表示已经合并，3表示两天tid>0的合并，4表示两个未合并的合并
 
-        if ($tid > 0 || $team_id_2 || $tid_2 ) {
+        if ($tid > 0 || $team_id_2 || $tid_2 || $team_id) {
             if($type==1){
                 //合并到已整合的战队
                 $postData = json_encode(['tid' => $tid,'team_id' => $team_id,'type' => 'mergeTeam2mergedTeam']);
@@ -325,7 +347,16 @@ class TeamInfo extends Admin
                     'teamInfo_2'=>[$team_id_2,"dataType"=>"totalTeamInfo","reset"=>1],
                 ]);
 
+            }elseif($type==5){
+                //自我整合
+                $postData = json_encode(['team_id' => $team_id,'type' => 'merge1unmergedTeam']);
+                $updataCache=json_encode([
+                    'teamInfo'=>[$team_id,"dataType"=>"totalTeamInfo","reset"=>1],
+                ]);
+
+
             }
+
 
             $api_host = config('app.api_host') . '/intergration';
             $return = curl_post($api_host, $postData);

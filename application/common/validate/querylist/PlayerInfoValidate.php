@@ -8,19 +8,19 @@ class PlayerInfoValidate extends Validate
     protected $rule = [
         'player_name'   => 'require',
 		'game'   => 'require',
-		'position'   => 'require',
         'logo'    => 'require',
+		'team_id'   => 'require',
     ];
 
     protected $message = [
-        'team_name.require' => '请输入名称',
-		 'game.require' => '请选择游戏类型',
-		 'position.require' => '请输入位置',
+        'player_name.require' => '请输入队员名称',
+		'game.require' => '请选择游戏类型',
         'logo.require'  => '请上传logo',
+		'team_id.require' => '请选择所属战队',
     ];
 
     protected $scene = [
-        'create'         => ['player_name','game', 'position','logo'],
-        'edit'           => ['game','position','logo'],
+        'create'         => ['player_name','game','logo','team_id'],
+        'edit'           => ['game','logo'],
     ];
 }
