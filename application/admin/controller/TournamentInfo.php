@@ -6,6 +6,7 @@ use app\common\model\Collect;
 use app\common\model\querylist\ChangeLogs;
 use app\common\model\querylist\ScoreggTournamentInfo as ScoreggTournamentInfoModel;
 use app\common\model\querylist\WcaTournamentInfo as WcaTournamentInfoModel;
+use app\common\model\querylist\ShangniuTournamentInfo as ShangniuTournamentInfoModel;
 use app\common\model\querylist\TeamList;
 use app\common\validate\querylist\CpseoTeamInfoValidate;
 use think\Db;
@@ -23,7 +24,7 @@ class TournamentInfo extends Admin
     {
         $request = Request::param();
         $source_from=$request['source_from'] ?? 'scoregg';
-        $default_game=$source_from=='wca' ?'dota2':'lol';
+        $default_game=($source_from=='wca'||$source_from=='shangniu') ?'dota2':'lol';
         $query = [
             'q' => isset($request['q']) ? $request['q'] : '',
             'game' => isset($request['game']) ? $request['game'] :$default_game,
@@ -37,13 +38,15 @@ class TournamentInfo extends Admin
         ];
         $gameList = config('app.game_type');
         // 分页列表
-        if($source_from =='scoregg'){
-            $scoreggTournamentInfoModel = new ScoreggTournamentInfoModel();
-            $list = $scoreggTournamentInfoModel->getList($args);
-        }else{
+        if($source_from =='shangniu'){
+            $shangniuTournamentInfoModel = new ShangniuTournamentInfoModel();
+            $list = $shangniuTournamentInfoModel->getList($args);
+        }elseif($source_from =='wca'){
             $wcaTournamentInfoModel = new WcaTournamentInfoModel();
             $list = $wcaTournamentInfoModel->getList($args);
-
+        }else{
+            $scoreggTournamentInfoModel = new ScoreggTournamentInfoModel();
+            $list = $scoreggTournamentInfoModel->getList($args);
         }
 
         $this->assign('search', $query);
@@ -73,6 +76,8 @@ class TournamentInfo extends Admin
             $source_from=$request['source_from'] ?? 'scoregg';
             if($source_from =='wca'){
                 $tournamentInfoObj = new wcaTournamentInfoModel();
+            }elseif($source_from =='shangniu'){
+                $tournamentInfoObj = new ShangniuTournamentInfoModel();
             }else{
                 $tournamentInfoObj = new ScoreggTournamentInfoModel();
             }
@@ -84,7 +89,7 @@ class TournamentInfo extends Admin
 				$postData=['params'=>json_encode(['tournament_id'=>$tournamentInfoObj->tournament_id,"source"=>$source_from]),'dataType' => 'tournament'];
 				$api_host=config('app.api_host').'/refresh';
 				$return=curl_post($api_host, $postData);
-				return $this->response(200, Lang::get('Success'));
+				return $this->response(200, Lang::get('Success'),$source_from );
 			} else {
 				return $this->response(201, Lang::get('Fail'));
 			}
@@ -96,6 +101,9 @@ class TournamentInfo extends Admin
         $typeList = config('app.game_type');
         if($source_from =='wca'){
             $info = wcaTournamentInfoModel::get($id);
+        }elseif($source_from =='shangniu'){
+            $info = ShangniuTournamentInfoModel::get($id);
+
         }else{
             $info = ScoreggTournamentInfoModel::get($id);
         }

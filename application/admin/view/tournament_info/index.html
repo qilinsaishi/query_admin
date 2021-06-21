@@ -12,6 +12,7 @@
   <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
       <li    {if condition="$source_from eq 'scoregg'"}class="active"{/if} ><a href="{:url('admin/TournamentInfo/index', ['source_from' =>'scoregg'])}">scoregg赛事信息</a></li>
+	  <li  {if condition="$source_from eq 'shangniu'"}class="active"{/if}><a href="{:url('admin/TournamentInfo/index', ['source_from' =>'shangniu'])}">shangniu赛事信息</a></li>
      <li  {if condition="$source_from eq 'wca'"}class="active"{/if}><a href="{:url('admin/TournamentInfo/index', ['source_from' =>'wca'])}">wca赛事信息</a></li>
     </ul>
 
