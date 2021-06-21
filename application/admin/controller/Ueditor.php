@@ -24,10 +24,15 @@ class Ueditor extends Admin
 
             /* 上传图片 */
             case 'uploadimage':
+                $result=$this->uploadImage();
+                break;
             /* 上传涂鸦 */
             case 'uploadscrawl':
             /* 上传视频 */
             case 'uploadvideo':
+                $result=$this->uploadVideo();
+
+                break;
             /* 上传文件 */
             case 'uploadfile':
                 $result = $this->uploadFile();
@@ -66,6 +71,28 @@ class Ueditor extends Admin
         } else {
             echo $result;
         }
+    }
+    // 图片上传
+    public function uploadImage()
+    {
+        // 获取表单上传文件
+        $file = Request::file('upfile');
+
+        $uploadObj = new UploadFile($this->site_id);
+        $ret = $uploadObj->upload($file, 'image');
+
+        return $this->getFileInfo($ret);
+    }
+
+    // 视频上传
+    public function uploadVideo()
+    {
+        // 获取表单上传文件
+        $file = Request::file('upfile');
+
+        $uploadObj = new UploadFile($this->site_id);
+        $ret = $uploadObj->upload($file, 'video');
+        return $this->getFileInfo($ret);
     }
 
     public function uploadFile()

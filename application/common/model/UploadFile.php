@@ -155,8 +155,7 @@ class UploadFile
                 }
                 break;
         }
-
-        $result =  $this->uploadHandler->upload($file);
+        $result =  $this->uploadHandler->upload($file,$fileType);
         $data   =  array_merge($result, ['site_id' => $this->site_id]);
         SiteFile::create($data);
         return $data;
