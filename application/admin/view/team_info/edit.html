@@ -11,7 +11,8 @@
 {block name="content"}
   <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
-      <li class=""><a href="{:url('admin/TeamInfo/index')}">cpSeo战队</a></li>
+      <li class="">
+	  <a href="{:url('admin/TeamInfo/index', ['game'=>$info['game'],'original_source' =>$info['original_source']])}">战队</a></li>
       <li class=""><a href="{:url('admin/TeamInfo/create')}">{:lang('Create')}</a></li>
       <li class="pull-right"><a href="javascript:history.back(-1);" class="text-muted"><i class="fa fa-chevron-circle-left"></i></a></li>
     </ul>
@@ -143,7 +144,7 @@
 						<input type="radio" {eq name="info.status" value="1"}checked{/eq} name="status" value="1">正常
 					</label>
 					<label class="radio-inline">
-						<input type="radio" {eq name="info.status" value="2"}checked{/eq} name="status" value="2">隐藏
+						<input type="radio" {eq name="info.status" value="0"}checked{/eq} name="status" value="0">隐藏
 					</label>
 					
 				</div>
@@ -288,7 +289,8 @@ var ue2 = UE.getEditor('description', {
             success:function(xhr){
                 if(xhr.code == 200){
                     swal(xhr.msg, "","success").then(function(value){
-						  window.location.href = "{:url('admin/TeamInfo/index')}";
+							 window.location.reload();
+						  //window.location.href = "{:url('admin/TeamInfo/index')}";
 					});
                 } else{
                     swal({
