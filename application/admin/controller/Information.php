@@ -74,6 +74,7 @@ class Information extends Admin
                     $request['site']=$request['site'] ?? 0;
                     $old_request_game=$request['game'];//echo "oldgame:".$old_request_game."\n";
                     $request['update_time']=date("Y-m-d H:i:s",time());
+                    $request['content'] = htmlspecialchars_decode($request['content']);
                     if(isset($request['redirect']) && $request['redirect']>0){
                         $redirectInfo = $informationInfoObj->get($request['redirect']);//跳转的数据详情
                         if($request['game']!=$redirectInfo['game']){
@@ -132,6 +133,7 @@ class Information extends Admin
         }
         $id = Request::param('id');
         $info = InformationModel::get($id);
+        $info['content']=html_entity_decode($info['content']);
         $gameList=config('app.game_type');
         $siteList=[];
         $siteModel=new \app\common\model\Site();
@@ -280,7 +282,7 @@ class Information extends Admin
             $request['create_time']=date("Y-m-d H:i:s",time());
             $request['update_time']=date("Y-m-d H:i:s",time());
             $request['baidu_word_list']=json_encode([]);
-
+            $request['content'] = htmlspecialchars_decode($request['content']);
 
             $informationInfoObj->allowField(true)->save($request);
 

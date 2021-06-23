@@ -94,7 +94,7 @@
 						<input type="radio" {eq name="info.status" value="1"}checked{/eq} name="status" value="1">正常
 					</label>
 					<label class="radio-inline">
-						<input type="radio" {eq name="info.status" value="2"}checked{/eq} name="status" value="2">隐藏
+						<input type="radio" {eq name="info.status" value="0"}checked{/eq} name="status" value="0">隐藏
 					</label>
 					
 				</div>
@@ -255,7 +255,8 @@ $(document).ready(function() {
             success:function(xhr){
                 if(xhr.code == 200){
                     swal(xhr.msg, "","success").then(function(value){
-						  window.location.href = "{:url('admin/PlayerInfo/index')}";
+						window.location.reload();
+						  //window.location.href = "{:url('admin/PlayerInfo/index')}";
 					});
                 } else{
                     swal({
