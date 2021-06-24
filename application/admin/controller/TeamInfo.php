@@ -222,6 +222,7 @@ class TeamInfo extends Admin
 
     public function create()
     {
+        $teamInfoObj = new teamInfoModel();
         // 处理AJAX提交数据
         if (Request::isAjax()) {
             $request = Request::param();
@@ -232,7 +233,20 @@ class TeamInfo extends Admin
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
-            $request['site_id'] = $this->site_id;
+            $request['site_id'] = $request['site_id']??0;
+            $map['site_id']=$request['site_id'];
+            $map['game']=$request['game'];
+            $map['original_source']=$request['original_source'];
+            $checks=$teamInfoObj->getFieldList($map,'team_id',$orderBy='team_id');
+            if(count($checks)>0){
+                return $this->response(201, '该站点的战队已经存在');
+            }
+
+            $request['honor_list'] = json_encode([]);
+            $request['team_history'] = json_encode([]);
+            $request['team_stat'] = json_encode([]);
+            $request['race_stat'] = json_encode([]);
+
             if (isset($request['aka']) && $request['aka']) {
                 if (strpos($request['aka'], '，') !== false) {
                     $request['aka'] = str_replace('，', ',', $request['aka']);
@@ -243,7 +257,7 @@ class TeamInfo extends Admin
             $request['create_time']=date("Y-m-d H:i:s");
             $request['update_time']=date("Y-m-d H:i:s");
 
-            $teamInfoObj = new teamInfoModel();
+
             $teamInfoObj->allowField(true)->save($request);
 
             if (is_numeric($teamInfoObj->team_id)) {
@@ -253,9 +267,9 @@ class TeamInfo extends Admin
             }
         }
         $typeList = config('app.game_type');
-        //$typeList=config('app.config_type');
+        $originalSource = config('app.original_source');
 
-        return $this->fetch('create', ['typeList' => $typeList]);
+        return $this->fetch('create', ['typeList' => $typeList,'originalSource'=>$originalSource]);
     }
 
     public function selectHmtl()

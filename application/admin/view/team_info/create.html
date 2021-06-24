@@ -27,7 +27,7 @@
               </div>
             </div>
 			<div class="form-group">
-              <label class="layui-form-label">外文名称 <span class="text-red">*</span></label>
+              <label class="layui-form-label">外文名称 </label>
               <div class="row">
               <div class="col-md-4">
               <input type="text" name="en_name" class="form-control input-sm" placeholder="">
@@ -35,7 +35,7 @@
               </div>
             </div>
 			<div class="form-group">
-              <label class="layui-form-label"><span class="text-red">*</span>中文名称 </label>
+              <label class="layui-form-label">中文名称 </label>
               <div class="row">
               <div class="col-md-4">
               <input type="text" name="cn_name"   class="form-control input-sm" placeholder="">
@@ -97,8 +97,31 @@
               </div>
               </div>
             </div>
+			<div class="form-group">
+              <label class="layui-form-label">来源 </label>
+              <div class="row">
+              <div class="col-md-4">
+              <select name="original_source" class="form-control">
+               
+                {volist name="originalSource" id="vo"}
+                <option value="{$vo}">
+                    {$vo}
+                </option>
+                {/volist}
+              </select>
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+              <label class="layui-form-label">原站点ID</label>
+              <div class="row">
+              <div class="col-md-4">
+              <input type="text" name="site_id"  class="form-control input-sm" onkeyup="value=value.replace(/[^\d]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))" placeholder="">
+              </div>
+              </div>
+            </div>
             <div class="form-group">
-              <label class="layui-form-label">战队的主Logo</label>
+              <label class="layui-form-label">战队Logo<span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-4">
                 <div class="layui-upload-drag" id="logo">

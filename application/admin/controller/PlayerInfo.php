@@ -77,9 +77,9 @@ class PlayerInfo extends Admin
                 $request['aka']=json_encode($request['aka']);
             }
             //反编译元字符
-            $request['team_history'] = strip_tags(htmlspecialchars_decode($request['team_history']));
-            $request['event_history'] = strip_tags(htmlspecialchars_decode($request['event_history']));
-            $request['event_history'] = strip_tags(htmlspecialchars_decode($request['event_history']));
+            $request['team_history'] = htmlspecialchars_decode($request['team_history']);
+            $request['event_history'] = htmlspecialchars_decode($request['event_history']);
+          
 
 
             //需要加事务
@@ -209,6 +209,7 @@ class PlayerInfo extends Admin
 
     public function create()
     {
+        $playerInfoObj = new PlayerInfoModel();
         // 处理AJAX提交数据
         if (Request::isAjax()) {
             $request = Request::param();
@@ -219,8 +220,15 @@ class PlayerInfo extends Admin
             if (!$validateResult) {
                 return $this->response(201, $validate->getError());
             }
-            $request['site_id']=$this->site_id;
-            $request['stat']='';
+            $request['site_id']=$request['site_id']?? 0;
+            $map['site_id']=$request['site_id'];
+            $map['game']=$request['game'];
+            $map['original_source']=$request['original_source'];
+            $checks=$playerInfoObj->getFieldList($map,'player_id',$orderBy='player_id');
+            if(count($checks)>0){
+                return $this->response(201, '该站点的队员已经存在');
+            }
+
             if(isset($request['aka']) && $request['aka']){
                 if(strpos($request['aka'],'，') !==false){
                     $request['aka']=str_replace('，',',',$request['aka']);
@@ -230,10 +238,12 @@ class PlayerInfo extends Admin
             }
             $request['create_time']=date("Y-m-d H:i:s");
             $request['update_time']=date("Y-m-d H:i:s");
-            $request['team_history']=addslashes($request['team_history']);
-            $request['event_history']=addslashes($request['event_history']);
+            $request['team_history']=json_encode([]);
+            $request['event_history']=json_encode([]);
+            $request['stat'] = json_encode([]);
+            $request['player_stat'] = json_encode([]);
 
-            $playerInfoObj = new PlayerInfoModel();
+
             
             $playerInfoObj->allowField(true)->save($request);
 
@@ -245,8 +255,9 @@ class PlayerInfo extends Admin
         }
 
         $typeList=config('app.game_type');
+        $originalSource=config('app.original_source');
 
-        return $this->fetch('create',['typeList'=>$typeList]);
+        return $this->fetch('create',['typeList'=>$typeList,'originalSource'=>$originalSource]);
     }
 
     //根据选择游戏获取战队信息

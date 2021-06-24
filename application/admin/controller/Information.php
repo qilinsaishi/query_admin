@@ -21,7 +21,9 @@ class Information extends Admin
         2=>'公告',
         3=>'赛事',
         4=>'攻略',
-        5=>'社区'
+        5=>'社区',
+        6=>'活动',
+        7=>'视频'
     ];
     public function index()
     {
