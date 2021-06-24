@@ -74,6 +74,7 @@
 						<th>所在地区</th>
 						<th>源站点ID</th>
                         <th>游戏类型</th>
+						<th>显示状态</th>
 						<th>初始来源</th>
                         <th>战队Logo</th>
                         <th>{:lang('Action')}</th>
@@ -103,7 +104,8 @@
 						 <td>{$vo.established_date}</td>
 						 <td>{$vo.location}</td>
 						 <td>{$vo.site_id}</td>
-                        <td>{$vo.game}</td>
+						 <td>{$vo.game}</td>
+						 <td>{if condition="$vo['status']==1"}<span style="background-color:green;color:white;">显示</span>{else /}隐藏{/if}</td>
 						<td>{$vo.original_source}</td>
                         <td>
                             <img src="{$vo.logo}?x-oss-process=image/resize,m_lfit,h_60,w_60" width="60"  height='60'>

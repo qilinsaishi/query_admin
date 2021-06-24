@@ -80,6 +80,7 @@
 							<span style="margin-left:50px;">源站点ID</span>
 							<span style="margin-left:50px;">游戏类型</span>
 							<span style="margin-left:50px;">初始来源</span>
+							<span style="margin-left:50px;">显示状态</span>
 							<span style="margin-left:50px;">操作</span>
 						</li>
 						</div>
@@ -98,6 +99,8 @@
 						  <span style="margin-left:80px;" onclick="editField({$vo.tid},'site_id');">{$vo.site_id}</span>
 						  <span style="margin-left:80px;" onclick="editField({$vo.tid},'game');">{$vo.game}</span>
 						  <span style="margin-left:80px;" onclick="editField({$vo.tid},'original_source');">{$vo.original_source}</span>
+						  {if condition="$vo['display']==1"}
+						  <span style="background-color:green;color:white;margin-left:50px;">显示</span>{else /}<span style="margin-left:50px;">隐藏</span>{/if}
 						  <span style="margin-left:50px;">
                             <a href="{:url('admin/TeamList/edit', ['id' => $vo['tid']])}"></i> {:lang('Edit')}</a>
 						  </span>

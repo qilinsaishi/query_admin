@@ -69,8 +69,10 @@
                         <th>选手名称</th>
 						<th>中文名称</th>
 						<th>英文名称</th>
+						<th>TeamID</th>
 						<th>游戏</th>
                         <th>位置</th>
+						<th>显示状态</th>
 						<th>初始来源</th>
                         <th>队员Logo</th>
 						<th>{:lang('Creation date')}</th>
@@ -98,9 +100,12 @@
 						<td>
                             {$vo.en_name}
                         </td>
+						<td>
+                            {$vo.team_id}
+                        </td>
 						<td>{$vo.game}</td>
                         <td>{$vo.position}</td>
-						
+						<td>{if condition="$vo['status']==1"}<span style="background-color:green;color:white;">显示</span>{else /}隐藏{/if}</td>
 						<td>{$vo.original_source}</td>
 						
                         <td>

@@ -150,14 +150,11 @@ class TeamInfo extends Admin
             $race_stat='win:'.$info['race_stat']['win'].',draw:'.$info['race_stat']['draw'].',lose:'.$info['race_stat']['lose'];
         }
         $info['race_stat']=$race_stat;
-
-
-        if (!empty($info['aka'])) {
+        if(is_array($info['aka']) && count($info['aka'])>0){
             $info['aka'] = implode(',', $info['aka']);
-        } else {
+        }else{
             $info['aka'] = '';
         }
-
 
         $data = [
             'info' => $info,

@@ -47,6 +47,10 @@ class TeamInfo extends BaseQueryList
         if (!empty($request['query']['game'])) {
             $query[] = ['game', 'eq', $request['query']['game']];
         }
+
+      /*  if ($request['query']['status'] >=0) {
+            $query[] = ['status', 'eq', $request['query']['status']];
+        }*/
         if (!empty($request['query']['original_source'])) {
             $query[] = ['original_source', 'eq', $request['query']['original_source']];
         }
