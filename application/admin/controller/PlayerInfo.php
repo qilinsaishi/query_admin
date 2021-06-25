@@ -426,6 +426,18 @@ class PlayerInfo extends Admin
                     ]);
 
                     break;
+                case "merge1unmergedPlayer":
+
+                    $player_id= $request['player_id'] ?? 0;
+                    //合并到已整合的战队
+                    $postData = json_encode(['player_id' => $player_id,'type' => 'merge1unmergedPlayer']);
+                    $updataCache=json_encode([
+                        'playerInfo'=>[$player_id,"dataType"=>"totalPlayerInfo","reset"=>1],
+                    ]);
+
+                    break;
+                default:
+                    break;
 
             }
 
@@ -435,8 +447,8 @@ class PlayerInfo extends Admin
             $msg=isset($return['log']) ? join("\n",$return['log']):'';
             if ($return['result']) {
                 $update_cache_api = config('app.api_host') . '/get';
-               // $updataCacheResult = curl_post($update_cache_api, $updataCache);
-                //$updataCacheResult=json_decode($updataCacheResult,true);
+               $updataCacheResult = curl_post($update_cache_api, $updataCache);
+                $updataCacheResult=json_decode($updataCacheResult,true);
                 return $this->response(200, $msg);
             } else {
                 return $this->response(201, $msg);

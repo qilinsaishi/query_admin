@@ -88,6 +88,7 @@
 						{neq name="vo.original_source" value="wanplus"}
 						{eq name="vo.pid" value="0"}
 						<span><button  onclick="getMergedPlayerList4playerid('{$vo.player_id}','{$vo.player_name}','{$vo.team_id}');">并入</button></span>&nbsp;&nbsp;&nbsp;&nbsp;<span><button  onclick="getUnmergedPlayerList('{$vo.player_id}','{$vo.player_name}','{$vo.game}','{$vo.team_id}');">合并</button></span>
+						&nbsp;&nbsp;&nbsp;&nbsp;<span><button  onclick="mergeSelf('{$vo.player_id}');">自整合</button></span>
 						{else /}
 						（<span><button onclick="getMergedPlayerList4pid('{$vo.pid}','{$vo.player_name}','{$vo.team_id}');">合并</button></span>）
 						{/eq}{/neq}</td>
@@ -346,6 +347,43 @@
 		})
 	
 	}
+	
+	//自整合
+	function mergeSelf(player_id){
+		 swal({
+          title: "{:lang('Are you sure')}",
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: "{:lang('Yes')}",
+          cancelButtonText: "{:lang('No')}",
+        }).then(function(result){
+          if (result.value) {
+            var data={'player_id':player_id,'type':'merge1unmergedPlayer'};
+			$.ajax({
+				url:"{:Url('admin/playerInfo/updataInfo')}",
+				data:data,
+				type:'post',
+				dataType:'json',
+				success: function(xhr){
+					if(xhr.code == 200){
+						swal(xhr.msg, "","success").then(function(value){
+							  window.location.reload();
+						});
+					}else{
+						swal(xhr.msg, "","error").then(function(value){
+							  window.location.reload();
+						});
+						
+					}
+				}
+			})
+          }
+        })
+
+	}
+	
 	
 	
 	//保存
