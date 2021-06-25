@@ -221,13 +221,15 @@ class PlayerInfo extends Admin
                 return $this->response(201, $validate->getError());
             }
             $request['site_id']=$request['site_id']?? 0;
+            /*$request['site_id']=$request['site_id']?? 0;
             $map['site_id']=$request['site_id'];
             $map['game']=$request['game'];
-            $map['original_source']=$request['original_source'];
+            $map['original_source']=$request['original_source'];print_r($map);
             $checks=$playerInfoObj->getFieldList($map,'player_id',$orderBy='player_id');
+
             if(count($checks)>0){
                 return $this->response(201, '该站点的队员已经存在');
-            }
+            }*/
 
             if(isset($request['aka']) && $request['aka']){
                 if(strpos($request['aka'],'，') !==false){
