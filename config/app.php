@@ -147,5 +147,7 @@ return [
 	'config_type'=>['text'=>'文本','images'=>'图片','file'=>'文件'],
 	'game_type'=>['lol','kpl','dota2'],
 	'original_source'=>['scoregg','shangniu'],
+	'scoreggMatchStatus'=>['0'=>'未开始','1'=>'进行中','2'=>'已结束','3'=>'已删除'],
+	'shangniuMatchStatus'=>['0'=>'比赛异常','1'=>'未开始','2'=>'正在进行','3'=>'已结束','12'=>'已取消','13'=>'延期','15'=>'待定'],
 
 ];

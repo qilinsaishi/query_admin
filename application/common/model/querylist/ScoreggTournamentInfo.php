@@ -48,6 +48,10 @@ class ScoreggTournamentInfo extends BaseQueryList
             ]);
         return $data;
     }
+    public function getTournamentInfo($map,$field="*"){
+
+        return $this->where($map)->field($field)->find();
+    }
 
 
    

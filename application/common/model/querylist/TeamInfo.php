@@ -94,6 +94,9 @@ class TeamInfo extends BaseQueryList
     public function updateField($id,$data){
         return $this->where('team_id',$id)->update($data);
     }
+    public function getTeamInfo($map,$field="*"){
+        return $this->where($map)->field($field)->find();
+    }
 
 
 

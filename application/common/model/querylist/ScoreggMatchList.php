@@ -4,10 +4,10 @@ namespace app\common\model\querylist;
 use think\Db;
 use app\common\model\BaseQueryList;
 
-class ShangniuTournamentInfo extends BaseQueryList
+class ScoreggMatchList extends BaseQueryList
 {
-    protected $pk = 'tournament_id';
-	protected $table = 'shangniu_tournament_info';
+    protected $pk = 'match_id';
+	protected $table = 'scoregg_match_list';
 
     protected $autoWriteTimestamp = true;
 
@@ -17,14 +17,14 @@ class ShangniuTournamentInfo extends BaseQueryList
 
     public function getList($request){
         $query = [];
-        if (isset($request['query']['q']) && $request['query']['q'] !='') {
+        if (isset($request['query']['q'])) {
 
             if(is_numeric($request['query']['q'])){
                 $request['query']['game']='';
                 $request['params']['game']='';
-                $query[] = ['tournament_id', 'eq', $request['query']['q']];
+                $query[] = ['match_id', 'eq', $request['query']['q']];
             }else{
-                $query[] = ['tournament_name','like','%'.$request['query']['q'].'%'];
+                $query[] = ['round_detailed','like','%'.$request['query']['q'].'%'];
             }
 
         }
@@ -32,26 +32,33 @@ class ShangniuTournamentInfo extends BaseQueryList
         if (!empty($request['query']['game'])) {
             $query[] = ['game', 'eq', $request['query']['game']];
         }
-        
-        
+        if ($request['query']['match_status']>-1) {
+            $query[] = ['match_status', 'eq', $request['query']['match_status']];
+        }
+
+        $filed="match_id,game,match_status,round_detailed,tournament_id,home_id,away_id,
+        home_score,away_score,start_time,update_time,create_time";
         // 分页参数
         $params = [];
         if (!empty($request['params'])) {
             $params = $request['params'];
         }
         $data=$this->where($query)
-            ->order('tournament_id desc')
+            ->field($filed)
+            ->order('match_id desc')
             ->paginate(20, false, [
                 'type'     => 'bootstrap',
                 'var_page' => 'page',
                 'query'    => $params,
             ]);
-
         return $data;
     }
-    public function getTournamentInfo($map,$field="*"){
-        return $this->where($map)->field($field)->find();
+
+    public function getTeamInfo($map,$field="*"){
+        $teamModel=new TeamInfo();
+        return $teamModel->where($map)->field($field)->find();
     }
+
 
    
 }
