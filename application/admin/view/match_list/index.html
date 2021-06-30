@@ -66,19 +66,19 @@
                 <thead>
                     <tr>
                         <th><input id="checkAll" type="checkbox"></th>
-                        <th>#MatchID</th>
-                        <th>赛事名称</th>
-						<th>游戏类型</th>
-						<th>主队名称</th>
-						<th>客队名称</th>
-						<th>主队得分</th>
-						<th>客队得分</th>
-						<th>主队图片</th>
-						<th>客队图片</th>
-						<th>状态</th>
+                        <th >#MatchID</th>
+                        <th >赛事名称</th>
+						<th width="100">游戏类型</th>
+						<th width="100">主队名称</th>
+						<th width="100">客队名称</th>
+						<th width="80">主队得分</th>
+						<th width="80">客队得分</th>
+						<th width="80">主队图片</th>
+						<th width="80">客队图片</th>
+						<th width="80">状态</th>
 						<th>开始时间</th>
 						<th>下次重试时间</th>
-						<th>重试次数</th>
+						<th width="80">重试次数</th>
 						<th>更新时间</th>
                         <th>{:lang('Action')}</th>
                     </tr>
@@ -87,11 +87,12 @@
                     {volist name="list" id="vo"}
                     <tr id = "tr_{$vo.tournament_id}">
                         <td><input name="ids[]" value="{$vo.match_id}" type="checkbox"></td>
-                        <td>{$vo.match_id}</td>
+                        <td width="130">{$vo.match_id}{if condition="$vo['game']=='dota2'"}
+						{if condition="($vo['home_display']*$vo['away_display'])>0"}（显示）{else /}（隐藏）{/if}{/if}</td>
                         <td>
                             {$vo.tournament_name}
                         </td>
-						<td>{$vo.game}</td>
+						<td width="100">{$vo.game}</td>
 						<td>
                             {$vo.home_name}（home_id:{$vo.home_id}）
                         </td>
