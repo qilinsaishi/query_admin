@@ -103,7 +103,7 @@ class MatchList extends Admin
             $source_from=$request['source_from'] ?? 'scoregg';
             $postData=['game'=>$request['game'],'match_id' =>$request['match_id']];
 
-            $api_host=config('app.api_host').'/refreshGame';echo $api_host;exit;
+            $api_host=config('app.api_host').'/refreshGame';
             $return=curl_post($api_host, $postData);
 
 			if ($return) {
