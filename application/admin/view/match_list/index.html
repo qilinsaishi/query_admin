@@ -77,6 +77,8 @@
 						<th>客队图片</th>
 						<th>状态</th>
 						<th>开始时间</th>
+						<th>下次重试时间</th>
+						<th>重试次数</th>
 						<th>更新时间</th>
                         <th>{:lang('Action')}</th>
                     </tr>
@@ -91,10 +93,10 @@
                         </td>
 						<td>{$vo.game}</td>
 						<td>
-                            {$vo.home_name}
+                            {$vo.home_name}（home_id:{$vo.home_id}）
                         </td>
 						<td>
-                            {$vo.away_name}
+                            {$vo.away_name}（away_id:{$vo.away_id}）
                         </td>
 						<td>
                             {$vo.home_score}
@@ -128,6 +130,8 @@
 						
 						</td>
                          <td>{$vo.start_time|format_time='Y-m-d H:i:s'}</td>
+						  <td>{$vo.next_try|format_time='Y-m-d H:i:s'}</td>
+						   <td><span {if condition="$vo['try']>=10"} style="background-color:red;color:white;" {/if}>{$vo.try}</span></td>
 						 <td>{$vo.update_time}</td>
                         <td>
                             
@@ -220,34 +224,43 @@
 
 
     function UpdateMatch(id,game){
-        swal({
-          title: "确定要更新当前比赛吗？",
-          type: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: "{:lang('Yes')}",
-          cancelButtonText: "{:lang('No')}",
-        }).then(function(result){
-          if (result.value) {
-            $.ajax({
-                url:"{:Url('admin/MatchList/edit')}",
-                data:{'match_id':id,'game':game},
-                type:'post',
-                dataType:'json',
-                success: function(xhr){
-                    if(xhr.code == 200){
-                        swal(xhr.msg, "","success").then(function(value){
-							window.location.reload();
-                            // window.location.href = "{:url('admin/MatchList/index')}";
-                        });
-                    }else{
-                        swal(xhr.msg, "", "error");
-                    }
-                }
-            })
-          }
-        })
+
+		layui.use('layer', function(){
+			var layer = layui.layer;
+			
+		
+			swal({
+			  title: "此次更新需要的时间比较长，请耐心等待",
+			  type: 'warning',
+			  showCancelButton: true,
+			  confirmButtonColor: '#3085d6',
+			  cancelButtonColor: '#d33',
+			  confirmButtonText: "{:lang('Yes')}",
+			  cancelButtonText: "{:lang('No')}",
+			}).then(function(result){
+				var index = layer.load();
+			  if (result.value) {
+				$.ajax({
+					url:"{:Url('admin/MatchList/edit')}",
+					data:{'match_id':id,'game':game},
+					type:'post',
+					dataType:'json',
+					success: function(xhr){
+						if(xhr.code == 200){
+							layer.close(index);
+							swal(xhr.msg, "","success").then(function(value){
+								window.location.reload();
+								// window.location.href = "{:url('admin/MatchList/index')}";
+							});
+						}else{
+							layer.close(index);
+							swal(xhr.msg, "", "error");
+						}
+					}
+				})
+			  }
+			})
+		});
     }
 </script>
 {/block}

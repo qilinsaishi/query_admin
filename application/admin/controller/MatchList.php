@@ -22,17 +22,20 @@ class MatchList extends Admin
     public function index()
     {
         $request = Request::param();
-        $source_from=$request['source_from'] ?? 'scoregg';
+        $source_from=$request['source_from'] ?? ((isset($request['game']) && $request['game']=='dota2')?"shangniu":"scoregg");
         $default_game=($source_from=='shangniu') ?'dota2':'lol';
+
         $query = [
             'q' => isset($request['q']) ? $request['q'] : '',
             'game' => isset($request['game']) ? $request['game'] :$default_game,
             'match_status' => isset($request['match_status']) ? $request['match_status'] :'-1',
         ];
+
+
         $args = [
             'query' => $query,
             'field' => '',
-            'order' => 'tournament_id desc',
+            'order' => 'match_id desc',
             'params' => $query,
             'limit' => 20,
         ];
@@ -74,6 +77,7 @@ class MatchList extends Admin
                 $matchInfo['home_logo']=$homeTeamInfo['logo'] ?? '';
                 $matchInfo['away_logo']=$awayTeamInfo['logo'] ?? '';
 
+
             }
 
         }
@@ -99,7 +103,7 @@ class MatchList extends Admin
             $source_from=$request['source_from'] ?? 'scoregg';
             $postData=['game'=>$request['game'],'match_id' =>$request['match_id']];
 
-            $api_host=config('app.api_host').'/refreshGame';
+            $api_host=config('app.api_host').'/refreshGame';echo $api_host;exit;
             $return=curl_post($api_host, $postData);
 
 			if ($return) {

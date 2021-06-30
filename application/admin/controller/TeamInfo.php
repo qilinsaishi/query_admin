@@ -4,6 +4,8 @@ namespace app\admin\controller;
 
 use app\common\model\Collect;
 use app\common\model\querylist\ChangeLogs;
+use app\common\model\querylist\ScoreggMatchList as ScoreggMatchListModel;
+use app\common\model\querylist\ShangniuMatchList as ShangniuMatchListModel;
 use app\common\model\querylist\TeamInfo as TeamInfoModel;
 use app\common\model\querylist\TeamList;
 use app\common\validate\querylist\CpseoTeamInfoValidate;
@@ -155,10 +157,30 @@ class TeamInfo extends Admin
         }else{
             $info['aka'] = '';
         }
+        $playerModel=new \app\common\model\querylist\PlayerInfo();
+        $map['team_id']=$id;
+        $map['game']=$info['game'];
+        $map['original_source']=$info['original_source'];
+        $map['status']=1;
+        $playerInfoShow=count($playerModel->getFieldList($map,'player_id'));
+        $hideMap=$map;
+        $hideMap['status']=0;
+        $playerInfoHide=count($playerModel->getFieldList($hideMap,'player_id'));
+        if($info['original_source']=='shangniu'){
+            $matchListModel = new ShangniuMatchListModel();
+        }else{
+            $matchListModel = new ScoreggMatchListModel();
+        }
+        $matchMap['home_id|away_id']=$info['site_id'];
+        $matchMap['game']=$info['game'];
+        $matchCount=$matchListModel->MatchCount($matchMap);
 
         $data = [
             'info' => $info,
-            'typeList' => $typeList
+            'typeList' => $typeList,
+            'playerInfoShow' => $playerInfoShow,
+            'playerInfoHide' => $playerInfoHide,
+            'matchCount'=>$matchCount
         ];
 
         return $this->fetch('edit', $data);

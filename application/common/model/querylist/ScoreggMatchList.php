@@ -20,9 +20,9 @@ class ScoreggMatchList extends BaseQueryList
         if (isset($request['query']['q'])) {
 
             if(is_numeric($request['query']['q'])){
-                $request['query']['game']='';
-                $request['params']['game']='';
-                $query[] = ['match_id', 'eq', $request['query']['q']];
+               // $request['query']['game']='';
+               // $request['params']['game']='';
+                $query[] = ['match_id|home_id|away_id', 'eq', $request['query']['q']];
             }else{
                 $query[] = ['round_detailed','like','%'.$request['query']['q'].'%'];
             }
@@ -37,7 +37,7 @@ class ScoreggMatchList extends BaseQueryList
         }
 
         $filed="match_id,game,match_status,round_detailed,tournament_id,home_id,away_id,
-        home_score,away_score,start_time,update_time,create_time";
+        home_score,away_score,start_time,update_time,create_time,next_try,try";
         // 分页参数
         $params = [];
         if (!empty($request['params'])) {
@@ -54,11 +54,10 @@ class ScoreggMatchList extends BaseQueryList
         return $data;
     }
 
-    public function getTeamInfo($map,$field="*"){
-        $teamModel=new TeamInfo();
-        return $teamModel->where($map)->field($field)->find();
+    public function MatchCount($map){
+        return $this->where($map)->count();
     }
 
 
-   
+
 }
