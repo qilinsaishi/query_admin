@@ -105,7 +105,7 @@ class ActiveList extends Admin
 
 
             $activeListObj = new ActiveListModel;
-            $exist = $activeListObj->where('title', $request['title'])->value('id');
+            $exist = $activeListObj->where(['title'=>$request['title'],'site_id'=>$request['site_id']])->value('id');
             if (is_numeric($exist)) {
                 return $this->response(201, Lang::get('This record already exists'));
             }
