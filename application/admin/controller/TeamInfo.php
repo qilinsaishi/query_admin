@@ -283,6 +283,9 @@ class TeamInfo extends Admin
             $teamInfoObj->allowField(true)->save($request);
 
             if (is_numeric($teamInfoObj->team_id)) {
+                $postData=['game'=>$request['game'],'site_id' =>$request['site_id'],'type'=>'team'];
+                $api_host=config('app.api_host').'/createMission';
+                $return=curl_post($api_host, $postData);
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));

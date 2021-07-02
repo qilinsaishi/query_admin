@@ -24,6 +24,7 @@ class Ueditor extends Admin
 
             /* 上传图片 */
             case 'uploadimage':
+
                 $result=$this->uploadImage();
                 break;
             /* 上传涂鸦 */
@@ -80,7 +81,9 @@ class Ueditor extends Admin
 
         $uploadObj = new UploadFile($this->site_id);
         $ret = $uploadObj->upload($file, 'image');
-
+        if(!$ret){
+            return json_encode(['state'=>$uploadObj->getError()]);
+        }
         return $this->getFileInfo($ret);
     }
 

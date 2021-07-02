@@ -221,15 +221,15 @@ class PlayerInfo extends Admin
                 return $this->response(201, $validate->getError());
             }
             $request['site_id']=$request['site_id']?? 0;
-            /*$request['site_id']=$request['site_id']?? 0;
+
             $map['site_id']=$request['site_id'];
             $map['game']=$request['game'];
-            $map['original_source']=$request['original_source'];print_r($map);
+            $map['original_source']=$request['original_source'];
             $checks=$playerInfoObj->getFieldList($map,'player_id',$orderBy='player_id');
 
             if(count($checks)>0){
                 return $this->response(201, '该站点的队员已经存在');
-            }*/
+            }
 
             if(isset($request['aka']) && $request['aka']){
                 if(strpos($request['aka'],'，') !==false){
@@ -250,6 +250,9 @@ class PlayerInfo extends Admin
             $playerInfoObj->allowField(true)->save($request);
 
             if (is_numeric($playerInfoObj->player_id)) {
+                $postData=['game'=>$request['game'],'site_id' =>$request['site_id'],'type'=>'player'];
+                $api_host=config('app.api_host').'/createMission';
+                $return=curl_post($api_host, $postData);
                 return $this->response(200, Lang::get('Success'));
             } else {
                 return $this->response(201, Lang::get('Fail'));
