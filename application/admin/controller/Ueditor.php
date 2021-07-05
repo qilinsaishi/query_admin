@@ -95,6 +95,9 @@ class Ueditor extends Admin
 
         $uploadObj = new UploadFile($this->site_id);
         $ret = $uploadObj->upload($file, 'video');
+        if(!$ret){
+            return json_encode(['state'=>$uploadObj->getError()]);
+        }
         return $this->getFileInfo($ret);
     }
 
