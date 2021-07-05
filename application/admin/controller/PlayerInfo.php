@@ -23,7 +23,11 @@ class PlayerInfo extends Admin
         $request = Request::param();
         $game= isset($request['game']) ? $request['game'] : 'lol';
         //根据游戏不同获取默认来源
-        $default_original_source=(isset($request['game']) && $request['game']=='dota2')?"shangniu":"scoregg";
+        if($game=='lol' || $game=='kpl'){
+            $default_original_source="scoregg";
+        }elseif($game=='dota2'){
+            $default_original_source="shangniu";
+        }
 
         $query = [
             'q'       => isset($request['q']) ? trim($request['q']) : '',
@@ -39,6 +43,7 @@ class PlayerInfo extends Admin
             'limit'  => 20,
         ];
         $gameList=config('app.game_type');
+        $originalSource=config('app.original_source');
         // 分页列表
         $playInfoModel=new PlayerInfoModel();
         $list=$playInfoModel->getList($args);
@@ -47,6 +52,7 @@ class PlayerInfo extends Admin
         $this->assign('list', $list);
         $this->assign('page', $list->render());
         $this->assign('gameList', $gameList);
+        $this->assign('originalSource', $originalSource);
         return $this->fetch('index');
     }
 

@@ -35,7 +35,19 @@
                   </select>
                   </div>
               </div>
-			  
+			  <div class="form-group">
+                  <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon2">初始来源</span>
+                  <select name="original_source" class="form-control">
+                    <option value="">--请选择--</option>
+                    {foreach $originalSource as $k=>$v } 
+                    <option {eq name="$v" value="$search.original_source"}selected{/eq} value="{$v}">
+                        {$v}
+                    </option>
+                    {/foreach}
+                  </select>
+                  </div>
+              </div>
               <div class="form-group">
                 <input type="text" name="q" value="{$search.q}" class="form-control" placeholder="">
 				<input type="hidden" name="is_intergrated" value="{$search.is_intergrated}" class="form-control" placeholder="">
@@ -53,7 +65,7 @@
                     <tr>
                         <th><input id="checkAll" type="checkbox"></th>
                         <th>#ID</th>
-						<th width="240" >PID（<span ><a href="{:url('admin/PlayerInfo/index')}?is_intergrated=1&game={$search.game}&q={$search.q}"><button >未整合</button></a></span>&nbsp;&nbsp;&nbsp;&nbsp;<span ><a href="{:url('admin/PlayerInfo/index')}?is_intergrated=2&game={$search.game}&q={$search.q}"><button >已整合</button></a></span>&nbsp;&nbsp;&nbsp;&nbsp;<button><a href="{:url('admin/PlayerInfo/index')}?is_intergrated=0&game={$search.game}&q={$search.q}">全部</a></button></span>）</th>
+						<th width="240" >PID（<span ><a href="{:url('admin/PlayerInfo/index')}?is_intergrated=1&game={$search.game}&original_source={$search.original_source}&q={$search.q}"><button >未整合</button></a></span>&nbsp;&nbsp;&nbsp;&nbsp;<span ><a href="{:url('admin/PlayerInfo/index')}?is_intergrated=2&game={$search.game}&original_source={$search.original_source}&q={$search.q}"><button >已整合</button></a></span>&nbsp;&nbsp;&nbsp;&nbsp;<button><a href="{:url('admin/PlayerInfo/index')}?is_intergrated=0&game={$search.game}&original_source={$search.original_source}&q={$search.q}">全部</a></button></span>）</th>
                         <th>选手名称</th>
 						<th>中文名称</th>
 						<th>英文名称</th>
