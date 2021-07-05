@@ -243,7 +243,7 @@ var ue = UE.getEditor('editor', {
 	//预览
 	function preview(){
 		var site_id=$("#siteId").find("option:selected").val();
-		if(site_id==5 || site_id==4 || site_id==0){
+		if(site_id==4 || site_id==0){
 			return alert("暂不提供预览");
 		}
 		var title=$("#titleId").val();
@@ -256,7 +256,7 @@ var ue = UE.getEditor('editor', {
 		var type=$("#typeId").find("option:selected").val();
 		var post_url=trim(site_url)+"/preview/";
 		var status = $("input[name='status']:checked").val();
-		var create_time = $("input[name='published_time']").val();
+		var create_time = $("input[name='time_to_publish']").val();
         postcall( post_url, {title:title,author:author,source:source,type:type,status:status,create_time:create_time,game:game,logo:logo,content:content}, '_blank');
     }
 	function trim(str)
