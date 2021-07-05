@@ -25,13 +25,7 @@ class TeamInfo extends Admin
         $request = Request::param();
 
         $game= isset($request['game']) ? $request['game'] : 'lol';
-        //根据游戏不同获取默认来源
-        if($game=='lol' || $game=='kpl'){
-            $default_original_source="scoregg";
-        }elseif($game=='dota2'){
-            $default_original_source="shangniu";
-        }
-
+        $default_original_source=(isset($request['game']) && $request['game']=='dota2')?"shangniu":"scoregg";
 
         $query = [
             'q' => isset($request['q']) ? trim($request['q']) : '',
@@ -47,7 +41,7 @@ class TeamInfo extends Admin
             'limit' => 20,
         ];
         $gameList = config('app.game_type');
-        $originalSource = config('app.original_source');
+        //$originalSource = config('app.original_source');
         // 分页列表
         $teamInfoModel = new TeamInfoModel();
         $list = $teamInfoModel->getList($args);
@@ -55,7 +49,7 @@ class TeamInfo extends Admin
         $this->assign('list', $list);
         $this->assign('page', $list->render());
         $this->assign('gameList', $gameList);
-        $this->assign('originalSource', $originalSource);
+        //$this->assign('originalSource', $originalSource);
 
         return $this->fetch('index');
     }

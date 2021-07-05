@@ -25,10 +25,7 @@ class PlayerInfo extends BaseQueryList
         if($is_intergrated==1){//未整合
             $query[] = ['pid', 'eq', 0];
             $request['params'][]= ['pid', 'eq', 0];
-            $request['query']['game']='';
-            $request['query']['original_source']='';
-            $request['params']['game']='';
-            $request['params']['original_source']='';
+
         }elseif($is_intergrated==2){//已整合
             $query[] = ['pid', 'gt', 0];
             $request['params'][]=['pid', 'gt', 0];
