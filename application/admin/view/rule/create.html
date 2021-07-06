@@ -25,7 +25,7 @@
               <select name="pid" class="form-control input-sm">
                 <option value="0">{:lang('Root')}</option>
                 {volist name="list" id="vo"}
-                <option value="{$vo.id}">
+                <option value="{$vo.id}" {eq name="$vo['id']" value="$pid"}selected{/eq}>
                     {eq name="vo.pid" value="0"}
                         <{$vo.name}>
                     {else/}

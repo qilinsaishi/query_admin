@@ -83,9 +83,9 @@ class Rule extends Admin
             }
 
         }
-
+        $pid = Request::param('pid',0);
         $query = Db::name('auth_rule')->order('sort asc')->select();
         $list = list_for_level($query);
-        return view('create', ['list' => $list]);
+        return view('create', ['list' => $list,'pid'=>$pid]);
     }
 }
