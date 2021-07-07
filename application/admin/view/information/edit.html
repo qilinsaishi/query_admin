@@ -23,8 +23,7 @@
               <div class="row">
               <div class="col-md-6">
 				<input type="hidden" name="id" value="{$info.id}">
-				<input type="hidden" name="site" value="{$info.site}">
-			    <input type="text" name="title" value="{$info.title}"  class="form-control input-sm" placeholder="">
+			    <input type="text" name="title" value="{$info.title}" id="titleId"  class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
@@ -32,7 +31,7 @@
               <label class="layui-form-label">作者 </label>
               <div class="row">
               <div class="col-md-6">
-              <input type="text" name="author" value="{$info.author}"  class="form-control input-sm" placeholder="">
+              <input type="text" name="author" value="{$info.author}"  id="authorId"  class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
@@ -40,7 +39,7 @@
               <label class="layui-form-label">对应来源</label>
               <div class="row">
               <div class="col-md-6">
-              <input type="text" name="source" value="{$info.source}"  class="form-control input-sm" placeholder="">
+              <input type="text" name="source" value="{$info.source}" id="sourceId"  class="form-control input-sm" placeholder="">
               </div>
               </div>
             </div>
@@ -49,7 +48,7 @@
               <label class="layui-form-label">对应游戏 <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-6">
-              <select name="game" class="form-control" id="game">
+              <select name="game" class="form-control"  id="gameId">
                 <option>请选择</option>
                 {volist name="gameList" id="vo"}
                 <option  {eq name="$vo" value="$info.game"}selected{/eq} value="{$vo}">
@@ -81,7 +80,7 @@
               <label class="layui-form-label">文章类型 <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-6">
-              <select name="type" class="form-control">
+              <select name="type" class="form-control" id="typeId">
                 <option>请选择</option>
                 {volist name="typeList" id="vo"}
                 <option  {eq name="key" value="$info.type"}selected{/eq} value="{$key}" >
