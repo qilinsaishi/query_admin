@@ -228,7 +228,7 @@
         //]
 
         //打开右键菜单功能
-        //,enableContextMenu: true
+        ,enableContextMenu: true
         //右键菜单的内容，可以参考plugins/contextmenu.js里边的默认菜单的例子，label留空支持国际化，否则以此配置为准
         //,contextMenu:[
         //    {
@@ -265,9 +265,9 @@
         //removeFormat
         //清除格式时可以删除的标签和属性
         //removeForamtTags标签
-        //,removeFormatTags:'b,big,code,del,dfn,em,font,i,ins,kbd,q,samp,small,span,strike,strong,sub,sup,tt,u,var'
+        ,removeFormatTags:'b,big,code,del,dfn,em,font,i,ins,kbd,q,samp,small,span,strike,strong,sub,sup,tt,u,var'
         //removeFormatAttributes属性
-        //,removeFormatAttributes:'class,style,lang,width,height,align,hspace,valign'
+        ,removeFormatAttributes:'class,style,lang,width,height,align,hspace,valign'
 
         //undo
         //可以最多回退的次数,默认20
@@ -277,7 +277,7 @@
 
         //autoHeightEnabled
         // 是否自动长高,默认true
-        //,autoHeightEnabled:true
+        ,autoHeightEnabled:true
 
         //scaleEnabled
         //是否可以拉伸长高,默认true(当开启时，自动长高失效)
