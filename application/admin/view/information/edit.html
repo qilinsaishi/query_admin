@@ -62,6 +62,22 @@
             </div>
 			
 			<div class="form-group">
+              <label  class="layui-form-label">所属站点</label>
+              <div class="row">
+              <div class="col-md-6">
+              <select name="site" id="siteId" class="form-control">
+                <option value="0">不指定</option>
+                {volist name="siteList" id="vo"}
+                <option value="{$vo.id}" data-url="{$vo.domain}" {eq name="$vo.id" value="$info.site"}selected{/eq} >
+                    {$vo.domain}{$vo.name}(id:{$vo.id})
+                </option>
+                {/volist}
+              </select>
+              </div>
+              </div>
+            </div>
+			
+			<div class="form-group">
               <label class="layui-form-label">文章类型 <span class="text-red">*</span></label>
               <div class="row">
               <div class="col-md-6">
@@ -73,6 +89,14 @@
                 </option>
                 {/volist}
               </select>
+              </div>
+              </div>
+            </div>
+			<div class="form-group">
+              <label class="layui-form-label">发布时间</label>
+              <div class="row">
+              <div class="col-md-6">
+              <input type="text"  name="time_to_publish" id="time_to_publish" lay-verify="time_to_publish" placeholder="yyyy-MM-dd HH:ii:ss" value="{$info.time_to_publish}" class="layui-input" >
               </div>
               </div>
             </div>
@@ -101,7 +125,7 @@
               <div class="col-md-6">
                 <div class="layui-upload-drag" id="logo">
                   <input type="hidden" name="logo" value="{$info.logo}">
-                  <div class="layui-upload-list" id="preview">
+                  <div class="layui-upload-list" >
                       {empty name="info.logo"}
                       <p>{:lang('Upload')}</p>
                       {else /}
@@ -129,7 +153,7 @@
     <div class="box-footer">
         <div class="btn-group">
             <button class="btn btn-primary btn-flat" onclick="operate();" type="button"> {:lang('Save')}</button>
-			
+			<button class="btn btn-default btn-flat" onclick="preview();" style="margin-left:20px;" type="button"> 预览</button>
         </div>
     </div>
   </div>
@@ -138,9 +162,16 @@
 <!-- 自定义js -->
 {block name="js"}
 <script>
-layui.use('upload', function(){
+layui.use(['upload','laydate'], function(){
   var $ = layui.jquery
-  ,upload = layui.upload;
+  ,upload = layui.upload
+  ,laydate = layui.laydate;
+  
+  laydate.render({
+    elem: '#time_to_publish'
+    ,type: 'datetime'
+  });
+  
   //拖拽上传
   upload.render({
     elem: "#logo"
@@ -213,37 +244,50 @@ var ue = UE.getEditor('editor', {
         });
     }
 	
-	//预览
+		//预览
 	function preview(){
-		$post_url="{$site_url}/preview/";
-        $.ajax({
-            url:post_url,
-            data:$("#operate").serialize(),
-            type:'post',
-            dataType:'json',
-            success:function(xhr){
-                if(xhr.code == 200){
-                    swal({
-                      position: 'center',
-                      type: 'success',
-                      title: xhr.msg,
-                      showConfirmButton: false,
-                      toast:false,
-                      timer: 2000
-                    });
-                } else{
-                    swal({
-                      position: 'center',
-                      type: 'error',
-                      title: xhr.msg,
-                      showConfirmButton: false,
-                      toast:false,
-                      timer: 2000
-                    });
-                }
-            }
-        });
+		var site_id=$("#siteId").find("option:selected").val();
+		if(site_id==4 || site_id==0){
+			return alert("暂不提供预览");
+		}
+		var title=$("#titleId").val();
+		var author=$("#authorId").val();
+		var source=$("#sourceId").val();
+		var game=$("#gameId").val();
+		var logo=$("#logoId").val();
+		var content = $('textarea[name="content"]').val();
+		var site_url=$("#siteId").find("option:selected").attr('data-url');
+		var type=$("#typeId").find("option:selected").val();
+		var post_url=trim(site_url)+"/preview/";
+		var status = $("input[name='status']:checked").val();
+		var create_time = $("input[name='time_to_publish']").val();
+        postcall( post_url, {title:title,author:author,source:source,type:type,status:status,create_time:create_time,game:game,logo:logo,content:content}, '_blank');
     }
+	function trim(str)
+	{ 
+	  return str.replace(/(^\s*)|(\s*$)/g, ""); 
+	}
+	function postcall( url, params, target){
+		var tempform = document.createElement("form");
+		tempform.action = url;
+		tempform.method = "post";
+		tempform.style.display="none"
+		if(target) {
+		tempform.target = target;
+		}
+		for (var x in params) {
+		var opt = document.createElement("input");
+		opt.name = x;
+		opt.value = params[x];
+		tempform.appendChild(opt);
+		}
+		var opt = document.createElement("input");
+		opt.type = "submit";
+		tempform.appendChild(opt);
+		document.body.appendChild(tempform);
+		tempform.submit();
+		document.body.removeChild(tempform);
+	}
 
 </script>
 {/block}
