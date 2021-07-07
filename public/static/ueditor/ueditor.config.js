@@ -87,14 +87,14 @@
 
         //indentValue
         //首行缩进距离,默认是2em
-        //,indentValue:'2em'
+        ,indentValue:'2em'
 
         //,initialFrameWidth:1000  //初始化编辑器宽度,默认1000
         //,initialFrameHeight:320  //初始化编辑器高度,默认320
 
         //,readonly : false //编辑器初始化结束后,编辑区域是否是只读的，默认是false
 
-        //,autoClearEmptyNode : true //getContent时，是否删除空的inlineElement节点（包括嵌套的情况）
+        ,autoClearEmptyNode : true //getContent时，是否删除空的inlineElement节点（包括嵌套的情况）
 
         //启用自动保存
         //,enableAutoSave: true
@@ -103,7 +103,7 @@
 
         //,fullscreen : false //是否开启初始化时即全屏，默认关闭
 
-        //,imagePopup:true      //图片操作的浮层开关，默认打开
+        ,imagePopup:true      //图片操作的浮层开关，默认打开
 
         //,autoSyncData:true //自动同步编辑器要提交的数据
         //,emotionLocalization:false //是否开启表情本地化，默认关闭。若要开启请确保emotion文件夹下包含官网提供的images表情文件夹
@@ -111,7 +111,7 @@
         //粘贴只保留标签，去除标签所有属性
         //,retainOnlyLabelPasted: false
 
-        //,pasteplain:false  //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+        ,pasteplain:true  //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
         //纯文本粘贴模式下的过滤规则
         //'filterTxtRules' : function(){
         //    function transP(node){
@@ -193,23 +193,23 @@
 
         //fontsize
         //字号
-        //,'fontsize':[10, 11, 12, 14, 16, 18, 20, 24, 36]
+        ,'fontsize':[10, 11, 12, 14, 16, 18, 20, 24, 36]
 
         //paragraph
         //段落格式 值留空时支持多语言自动识别，若配置，则以配置值为准
-        //,'paragraph':{'p':'', 'h1':'', 'h2':'', 'h3':'', 'h4':'', 'h5':'', 'h6':''}
+        ,'paragraph':{'p':'', 'h1':'', 'h2':'', 'h3':'', 'h4':'', 'h5':'', 'h6':''}
 
         //rowspacingtop
         //段间距 值和显示的名字相同
-        //,'rowspacingtop':['5', '10', '15', '20', '25']
+        ,'rowspacingtop':['5', '10', '15', '20', '25']
 
         //rowspacingBottom
         //段间距 值和显示的名字相同
-        //,'rowspacingbottom':['5', '10', '15', '20', '25']
+        ,'rowspacingbottom':['5', '10', '15', '20', '25']
 
         //lineheight
         //行内间距 值和显示的名字相同
-        //,'lineheight':['1', '1.5','1.75','2', '3', '4', '5']
+        ,'lineheight':['1', '1.5','1.75','2', '3', '4', '5']
 
         //customstyle
         //自定义样式，不支持国际化，此处配置值即可最后显示值
@@ -220,12 +220,12 @@
         //label 显示的名字也是用来标识不同类型的标识符，注意这个值每个要不同，
         //style 添加的样式
         //每一个对象就是一个自定义的样式
-        //,'customstyle':[
-        //    {tag:'h1', name:'tc', label:'', style:'border-bottom:#ccc 2px solid;padding:0 4px 0 0;text-align:center;margin:0 0 20px 0;'},
-        //    {tag:'h1', name:'tl',label:'', style:'border-bottom:#ccc 2px solid;padding:0 4px 0 0;margin:0 0 10px 0;'},
-        //    {tag:'span',name:'im', label:'', style:'font-style:italic;font-weight:bold'},
-        //    {tag:'span',name:'hi', label:'', style:'font-style:italic;font-weight:bold;color:rgb(51, 153, 204)'}
-        //]
+        ,'customstyle':[
+            {tag:'h1', name:'tc', label:'', style:'border-bottom:#ccc 2px solid;padding:0 4px 0 0;text-align:center;margin:0 0 20px 0;'},
+            {tag:'h1', name:'tl',label:'', style:'border-bottom:#ccc 2px solid;padding:0 4px 0 0;margin:0 0 10px 0;'},
+            {tag:'span',name:'im', label:'', style:'font-style:italic;font-weight:bold'},
+            {tag:'span',name:'hi', label:'', style:'font-style:italic;font-weight:bold;color:rgb(51, 153, 204)'}
+        ]
 
         //打开右键菜单功能
         ,enableContextMenu: true
@@ -243,7 +243,7 @@
         //]
 
         //快捷菜单
-        //,shortcutMenu:["fontfamily", "fontsize", "bold", "italic", "underline", "forecolor", "backcolor", "insertorderedlist", "insertunorderedlist"]
+        ,shortcutMenu:["fontfamily", "fontsize", "bold", "italic", "underline", "forecolor", "backcolor", "insertorderedlist", "insertunorderedlist"]
 
         //elementPathEnabled
         //是否启用元素路径，默认是显示
@@ -259,8 +259,8 @@
 
         //tab
         //点击tab键时移动的距离,tabSize倍数，tabNode什么字符做为单位
-        //,tabSize:4
-        //,tabNode:'&nbsp;'
+        ,tabSize:4
+        ,tabNode:'&nbsp;'
 
         //removeFormat
         //清除格式时可以删除的标签和属性
@@ -314,7 +314,7 @@
             removeEmptyNode: true,         // 去掉空节点
         //    //可以去掉的标签
         //    removeTagNames: {标签名字:1},
-        //    indent: false,                  // 行首缩进
+            indent: true,                  // 行首缩进
             indentValue : '2em',            //行首缩进的大小
             bdc2sb: false,
             tobdc: false
