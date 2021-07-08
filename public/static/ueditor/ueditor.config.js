@@ -412,7 +412,7 @@
 			s:      [],
 			section:[],
 			small:  [],
-			span:   ['class', 'style'],
+			span:   [],
 			sub:    ['class', 'style'],
 			sup:    ['class', 'style'],
 			strong: ['class', 'style'],
