@@ -259,8 +259,8 @@
 
         //tab
         //点击tab键时移动的距离,tabSize倍数，tabNode什么字符做为单位
-        //,tabSize:4
-        //,tabNode:'&nbsp;'
+        ,tabSize:4
+        ,tabNode:'&nbsp;'
 
         //removeFormat
         //清除格式时可以删除的标签和属性
@@ -407,7 +407,7 @@
 			mark:   [],
 			nav:    [],
 			ol:     ['class', 'style'],
-			p:      ['class', 'style'],
+			p:      [],
 			pre:    ['class', 'style'],
 			s:      [],
 			section:[],

@@ -71,7 +71,9 @@ class Information extends Admin
             Db::startTrans();
             try {
                 $informationInfoObj= new InformationModel();
-                $changeLog = ChangeLogs::checkInsertData('app\common\model\querylist\Information', $request, $request['id'], 'information', $this->username, 'id');
+                $logData=$request;
+                unset($logData['content']);
+                $changeLog = ChangeLogs::checkInsertData('app\common\model\querylist\Information', $logData, $request['id'], 'information', $this->username, 'id');
                 if ($changeLog) {
                     $request['site']=$request['site'] ?? 0;
                     $old_request_game=$request['game'];//echo "oldgame:".$old_request_game."\n";
