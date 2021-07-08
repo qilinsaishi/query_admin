@@ -209,8 +209,12 @@ var ue = UE.getEditor('editor', {
     ],
     initialFrameWidth: '100%',
     initialFrameHeight:800,
+	enterTag : 'br',
     scaleEnabled:true,
     serverUrl: '{:url("admin/ueditor/index")}',
+});
+ue.ready(function() {
+     ue.setContent('');
 });
 </script>
 <script type="text/javascript">
