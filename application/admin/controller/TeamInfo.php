@@ -259,10 +259,10 @@ class TeamInfo extends Admin
             $map['site_id']=$request['site_id'];
             $map['game']=$request['game'];
             $map['original_source']=$request['original_source'];
-            $checks=$teamInfoObj->getFieldList($map,'team_id',$orderBy='team_id');
-            if(count($checks)>0){
-                return $this->response(201, '该站点的战队已经存在');
-            }
+            //$checks=$teamInfoObj->getFieldList($map,'team_id',$orderBy='team_id');
+            //if(count($checks)>0){
+            //    return $this->response(201, '该站点的战队已经存在');
+            //}
 
             $request['honor_list'] = json_encode([]);
             $request['team_history'] = json_encode([]);
