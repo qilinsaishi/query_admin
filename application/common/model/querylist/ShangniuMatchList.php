@@ -54,7 +54,8 @@ class ShangniuMatchList extends BaseQueryList
         return $data;
     }
     public function MatchCount($map){
-        return $this->where($map)->count();
+        return $this->where($map)->where('home_id','>',0)
+            ->where('home_id','>',0)->count();
     }
 
 
