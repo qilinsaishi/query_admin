@@ -174,12 +174,14 @@ class TeamInfo extends Admin
         $matchMap['home_id|away_id']=$info['site_id'];
         $matchMap['game']=$info['game'];
         $matchCount=$matchListModel->MatchCount($matchMap);
+        $playerTotalCount=$playerInfoShow+$playerInfoHide;
 
         $data = [
             'info' => $info,
             'typeList' => $typeList,
             'playerInfoShow' => $playerInfoShow,
             'playerInfoHide' => $playerInfoHide,
+            'playerTotalCount'=>$playerTotalCount,
             'matchCount'=>$matchCount
         ];
 
